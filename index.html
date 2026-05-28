@@ -1411,6 +1411,13 @@ body.on-page-faq .wa-float{display:none!important;}
     <div class="field"><label>API Key (untuk baca data)</label><input id="cfg_apiKey" placeholder="AIzaSy..." /></div>
     <div class="field"><label>Nama Tab Sheet</label><input id="cfg_sheetName" placeholder="Orders" /></div>
     <div class="field"><label>Apps Script URL (untuk tambah/hapus)</label><input id="cfg_scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" /></div>
+    <div class="field"><label>🤖 Groq API Key (untuk chatbot AI)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="cfg_geminiKey" type="password" placeholder="gsk_... (dari console.groq.com)" style="flex:1;" />
+        <button onclick="togglePassVis('cfg_geminiKey',this)" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);padding:8px 10px;cursor:pointer;font-size:13px;flex-shrink:0;">👁️</button>
+      </div>
+      <small style="color:var(--muted);font-size:11px;margin-top:4px;display:block;">Dapatkan gratis di <a href="https://console.groq.com" target="_blank" style="color:var(--blue-light);">console.groq.com</a> · Disimpan di Google Sheets</small>
+    </div>
     <div style="display:flex;gap:9px;margin-top:4px;">
       <button class="btn btn-outline" style="flex:1;" onclick="closeSetup()">Batal</button>
       <button class="btn btn-primary" style="flex:1;" onclick="saveConfig()">Simpan</button>
@@ -1891,10 +1898,113 @@ let CFG={
   apiKey:    'AIzaSyBuitK6QzFyzhP_L2rZWaa94x80zWyi65U',
   sheetName: 'Orders',
   scriptUrl: 'https://script.google.com/macros/s/AKfycbwrzqaXAKUV7WD1h42hXzL7jWNr4RoF8EvHIxikVmrPMz5FwzwS-l4QuwqG-1cZu23S/exec',
+  groqKey: '', // diisi otomatis dari sheet Config (key: groqKey)
 };
 function loadConfig(){
   /* Config sudah hardcoded, sembunyikan setup banner */
   document.getElementById('setupBanner').classList.add('hidden');
+  /* Muat Groq Key dari sheet Config */
+  _loadGroqKey();
+}
+
+/* ── Ambil Groq API Key dari Google Sheets (sheet: Config) ── */
+let _groqKeyLoaded = false;
+async function _loadGroqKey(){
+  if(_groqKeyLoaded || !CFG.scriptUrl) return;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=config&action=get&key=groqKey');
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.value){
+      CFG.groqKey = data.value;
+      _groqKeyLoaded = true;
+    }
+  }catch(e){
+    // Tidak masalah kalau gagal — AI fallback tidak akan aktif
+  }
+}
+
+/* ── Simpan Groq Key ke sheet Config via Apps Script ── */
+async function saveGroqKey(key){
+  if(!CFG.scriptUrl || !key) return false;
+  try{
+    await fetch(CFG.scriptUrl, {
+      method: 'POST',
+      body: JSON.stringify({ sheet:'config', action:'set', key:'groqKey', value: key })
+    });
+    CFG.groqKey = key;
+    _groqKeyLoaded = true;
+    return true;
+  }catch(e){ return false; }
+}
+
+/* ── Panggil Groq API dengan konteks toko ── */
+let _chatHistory = []; // history percakapan untuk konteks multi-turn
+
+async function callGemini(userMsg){
+  // Fungsi tetap bernama callGemini agar tidak perlu ubah pemanggilan di faqRespond
+  if(!CFG.groqKey){
+    await _loadGroqKey();
+    if(!CFG.groqKey) return null;
+  }
+
+  // Bangun konteks produk dari data live
+  let produkCtx = '';
+  try{
+    const prods = typeof fetchProduk === 'function' ? await fetchProduk() : [];
+    if(prods.length){
+      produkCtx = '\n\nDAFTAR PRODUK RIZANTA STORE:\n' + prods.map(p =>
+        '- ' + p.name + ' | Harga: ' + (p.price||'tanya admin') + ' | Kategori: ' + (p.cat||'-') + (p.desc?' | '+p.desc:'')
+      ).join('\n');
+    }
+  }catch(e){}
+
+  const systemPrompt = 'Kamu adalah Riza, bot customer service Rizanta Store yang ramah dan helpful.\n' +
+    'Rizanta Store adalah toko digital online yang menjual akun & langganan aplikasi (Netflix, Spotify, dll) dan top up game.\n' +
+    'Jawab pertanyaan pelanggan dengan singkat, ramah, dan menggunakan bahasa Indonesia gaul yang santai. Pakai emoji yang relevan.\n' +
+    'Jangan jawab pertanyaan di luar topik toko (produk, harga, order, pembayaran, garansi, status langganan).\n' +
+    'Kalau tidak tahu atau di luar kemampuan, sarankan hubungi admin WA: 6289529101513\n' +
+    'Untuk order, arahkan ke tab Produk di website. Untuk cek status, arahkan ke tab Cek Resi.' + produkCtx;
+
+  // Bangun messages dengan history (max 6 pesan terakhir) — format OpenAI
+  const historySlice = _chatHistory.slice(-6);
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...historySlice,
+    { role: 'user', content: userMsg }
+  ];
+
+  try{
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CFG.groqKey
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: messages,
+        max_tokens: 300,
+        temperature: 0.7
+      })
+    });
+    if(!res.ok){
+      const errText = await res.text();
+      console.error('[Groq] HTTP error', res.status, errText);
+      return null;
+    }
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content || null;
+    if(reply){
+      _chatHistory.push({ role:'user', content: userMsg });
+      _chatHistory.push({ role:'assistant', content: reply });
+      if(_chatHistory.length > 20) _chatHistory = _chatHistory.slice(-20);
+    }
+    return reply;
+  }catch(e){
+    console.error('[Groq] fetch error:', e);
+    return null;
+  }
 }
 function saveConfig(){
   const s=document.getElementById('cfg_sheetId').value.trim();
@@ -1905,14 +2015,27 @@ function saveConfig(){
   const su=document.getElementById('cfg_scriptUrl').value.trim();
   if(sn) CFG.sheetName=sn;
   if(su) CFG.scriptUrl=su;
-  closeSetup(); showToast('✅ Konfigurasi diperbarui!');
+  // Simpan Groq Key ke Google Sheets kalau diisi
+  const gk=document.getElementById('cfg_geminiKey').value.trim();
+  if(gk){
+    saveGroqKey(gk).then(ok=>{
+      if(ok) showToast('✅ Konfigurasi & Groq Key tersimpan!');
+      else   showToast('✅ Konfigurasi diperbarui! (Groq Key gagal disimpan ke Sheets)');
+    });
+  } else {
+    showToast('✅ Konfigurasi diperbarui!');
+  }
+  closeSetup();
 }
 function openSetup(){
   document.getElementById('cfg_sheetId').value  =CFG.sheetId||'';
   document.getElementById('cfg_apiKey').value   =CFG.apiKey||'';
-  document.getElementById('cfg_sheetName').value=CFG.sheetName||'Orders';
-  document.getElementById('cfg_adminPass').value=CFG.adminPass||'';
+  const sheetNameEl = document.getElementById('cfg_sheetName');
+  if(sheetNameEl) sheetNameEl.value=CFG.sheetName||'Orders';
+  const adminPassEl = document.getElementById('cfg_adminPass');
+  if(adminPassEl) adminPassEl.value=CFG.adminPass||'';
   document.getElementById('cfg_scriptUrl').value=CFG.scriptUrl||'';
+  document.getElementById('cfg_geminiKey').value =CFG.groqKey||'';
   document.getElementById('setupModal').classList.remove('hidden');
 }
 function closeSetup(){document.getElementById('setupModal').classList.add('hidden');}
@@ -3721,7 +3844,7 @@ async function renderBerandaTestimoni(){
 const FAQ_DB = [
   // ── SAPAAN ──
   {
-    keys: ['hai','halo','hallo','hello','hi','hey','p','permisi','selamat','assalam','assalamualaikum','waalaikum'],
+    keys: ['hai','halo','hallo','hello','hi','hey','permisi','selamat pagi','selamat siang','selamat malam','assalam','assalamualaikum','waalaikum'],
     type: 'greeting',
     answers: [
       'Hai kak! 👋 Seneng ketemu kamu!\n\nAku <b>Riza</b>, siap bantu semua pertanyaan seputar Rizanta Store.\n\nMau tanya apa nih? 😊',
@@ -3759,7 +3882,7 @@ const FAQ_DB = [
   },
   // ── CARA ORDER ──
   {
-    keys: ['cara order','cara beli','pesan','beli','order','purchase','transaksi','cara pesan'],
+    keys: ['cara order','cara beli','cara pesan','mau order','mau beli','mau pesan','gimana order','gimana beli','langkah order','proses order','cara transaksi'],
     answer: '🛒 Cara order di Rizanta Store gampang banget!\n\n1️⃣ Pilih produk di tab <b>🛍️ Produk</b>\n2️⃣ Tap produknya → klik <b>Order via WA</b>\n3️⃣ Konfirmasi ke admin & lakukan pembayaran\n4️⃣ Akun langsung diaktifkan! ⚡\n\nProses biasanya <b>cepet banget</b>, ga sampai 10 menit kak!',
     quick: ['Lihat Produk','Hubungi WA']
   },
@@ -3771,13 +3894,13 @@ const FAQ_DB = [
   },
   // ── GARANSI ──
   {
-    keys: ['garansi','ganti','rusak','error','masalah','problem','tidak bisa','gabisa','gagal','kendala','bug'],
+    keys: ['garansi','ganti rugi','akun rusak','akun error','tidak bisa login','gabisa login','gagal login','kendala akun','akun bermasalah','refund'],
     answer: '🛡️ Tenang, kami kasih garansi penuh!\n\nKalau ada masalah dengan akun (tidak bisa login, error, dll) langsung hubungi admin WA — kami siap bantu <b>24 jam</b> dan ganti akun kalau memang ada kendala dari kami. 💪\n\nGaransi berlaku selama masa aktif langganan ya kak!',
     quick: ['Hubungi WA']
   },
   // ── CEK RESI ──
   {
-    keys: ['resi','cek resi','cek status','status','aktif','langganan','expired','habis','kapan habis','sisa hari'],
+    keys: ['cek resi','cek status','kode resi','nomor resi','status langganan','langganan aktif','kapan expired','kapan habis','sisa hari','masa aktif'],
     answer: '🎫 Kamu bisa cek status langganan kapan saja!\n\nBuka tab <b>🔍 Cek Resi</b> → masukkan kode resi yang dikirim admin → langsung ketahuan:\n• Sisa hari aktif\n• Info akun\n• Status langganan\n\nBelum dapat kode resi? Hubungi admin WA ya!',
     quick: ['Cek Resi','Hubungi WA']
   },
@@ -3795,19 +3918,19 @@ const FAQ_DB = [
   },
   // ── KONTAK / WA ──
   {
-    keys: ['kontak','hubungi','whatsapp','admin','cs','customer service','nomor','telpon','chat'],
+    keys: ['kontak','hubungi admin','whatsapp admin','customer service','nomor wa','telpon','chat wa','wa nya berapa','wa admin'],
     answer: '📞 Mau langsung ngobrol sama admin?\n\nKlik tombol di bawah buat chat WA sekarang! Admin kami ramah & <b>fast response</b> kok 😊\n\n🕐 Jam aktif: <b>Setiap hari, 08.00 – 22.00 WIB</b>',
     quick: ['Hubungi WA']
   },
   // ── KEAMANAN ──
   {
-    keys: ['aman','terpercaya','legit','scam','tipu','bohong','asli','real','original','trusted'],
+    keys: ['aman','terpercaya','legit','scam','penipuan','ditipu','bohong','original','trusted','bisa dipercaya'],
     answer: '✅ Rizanta Store 100% aman & terpercaya!\n\n• Sudah melayani <b>ratusan pelanggan</b> puas\n• Akun original & bergaransi\n• Ada fitur cek resi untuk pantau status\n• Respon cepat & siap bantu 24 jam\n• Testimoni nyata dari pelanggan\n\nYuk cek testimoni mereka! 😊',
     quick: ['Lihat Testimoni','Hubungi WA']
   },
   // ── PROSES AKTIVASI ──
   {
-    keys: ['berapa lama','proses aktivasi','lama','cepat','menit','jam','aktivasi','kapan aktif'],
+    keys: ['berapa lama aktivasi','proses aktivasi','lama aktivasi','kapan aktif','akun aktif berapa lama','estimasi aktivasi'],
     answer: '⚡ Proses aktivasi di Rizanta Store sangat cepat!\n\nSetelah pembayaran dikonfirmasi:\n• Biasanya aktif dalam <b>5–15 menit</b> ⏱️\n• Proses 24 jam sehari\n• Kode resi dikirim otomatis\n\nKalau lebih dari 15 menit, langsung ping admin WA ya kak!',
     quick: ['Hubungi WA']
   },
@@ -4019,8 +4142,16 @@ async function faqRespond(txt){
     faqHideTyping();
 
     if(!matchAsync){
-      faqAddMsg('bot', '🤔 Hmm, aku belum bisa jawab itu nih kak.\n\nCoba tanya dengan kata lain, atau langsung hubungi admin WA biar lebih cepat dibantu ya! 😊\n\nContoh: ketik <b>"harga"</b>, <b>"cara order"</b>, atau <b>"garansi"</b>');
-      setTimeout(()=> faqSetQuick(['💰 Harga','🛒 Cara Order','Hubungi WA']), 200);
+      // Fallback ke Gemini AI kalau keyword tidak cocok
+      const geminiReply = await callGemini(txt);
+      if(geminiReply){
+        const formatted = geminiReply.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+        faqAddMsg('bot', formatted);
+        setTimeout(()=> faqSetQuick(['💰 Harga','🛒 Cara Order','Hubungi WA']), 200);
+      } else {
+        faqAddMsg('bot', '🤔 Hmm, aku belum bisa jawab itu nih kak.\n\nCoba tanya dengan kata lain, atau langsung hubungi admin WA biar lebih cepat dibantu ya! 😊\n\nContoh: ketik <b>"harga"</b>, <b>"cara order"</b>, atau <b>"garansi"</b>');
+        setTimeout(()=> faqSetQuick(['💰 Harga','🛒 Cara Order','Hubungi WA']), 200);
+      }
       return;
     }
 
