@@ -1405,6 +1405,270 @@ body.on-page-faq .wa-float{display:none!important;}
 }
 
 /* ══════════════════════════════════════
+   REFUND CALCULATOR PAGE
+══════════════════════════════════════ */
+.refund-hero{
+  position:relative;border-radius:24px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(37,99,235,.22) 0%,rgba(6,182,212,.14) 50%,rgba(139,92,246,.18) 100%);
+  border:1.5px solid rgba(96,165,250,.28);
+  padding:24px 20px 20px;margin-bottom:18px;
+  animation:fadeU .5s ease both;
+}
+.refund-hero-glow{
+  position:absolute;top:-60px;right:-60px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(6,182,212,.22) 0%,transparent 70%);
+  pointer-events:none;
+}
+.refund-hero-glow2{
+  position:absolute;bottom:-40px;left:-40px;
+  width:140px;height:140px;
+  background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.refund-hero-icon{
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:12px;
+  box-shadow:0 6px 24px rgba(37,99,235,.45);
+}
+.refund-hero-title{
+  font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  color:#fff;margin-bottom:4px;
+  background:linear-gradient(90deg,#fff,var(--cyan-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.refund-hero-sub{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* Input section */
+.refund-section{
+  background:rgba(4,12,28,.55);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:14px;
+  animation:fadeU .5s ease both;
+  transition:border-color .3s;
+}
+.refund-section:focus-within{border-color:rgba(96,165,250,.38);}
+.refund-section-title{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--blue-light);margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+}
+.refund-section-title::before{
+  content:'';display:block;width:3px;height:14px;
+  background:linear-gradient(180deg,var(--blue-bright),var(--cyan));
+  border-radius:2px;
+}
+
+/* Field grid */
+.refund-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.refund-field{display:flex;flex-direction:column;gap:6px;}
+.refund-field.full{grid-column:1/-1;}
+.refund-label{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;color:var(--muted);
+}
+.refund-input{
+  width:100%;padding:11px 13px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(96,165,250,.15);
+  border-radius:12px;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  outline:none;transition:border-color .2s, background .2s;
+  box-sizing:border-box;
+}
+.refund-input:focus{
+  border-color:rgba(96,165,250,.55);
+  background:rgba(37,99,235,.07);
+}
+.refund-input[type=date]{color-scheme:dark;}
+.refund-input[type=number]::-webkit-inner-spin-button{opacity:.4;}
+
+/* Duration preset pills */
+.dur-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.dur-pill{
+  padding:5px 11px;border-radius:100px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(96,165,250,.15);
+  color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+}
+.dur-pill:hover{background:rgba(37,99,235,.12);border-color:rgba(96,165,250,.4);color:var(--blue-light);}
+.dur-pill.active{background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(6,182,212,.2));border-color:rgba(96,165,250,.55);color:var(--blue-pale);}
+
+/* Reason select */
+.refund-reason-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px;}
+.reason-card{
+  padding:10px 11px;border-radius:12px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(96,165,250,.12);
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:7px;
+}
+.reason-card:hover{background:rgba(37,99,235,.1);border-color:rgba(96,165,250,.35);}
+.reason-card.active{background:rgba(37,99,235,.18);border-color:rgba(96,165,250,.5);}
+.reason-icon{font-size:16px;flex-shrink:0;}
+.reason-text{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--text);line-height:1.3;}
+
+/* Kebijakan slider */
+.policy-slider-wrap{
+  display:flex;flex-direction:column;gap:8px;margin-top:4px;
+}
+.policy-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(96,165,250,.1);
+  border-radius:12px;padding:10px 13px;
+  cursor:pointer;transition:all .2s;
+}
+.policy-row:hover{background:rgba(37,99,235,.08);}
+.policy-row.active{background:rgba(37,99,235,.15);border-color:rgba(96,165,250,.4);}
+.policy-row-left{display:flex;align-items:center;gap:8px;}
+.policy-row-icon{font-size:15px;}
+.policy-row-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text);}
+.policy-row-desc{font-size:10px;color:var(--muted);margin-top:1px;}
+.policy-badge{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:100px;
+}
+.policy-badge.full{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);}
+.policy-badge.partial{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.policy-badge.none{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+
+/* CTA button */
+.refund-calc-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;border-radius:14px;
+  color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:.5px;cursor:pointer;
+  transition:all .25s;
+  box-shadow:0 4px 20px rgba(37,99,235,.45);
+  margin-bottom:14px;
+}
+.refund-calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.6);}
+.refund-calc-btn:active{transform:scale(.97);}
+
+/* Result card */
+.refund-result{
+  display:none;
+  border-radius:22px;overflow:hidden;
+  margin-bottom:14px;
+  animation:refundPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+.refund-result.show{display:block;}
+@keyframes refundPop{
+  from{opacity:0;transform:scale(.92) translateY(12px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+.result-header{
+  padding:20px 20px 14px;
+  background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(6,182,212,.2));
+  border:1.5px solid rgba(96,165,250,.3);
+  border-bottom:none;
+  border-radius:22px 22px 0 0;
+  text-align:center;
+}
+.result-emoji{font-size:36px;margin-bottom:8px;display:block;}
+.result-verdict{
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:800;
+  color:#fff;margin-bottom:4px;
+}
+.result-sub{font-size:11.5px;color:var(--muted);}
+
+.result-amount-wrap{
+  background:rgba(4,12,28,.75);
+  border:1.5px solid rgba(96,165,250,.25);
+  border-top:none;border-bottom:none;
+  padding:20px;text-align:center;
+}
+.result-amount-label{font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.result-amount{
+  font-family:'Syne',sans-serif;font-size:32px;font-weight:800;
+  background:linear-gradient(90deg,var(--blue-light),var(--cyan-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.result-amount.red{background:linear-gradient(90deg,var(--red),#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.result-breakdown{
+  background:rgba(4,12,28,.75);
+  border:1.5px solid rgba(96,165,250,.25);
+  border-top:none;
+  border-radius:0 0 22px 22px;
+  padding:14px 18px;
+}
+.breakdown-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid rgba(96,165,250,.08);
+}
+.breakdown-row:last-child{border-bottom:none;}
+.breakdown-key{font-size:11.5px;color:var(--muted);}
+.breakdown-val{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);}
+.breakdown-val.green{color:var(--green);}
+.breakdown-val.red{color:var(--red);}
+.breakdown-val.yellow{color:var(--yellow);}
+
+/* Timeline indicator */
+.refund-timeline{
+  display:flex;align-items:center;gap:0;
+  margin:14px 0 6px;
+  background:rgba(255,255,255,.04);
+  border-radius:100px;overflow:hidden;
+  height:8px;
+}
+.timeline-used{background:linear-gradient(90deg,var(--red),var(--yellow));height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.timeline-remaining{background:linear-gradient(90deg,var(--blue-bright),var(--cyan));height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.timeline-labels{display:flex;justify-content:space-between;margin-top:4px;}
+.timeline-lbl{font-size:10px;color:var(--muted);}
+
+/* Info tooltip badge */
+.refund-info-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:100px;
+  background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.2);
+  font-size:10.5px;color:var(--yellow);
+  margin-bottom:14px;
+}
+
+/* Share / copy button */
+.refund-action-row{display:flex;gap:9px;margin-top:10px;}
+.refund-action-btn{
+  flex:1;padding:11px;border-radius:12px;
+  border:1px solid rgba(96,165,250,.2);
+  background:rgba(37,99,235,.08);
+  color:var(--blue-light);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.refund-action-btn:hover{background:rgba(37,99,235,.18);border-color:rgba(96,165,250,.4);}
+
+/* History log */
+.refund-history{margin-top:4px;}
+.refund-history-item{
+  padding:11px 13px;border-radius:13px;
+  background:rgba(4,12,28,.52);
+  border:1px solid rgba(96,165,250,.1);
+  margin-bottom:7px;
+  display:flex;align-items:center;gap:10px;
+  animation:fadeU .3s ease both;
+  cursor:pointer;transition:all .2s;
+}
+.refund-history-item:hover{border-color:rgba(96,165,250,.3);background:rgba(37,99,235,.07);}
+.rhi-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(6,182,212,.2));}
+.rhi-info{flex:1;min-width:0;}
+.rhi-app{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rhi-date{font-size:10px;color:var(--muted);}
+.rhi-amount{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--cyan-light);}
+
+/* Empty history */
+.refund-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+
+/* ══════════════════════════════════════
    TOP UP BANNER
 ══════════════════════════════════════ */
 .topup-banner{
@@ -1553,6 +1817,20 @@ body.on-page-faq .wa-float{display:none!important;}
       <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">🎫</span>
       <span>Cek Langganan</span>
     </button>
+    <!-- Refund Kalkulator — selalu tampil -->
+    <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
+    <button onclick="closeMemberMenu();goPage('page-refund');" style="
+      display:flex;align-items:center;gap:9px;width:100%;
+      background:transparent;border:none;
+      border-radius:10px;padding:10px 12px;
+      color:#e8f0ff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+      cursor:pointer;transition:background .18s;text-align:left;
+    " onmouseover="this.style.background='rgba(6,182,212,.14)'"
+       onmouseout="this.style.background='transparent'">
+      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">💸</span>
+      <span>Kalkulator Refund</span>
+    </button>
+    <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
     <!-- Logged in: Avatar + nama + logout -->
     <div id="memberAvatarBtn" style="display:none;">
       <button onclick="closeMemberMenu();openMemberDashboard();" style="
@@ -2144,6 +2422,152 @@ body.on-page-faq .wa-float{display:none!important;}
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     PAGE 5 — KALKULATOR REFUND
+══════════════════════════════════════ -->
+<div class="page" id="page-refund">
+
+  <!-- Hero Banner -->
+  <div class="refund-hero">
+    <div class="refund-hero-glow"></div>
+    <div class="refund-hero-glow2"></div>
+    <div class="refund-hero-icon">💸</div>
+    <div class="refund-hero-title">Kalkulator Refund</div>
+    <div class="refund-hero-sub">Hitung estimasi refund berdasarkan tanggal order, durasi, dan alasan pembatalan. Transparan & akurat!</div>
+  </div>
+
+  <div class="refund-info-badge">
+    <span>⚠️</span>
+    <span>Hasil kalkulasi bersifat estimasi. Keputusan final di tangan admin.</span>
+  </div>
+
+  <!-- SECTION 1: Detail Order -->
+  <div class="refund-section">
+    <div class="refund-section-title">📋 Detail Order</div>
+    <div class="refund-field-grid">
+      <div class="refund-field">
+        <div class="refund-label">Nama Aplikasi</div>
+        <input class="refund-input" id="rfApp" type="text" placeholder="misal: Netflix" />
+      </div>
+      <div class="refund-field">
+        <div class="refund-label">Harga Bayar (Rp)</div>
+        <input class="refund-input" id="rfHarga" type="number" placeholder="25000" min="0" />
+      </div>
+      <div class="refund-field">
+        <div class="refund-label">Tanggal Order</div>
+        <input class="refund-input" id="rfTglOrder" type="date" oninput="updateSisaChip()" />
+      </div>
+      <div class="refund-field">
+        <div class="refund-label">Tanggal Problem</div>
+        <input class="refund-input" id="rfTglProblem" type="date" oninput="updateSisaChip()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Durasi Langganan -->
+  <div class="refund-section">
+    <div class="refund-section-title">⏱️ Durasi Langganan</div>
+    <div class="refund-field">
+      <div class="refund-label">Total Durasi (hari)</div>
+      <input class="refund-input" id="rfDurasi" type="number" placeholder="30" min="1" oninput="syncDurPills();updateSisaChip()" />
+    </div>
+    <div class="dur-pills" id="durPills">
+      <button class="dur-pill" data-days="7" onclick="setDur(7)">7 Hari</button>
+      <button class="dur-pill" data-days="14" onclick="setDur(14)">14 Hari</button>
+      <button class="dur-pill active" data-days="30" onclick="setDur(30)">30 Hari</button>
+      <button class="dur-pill" data-days="60" onclick="setDur(60)">2 Bulan</button>
+      <button class="dur-pill" data-days="90" onclick="setDur(90)">3 Bulan</button>
+      <button class="dur-pill" data-days="180" onclick="setDur(180)">6 Bulan</button>
+      <button class="dur-pill" data-days="365" onclick="setDur(365)">1 Tahun</button>
+    </div>
+    <!-- Sisa durasi otomatis, tampil sebagai info chip -->
+    <div id="rfSisaChip" style="display:none;margin-top:12px;padding:10px 13px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:12px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:15px;">⏳</span>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--cyan-light);" id="rfSisaChipText">Sisa durasi akan dihitung otomatis</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px;">Berdasarkan tanggal order, durasi, dan tanggal problem</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Alasan Refund -->
+  <div class="refund-section">
+    <div class="refund-section-title">❓ Alasan Pembatalan</div>
+    <div class="refund-reason-grid" id="rfReasonGrid">
+      <div class="reason-card active" data-reason="problem" onclick="selectReason(this)">
+        <span class="reason-icon">🐛</span>
+        <div><div class="reason-text">Problem / Error</div></div>
+      </div>
+      <div class="reason-card" data-reason="salah-order" onclick="selectReason(this)">
+        <span class="reason-icon">😅</span>
+        <div><div class="reason-text">Salah Order</div></div>
+      </div>
+      <div class="reason-card" data-reason="tidak-puas" onclick="selectReason(this)">
+        <span class="reason-icon">😞</span>
+        <div><div class="reason-text">Tidak Puas</div></div>
+      </div>
+      <div class="reason-card" data-reason="double-order" onclick="selectReason(this)">
+        <span class="reason-icon">📑</span>
+        <div><div class="reason-text">Double Order</div></div>
+      </div>
+      <div class="reason-card" data-reason="tidak-aktif" onclick="selectReason(this)">
+        <span class="reason-icon">🔇</span>
+        <div><div class="reason-text">Tidak Kunjung Aktif</div></div>
+      </div>
+      <div class="reason-card" data-reason="lainnya" onclick="selectReason(this)">
+        <span class="reason-icon">🤷</span>
+        <div><div class="reason-text">Lainnya</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hitung Button -->
+  <button class="refund-calc-btn" onclick="hitungRefund()">
+    💸 Hitung Estimasi Refund
+  </button>
+
+  <!-- RESULT CARD -->
+  <div class="refund-result" id="rfResult">
+    <div class="result-header">
+      <span class="result-emoji" id="rfResultEmoji">💸</span>
+      <div class="result-verdict" id="rfResultVerdict">Estimasi Refund</div>
+      <div class="result-sub" id="rfResultSub">-</div>
+    </div>
+    <div class="result-amount-wrap">
+      <div class="result-amount-label">Estimasi Nominal Refund</div>
+      <div class="result-amount" id="rfResultAmount">Rp 0</div>
+      <!-- Timeline bar -->
+      <div style="margin-top:14px;">
+        <div class="refund-timeline">
+          <div class="timeline-used" id="rfBarUsed" style="width:0%"></div>
+          <div class="timeline-remaining" id="rfBarRemain" style="width:100%"></div>
+        </div>
+        <div class="timeline-labels">
+          <span class="timeline-lbl" id="rfBarUsedLbl">0 hari dipakai</span>
+          <span class="timeline-lbl" id="rfBarRemainLbl">0 hari sisa</span>
+        </div>
+      </div>
+    </div>
+    <div class="result-breakdown" id="rfBreakdown">
+      <!-- filled by JS -->
+    </div>
+    <!-- Action buttons -->
+    <div class="refund-action-row">
+      <button class="refund-action-btn" onclick="copyRefundResult()">📋 Salin Hasil</button>
+      <button class="refund-action-btn" onclick="sendRefundWA()">💬 Kirim ke WA Admin</button>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="refund-section" style="margin-top:4px;">
+    <div class="refund-section-title">🕓 Riwayat Kalkulasi</div>
+    <div id="rfHistory">
+      <div class="refund-empty">Belum ada riwayat kalkulasi</div>
+    </div>
+    <button onclick="clearRefundHistory()" style="width:100%;margin-top:8px;padding:9px;background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:10px;color:var(--red);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(248,113,113,.15)'" onmouseout="this.style.background='rgba(248,113,113,.07)'">🗑️ Hapus Riwayat</button>
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="nav-inner">
@@ -2203,7 +2627,7 @@ const APPS=[
 ];
 
 /* ── Page navigation ── */
-const pageMap={'page-home':'nav-home','page-produk':'nav-produk','page-cek':'nav-cek','page-faq':'nav-faq','page-admin':'nav-admin','page-member':'nav-home'};
+const pageMap={'page-home':'nav-home','page-produk':'nav-produk','page-cek':'nav-cek','page-faq':'nav-faq','page-admin':'nav-admin','page-member':'nav-home','page-refund':'nav-home'};
 function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn, .nav-btn-fab').forEach(b=>b.classList.remove('active'));
@@ -2215,6 +2639,7 @@ function goPage(id){
   document.body.classList.add('on-page-'+id.replace('page-',''));
   if(id === 'page-home') loadAndShowIklanPopup();
   if(id === 'page-faq') initFaqPage();
+  if(id === 'page-refund') initRefundPage();
 }
 
 /* ── Config (hardcoded — tidak perlu setup manual) ── */
@@ -5259,5 +5684,241 @@ function memberLogout(){
   updateMemberButton(false, null);
   goPage('page-home');
   showToast('👋 Sampai jumpa!');
+}
+
+/* ══════════════════════════════════════
+   KALKULATOR REFUND
+══════════════════════════════════════ */
+const RF_HISTORY_KEY = 'rizanta_refund_history';
+let _rfReason  = 'problem';
+let _rfLastResult = null;
+
+/* ── Pilih Alasan ── */
+function selectReason(el){
+  document.querySelectorAll('#rfReasonGrid .reason-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  _rfReason = el.dataset.reason;
+}
+
+/* ── Set durasi dari pill ── */
+function setDur(val){
+  document.getElementById('rfDurasi').value = val;
+  syncDurPills();
+  updateSisaChip();
+}
+
+function syncDurPills(){
+  const val = parseInt(document.getElementById('rfDurasi').value)||0;
+  document.querySelectorAll('.dur-pill').forEach(p=>{
+    p.classList.toggle('active', parseInt(p.dataset.days)||0 === val);
+  });
+}
+
+/* ── Update chip sisa durasi otomatis ── */
+function updateSisaChip(){
+  const tglOrder   = document.getElementById('rfTglOrder').value;
+  const tglProblem = document.getElementById('rfTglProblem').value;
+  const durasi     = parseInt(document.getElementById('rfDurasi').value)||0;
+  const chip       = document.getElementById('rfSisaChip');
+  const chipText   = document.getElementById('rfSisaChipText');
+  if(!tglOrder || !durasi){ chip.style.display='none'; return; }
+  const tO   = new Date(tglOrder);
+  const tP   = tglProblem ? new Date(tglProblem) : new Date();
+  const hariPakai = Math.max(0, Math.ceil((tP - tO) / 86400000));
+  const sisaHari  = Math.max(0, durasi - hariPakai);
+  chipText.textContent = `${hariPakai} hari terpakai → sisa ${sisaHari} hari dari ${durasi} hari`;
+  chip.style.display = 'flex';
+}
+
+/* ── Hitung ── */
+function hitungRefund(){
+  const app      = (document.getElementById('rfApp').value||'').trim() || 'Tidak Diisi';
+  const harga    = parseFloat(document.getElementById('rfHarga').value)||0;
+  const tglOrder = document.getElementById('rfTglOrder').value;
+  const tglProblem = document.getElementById('rfTglProblem').value;
+  const durasi   = parseInt(document.getElementById('rfDurasi').value)||30;
+
+  if(!harga){ showToast('⚠️ Isi harga terlebih dahulu!'); return; }
+  if(!tglOrder){ showToast('⚠️ Isi tanggal order!'); return; }
+
+  const now  = new Date();
+  const tO   = new Date(tglOrder);
+  const tP   = tglProblem ? new Date(tglProblem) : now;
+
+  // Hari sudah terpakai (dari tgl order s/d tgl problem)
+  const hariPakai = Math.max(0, Math.ceil((tP - tO) / 86400000));
+
+  // Sisa hari — otomatis dari durasi & tgl
+  const sisaHari = Math.max(0, durasi - hariPakai);
+
+  const hargaPerHari = durasi > 0 ? (harga / durasi) : 0;
+
+  // Multiplier berdasarkan alasan (kebijakan standar Rizanta)
+  const reasonMultiplier = {
+    'problem':       1.0,   // penuh prorata — toko yang salah
+    'tidak-aktif':   1.0,   // penuh prorata
+    'double-order':  0.95,  // potongan admin 5%
+    'salah-order':   0.8,   // 80% dari prorata
+    'tidak-puas':    0.6,
+    'lainnya':       0.75,
+  }[_rfReason] ?? 0.75;
+
+  // Standar Rizanta: prorata sisa hari × multiplier alasan
+  let nominalRefund = Math.min(harga, Math.max(0, Math.round(sisaHari * hargaPerHari * reasonMultiplier)));
+  const pctRefund   = Math.round(sisaHari / durasi * reasonMultiplier * 100);
+
+  // Verdict emoji & text
+  let emoji, verdict, sub, amountCls;
+  if(nominalRefund <= 0){
+    emoji='🚫'; verdict='Tidak Ada Refund'; sub='Durasi sudah habis atau tidak memenuhi syarat refund.'; amountCls='red';
+  } else if(nominalRefund >= harga * 0.9){
+    emoji='🎉'; verdict='Refund Hampir Penuh!'; sub='Kamu berhak mendapat refund hampir penuh berdasarkan sisa durasi.'; amountCls='';
+  } else if(nominalRefund >= harga * 0.5){
+    emoji='✅'; verdict='Refund Sebagian'; sub='Dihitung prorata dari sisa hari yang belum terpakai.'; amountCls='';
+  } else {
+    emoji='⚠️'; verdict='Refund Terbatas'; sub='Sebagian besar durasi sudah terpakai sebelum problem terjadi.'; amountCls='red';
+  }
+
+  // Render result card
+  document.getElementById('rfResultEmoji').textContent   = emoji;
+  document.getElementById('rfResultVerdict').textContent = verdict;
+  document.getElementById('rfResultSub').textContent     = sub;
+  const amountEl = document.getElementById('rfResultAmount');
+  amountEl.textContent = 'Rp ' + nominalRefund.toLocaleString('id-ID');
+  amountEl.className   = 'result-amount' + (amountCls ? ' '+amountCls : '');
+
+  // Timeline bar
+  const usedPct   = durasi > 0 ? Math.min(100, Math.round(hariPakai/durasi*100)) : 0;
+  const remainPct = 100 - usedPct;
+  document.getElementById('rfBarUsed').style.width    = usedPct + '%';
+  document.getElementById('rfBarRemain').style.width  = remainPct + '%';
+  document.getElementById('rfBarUsedLbl').textContent = hariPakai + ' hari dipakai';
+  document.getElementById('rfBarRemainLbl').textContent = sisaHari + ' hari sisa';
+
+  // Breakdown
+  const fmtRp  = v => 'Rp ' + Math.round(v).toLocaleString('id-ID');
+  const fmtTgl = s => { if(!s) return 'Hari ini'; try{ return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return s; } };
+  const reasonLabels = {'problem':'Problem / Error','salah-order':'Salah Order','tidak-puas':'Tidak Puas','double-order':'Double Order','tidak-aktif':'Tidak Kunjung Aktif','lainnya':'Lainnya'};
+  const mulLabel = {'problem':'100%','tidak-aktif':'100%','double-order':'95%','salah-order':'80%','tidak-puas':'60%','lainnya':'75%'}[_rfReason]||'75%';
+  document.getElementById('rfBreakdown').innerHTML = `
+    <div class="breakdown-row"><span class="breakdown-key">🛍️ Aplikasi</span><span class="breakdown-val">${app}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">💰 Harga Bayar</span><span class="breakdown-val">${fmtRp(harga)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">📅 Tgl Order</span><span class="breakdown-val">${fmtTgl(tglOrder)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">⚠️ Tgl Problem</span><span class="breakdown-val">${fmtTgl(tglProblem)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">⏱️ Total Durasi</span><span class="breakdown-val">${durasi} hari</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">✅ Hari Terpakai</span><span class="breakdown-val red">${hariPakai} hari</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">⏳ Sisa Hari</span><span class="breakdown-val green">${sisaHari} hari</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">📆 Harga / Hari</span><span class="breakdown-val">${fmtRp(hargaPerHari)}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">❓ Alasan</span><span class="breakdown-val">${reasonLabels[_rfReason]||_rfReason}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">⚖️ Penyesuaian Alasan</span><span class="breakdown-val yellow">${mulLabel}</span></div>
+    <div class="breakdown-row" style="border-top:1px solid rgba(96,165,250,.18);margin-top:4px;padding-top:12px;"><span class="breakdown-key" style="color:var(--text);font-weight:700;">💸 Estimasi Refund</span><span class="breakdown-val" style="font-size:14px;color:var(--cyan-light);">${fmtRp(nominalRefund)}</span></div>
+  `;
+
+  const resultEl = document.getElementById('rfResult');
+  resultEl.classList.remove('show');
+  void resultEl.offsetWidth;
+  resultEl.classList.add('show');
+  resultEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  _rfLastResult = { app, harga, nominalRefund, tglOrder, tglProblem, hariPakai, sisaHari, durasi, reason:_rfReason, ts: new Date().toISOString() };
+  saveRefundHistory(_rfLastResult);
+  renderRefundHistory();
+  showToast('✅ Kalkulasi selesai!');
+}
+
+/* ── History ── */
+function getRefundHistory(){
+  try{ return JSON.parse(localStorage.getItem(RF_HISTORY_KEY)||'[]'); }catch(e){ return []; }
+}
+
+function saveRefundHistory(item){
+  const hist = getRefundHistory();
+  hist.unshift(item);
+  if(hist.length > 10) hist.splice(10);
+  localStorage.setItem(RF_HISTORY_KEY, JSON.stringify(hist));
+}
+
+let _rfClearPending = false;
+function clearRefundHistory(){
+  if(!_rfClearPending){
+    _rfClearPending = true;
+    showToast('⚠️ Tap lagi untuk konfirmasi hapus');
+    setTimeout(()=>{ _rfClearPending=false; }, 3000);
+    return;
+  }
+  _rfClearPending = false;
+  localStorage.removeItem(RF_HISTORY_KEY);
+  renderRefundHistory();
+  showToast('🗑️ Riwayat dihapus');
+}
+
+function renderRefundHistory(){
+  const wrap = document.getElementById('rfHistory');
+  if(!wrap) return;
+  const hist = getRefundHistory();
+  if(!hist.length){
+    wrap.innerHTML = '<div class="refund-empty">Belum ada riwayat kalkulasi</div>';
+    return;
+  }
+  wrap.innerHTML = hist.map((h, i) => {
+    const tgl = h.ts ? new Date(h.ts).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-';
+    return `<div class="refund-history-item" onclick="loadRefundHistory(${i})">
+      <div class="rhi-icon">💸</div>
+      <div class="rhi-info">
+        <div class="rhi-app">${h.app||'Aplikasi'} · ${h.durasi||0} hari</div>
+        <div class="rhi-date">${tgl}</div>
+      </div>
+      <div class="rhi-amount">Rp ${Math.round(h.nominalRefund||0).toLocaleString('id-ID')}</div>
+    </div>`;
+  }).join('');
+}
+
+function loadRefundHistory(i){
+  const hist = getRefundHistory();
+  const h = hist[i];
+  if(!h) return;
+  document.getElementById('rfApp').value        = h.app||'';
+  document.getElementById('rfHarga').value      = h.harga||'';
+  document.getElementById('rfTglOrder').value   = h.tglOrder||'';
+  document.getElementById('rfTglProblem').value = h.tglProblem||'';
+  document.getElementById('rfDurasi').value     = h.durasi||30;
+  syncDurPills();
+  updateSisaChip();
+  _rfReason = h.reason||'problem';
+  document.querySelectorAll('#rfReasonGrid .reason-card').forEach(c=>{
+    c.classList.toggle('active', c.dataset.reason===_rfReason);
+  });
+  showToast('📂 Data riwayat dimuat');
+  document.querySelector('.refund-hero').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── Copy & WA ── */
+function copyRefundResult(){
+  if(!_rfLastResult) return;
+  const r = _rfLastResult;
+  const fmtRp  = v => 'Rp ' + Math.round(v).toLocaleString('id-ID');
+  const fmtTgl = s => { if(!s) return 'Hari ini'; try{ return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return s; } };
+  const reasonLabels = {'problem':'Problem / Error','salah-order':'Salah Order','tidak-puas':'Tidak Puas','double-order':'Double Order','tidak-aktif':'Tidak Kunjung Aktif','lainnya':'Lainnya'};
+  const msg = `📋 *ESTIMASI REFUND — Rizanta Store*\n\n🛍️ Aplikasi: ${r.app}\n💰 Harga Bayar: ${fmtRp(r.harga)}\n📅 Tgl Order: ${fmtTgl(r.tglOrder)}\n⚠️ Tgl Problem: ${fmtTgl(r.tglProblem)}\n⏱️ Total Durasi: ${r.durasi} hari\n✅ Hari Terpakai: ${r.hariPakai} hari\n⏳ Sisa Hari: ${r.sisaHari} hari\n❓ Alasan: ${reasonLabels[r.reason]||r.reason}\n\n💸 *Estimasi Refund: ${fmtRp(r.nominalRefund)}*\n\n_(Hasil ini bersifat estimasi. Keputusan final di admin.)_`;
+  navigator.clipboard.writeText(msg).then(()=>showToast('✅ Hasil kalkulasi tersalin!'));
+}
+
+function sendRefundWA(){
+  if(!_rfLastResult) return;
+  const r = _rfLastResult;
+  const fmtRp  = v => 'Rp ' + Math.round(v).toLocaleString('id-ID');
+  const fmtTgl = s => { if(!s) return 'Hari ini'; try{ return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return s; } };
+  const reasonLabels = {'problem':'Problem / Error','salah-order':'Salah Order','tidak-puas':'Tidak Puas','double-order':'Double Order','tidak-aktif':'Tidak Kunjung Aktif','lainnya':'Lainnya'};
+  const msg = `Halo admin Rizanta Store, saya ingin mengajukan refund.\n\n📋 Detail:\n• Aplikasi: ${r.app}\n• Harga Bayar: ${fmtRp(r.harga)}\n• Tgl Order: ${fmtTgl(r.tglOrder)}\n• Tgl Problem: ${fmtTgl(r.tglProblem)}\n• Alasan: ${reasonLabels[r.reason]||r.reason}\n• Durasi: ${r.durasi} hari (terpakai ${r.hariPakai} hari, sisa ${r.sisaHari} hari)\n\n💸 Estimasi refund saya: *${fmtRp(r.nominalRefund)}*\n\nMohon bantuannya ya kak, terima kasih! 🙏`;
+  window.open('https://wa.me/6289529101513?text='+encodeURIComponent(msg),'_blank');
+}
+
+/* ── Init refund page ── */
+function initRefundPage(){
+  const today = new Date().toISOString().split('T')[0];
+  if(!document.getElementById('rfTglProblem').value)
+    document.getElementById('rfTglProblem').value = today;
+  updateSisaChip();
+  renderRefundHistory();
 }
 </script>
