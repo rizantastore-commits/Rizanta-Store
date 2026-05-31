@@ -123,6 +123,186 @@
 .iklan-suppress-label{font-size:11px;color:var(--muted);}
 .iklan-suppress-timer{color:var(--blue-light);font-size:10px;}
 
+/* ══════════════════════════════════════
+   BANNER SLIDE — Beranda
+══════════════════════════════════════ */
+.banner-slide-wrap{
+  position:relative;width:100%;border-radius:18px;overflow:hidden;
+  margin-bottom:16px;
+  background:var(--surface2);
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
+  animation:fadeU .5s ease both;
+}
+.banner-slides{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);}
+.banner-slide{
+  min-width:100%;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.12));
+}
+.banner-slide img{
+  width:100%;height:160px;object-fit:cover;display:block;
+}
+.banner-slide-body{
+  padding:12px 14px 14px;
+}
+.banner-slide-tag{
+  display:inline-block;background:linear-gradient(90deg,var(--blue),var(--cyan));
+  color:#fff;font-size:9px;font-weight:800;letter-spacing:1.2px;
+  padding:3px 9px;border-radius:100px;margin-bottom:6px;
+  font-family:'Syne',sans-serif;text-transform:uppercase;
+}
+.banner-slide-title{
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:800;
+  color:#fff;line-height:1.3;margin-bottom:4px;
+}
+.banner-slide-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
+.banner-slide-cta{
+  display:inline-block;padding:8px 18px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border-radius:10px;color:#fff;font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;text-decoration:none;
+  transition:opacity .2s,transform .2s;
+}
+.banner-slide-cta:hover{opacity:.88;transform:translateY(-1px);}
+
+/* Dots navigator */
+.banner-dots{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:6px 0 10px;
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,rgba(4,10,22,.6) 0%,transparent 100%);
+  pointer-events:none;
+}
+.banner-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.3);transition:all .3s;
+}
+.banner-dot.active{
+  background:#fff;width:18px;border-radius:3px;
+}
+
+/* Prev/Next arrow (only on no-img banners) */
+.banner-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.45);color:#fff;font-size:16px;
+  cursor:pointer;z-index:5;transition:background .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.banner-arrow:hover{background:rgba(37,99,235,.7);}
+.banner-arrow.prev{left:8px;}
+.banner-arrow.next{right:8px;}
+
+/* Skeleton saat loading */
+.banner-skeleton{
+  height:160px;border-radius:18px;
+  background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;margin-bottom:16px;
+}
+@keyframes shimmer{to{background-position:-200% 0;}}
+
+/* ── Stok badge on product card ── */
+.stok-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.4px;margin-top:5px;
+}
+.stok-ok{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+.stok-low{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--yellow);}
+.stok-out{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);}
+
+/* On product modal */
+.pm-stok-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:12px;
+}
+
+/* ══════════════════════════════════════
+   VOUCHER / KODE PROMO
+══════════════════════════════════════ */
+/* Input voucher di produk modal */
+.voucher-row{
+  display:flex;gap:8px;align-items:center;margin-top:4px;margin-bottom:8px;
+}
+.voucher-input{
+  flex:1;padding:10px 13px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:11px;
+  color:var(--text);font-family:'Syne',sans-serif;font-size:13px;
+  outline:none;letter-spacing:1px;text-transform:uppercase;
+  transition:border-color .2s;
+}
+.voucher-input:focus{border-color:var(--blue-bright);}
+.voucher-btn{
+  padding:10px 14px;border-radius:11px;border:none;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:opacity .2s;
+}
+.voucher-btn:hover{opacity:.88;}
+.voucher-result{
+  padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;
+  margin-bottom:8px;display:none;
+}
+.voucher-ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);}
+.voucher-err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--red);}
+
+/* Promo list di admin */
+.promo-admin-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;background:rgba(4,12,28,.52);
+  border:1px solid var(--border);border-radius:14px;
+  margin-bottom:8px;transition:border-color .25s;
+  backdrop-filter:blur(12px);
+}
+.promo-admin-item:hover{border-color:var(--border-hi);}
+.promo-admin-code{
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+  color:var(--cyan-light);letter-spacing:1.5px;
+  background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);
+  padding:4px 10px;border-radius:8px;flex-shrink:0;
+}
+.promo-admin-info{flex:1;min-width:0;}
+.promo-admin-name{font-weight:700;font-size:13px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.promo-admin-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.promo-admin-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-edit-promo,.btn-del-promo{
+  width:32px;height:32px;border-radius:9px;border:none;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.btn-edit-promo{background:rgba(59,130,246,.15);color:var(--blue-light);}
+.btn-edit-promo:hover{background:rgba(59,130,246,.3);}
+.btn-del-promo{background:rgba(248,113,113,.12);color:var(--red);}
+.btn-del-promo:hover{background:rgba(248,113,113,.25);}
+
+/* Banner admin list */
+.banner-admin-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;border-radius:14px;
+  background:rgba(4,12,28,.52);border:1px solid var(--border);
+  margin-bottom:9px;backdrop-filter:blur(12px);
+}
+.banner-admin-thumb{
+  width:72px;height:48px;border-radius:10px;
+  object-fit:cover;flex-shrink:0;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;
+}
+.banner-admin-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.banner-admin-info{flex:1;min-width:0;}
+.banner-admin-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.banner-admin-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.banner-admin-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-edit-banner,.btn-del-banner{
+  width:32px;height:32px;border-radius:9px;border:none;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.btn-edit-banner{background:rgba(59,130,246,.15);color:var(--blue-light);}
+.btn-edit-banner:hover{background:rgba(59,130,246,.3);}
+.btn-del-banner{background:rgba(248,113,113,.12);color:var(--red);}
+.btn-del-banner:hover{background:rgba(248,113,113,.25);}
+
 /* ── Admin iklan list ── */
 .iklan-admin-item{
   display:flex;align-items:center;gap:12px;
@@ -159,6 +339,7 @@
    MUSIC PLAYER — Floating Circle (WhatsApp style)
 ══════════════════════════════════════ */
 .music-bar{
+  display:none!important;
   position:fixed;
   bottom:calc(var(--nav-h) + 14px);
   right:82px;
@@ -1131,6 +1312,147 @@ body.on-page-faq .wa-float{display:none!important;}
 /* ── Mobile: music button sudah kecil, tidak perlu override ── */
 
 /* ══════════════════════════════════════
+   SEARCH & FILTER — v8
+══════════════════════════════════════ */
+.sf-wrap{
+  margin-bottom:16px;
+  animation:fadeD .5s ease both;
+}
+
+/* Search bar */
+.sf-search-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:12px;
+}
+.sf-search-box{
+  flex:1;display:flex;align-items:center;
+  background:rgba(4,12,28,.65);
+  border:1.5px solid var(--border);
+  border-radius:14px;padding:0 14px;
+  gap:9px;
+  transition:border-color .25s, box-shadow .25s;
+  backdrop-filter:blur(12px);
+}
+.sf-search-box:focus-within{
+  border-color:rgba(96,165,250,.55);
+  box-shadow:0 0 0 3px rgba(59,130,246,.12);
+}
+.sf-search-icon{font-size:15px;opacity:.5;flex-shrink:0;}
+.sf-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;
+  padding:12px 0;
+}
+.sf-input::placeholder{color:var(--muted);opacity:.7;}
+.sf-clear{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:16px;padding:4px;line-height:1;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+  flex-shrink:0;
+}
+.sf-clear.show{opacity:1;pointer-events:auto;}
+
+/* Sort button */
+.sf-sort-btn{
+  width:46px;height:46px;border-radius:13px;flex-shrink:0;
+  background:rgba(4,12,28,.65);
+  border:1.5px solid var(--border);
+  color:var(--blue-light);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;
+  position:relative;
+  backdrop-filter:blur(12px);
+}
+.sf-sort-btn:hover{border-color:var(--border-hi);background:rgba(37,99,235,.1);}
+.sf-sort-btn.active{border-color:rgba(96,165,250,.5);background:rgba(37,99,235,.15);color:var(--cyan-light);}
+.sf-sort-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--cyan);color:#fff;
+  font-size:8px;font-family:'Syne',sans-serif;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--bg);
+}
+
+/* Category pills */
+.sf-cats{
+  display:flex;gap:7px;overflow-x:auto;
+  padding-bottom:4px;
+  scrollbar-width:none;
+}
+.sf-cats::-webkit-scrollbar{display:none;}
+.sf-cat{
+  flex-shrink:0;
+  padding:6px 14px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.4px;
+  border:1.5px solid var(--border);
+  background:rgba(4,12,28,.5);
+  color:var(--muted);cursor:pointer;
+  transition:all .22s;white-space:nowrap;
+  backdrop-filter:blur(8px);
+}
+.sf-cat:hover{border-color:var(--border-hi);color:var(--text);}
+.sf-cat.active{
+  background:linear-gradient(135deg,rgba(37,99,235,.25),rgba(6,182,212,.15));
+  border-color:rgba(96,165,250,.6);
+  color:#fff;
+  box-shadow:0 0 12px rgba(37,99,235,.2);
+}
+
+/* Sort dropdown popup — fixed portal (escapes all stacking contexts) */
+.sf-sort-popup{
+  position:fixed;z-index:9990;
+  background:rgba(8,15,28,.97);
+  border:1px solid rgba(96,165,250,.25);
+  border-radius:14px;padding:6px;min-width:180px;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);
+  opacity:0;pointer-events:none;
+  transform:translateY(-6px) scale(.97);
+  transition:all .18s cubic-bezier(.34,1.56,.64,1);
+}
+.sf-sort-popup.open{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);}
+.sf-sort-opt{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;cursor:pointer;
+  font-size:13px;color:var(--muted);
+  transition:background .18s, color .18s;
+}
+.sf-sort-opt:hover{background:rgba(59,130,246,.12);color:var(--text);}
+.sf-sort-opt.sel{background:rgba(37,99,235,.18);color:var(--blue-light);font-weight:600;}
+.sf-sort-opt-icon{font-size:15px;width:20px;text-align:center;}
+
+/* Result info strip */
+.sf-result-info{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 2px;margin-bottom:4px;
+}
+.sf-result-count{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  color:var(--muted);letter-spacing:.3px;
+}
+.sf-result-count span{color:var(--blue-light);}
+.sf-reset-btn{
+  font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;
+  padding:3px 8px;border-radius:8px;transition:all .18s;font-family:'Syne',sans-serif;font-weight:700;
+}
+.sf-reset-btn:hover{background:rgba(248,113,113,.12);color:var(--red);}
+
+/* Empty state */
+.sf-empty{
+  text-align:center;padding:48px 20px;
+  animation:fadeU .4s ease;
+}
+.sf-empty-icon{font-size:44px;margin-bottom:12px;filter:grayscale(.5);}
+.sf-empty-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;}
+.sf-empty-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* Highlight match in product name */
+.sf-hl{
+  background:rgba(96,165,250,.25);border-radius:3px;
+  color:var(--blue-pale);font-weight:700;
+}
+
+/* ══════════════════════════════════════
    ANIMATIONS
 ══════════════════════════════════════ */
 @keyframes fadeD{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
@@ -1157,6 +1479,62 @@ body.on-page-faq .wa-float{display:none!important;}
 .prod-modal-features li:last-child{border-bottom:none;}
 .prod-order-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(37,211,102,.35);transition:all .3s;}
 .prod-order-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(37,211,102,.5);}
+
+/* ── Share row ── */
+.pm-share-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  margin-bottom:14px;
+}
+.pm-share-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;padding:11px 6px;border-radius:14px;
+  border:1.5px solid var(--border);background:rgba(4,12,28,.55);
+  color:var(--text);cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3px;
+  transition:all .22s;backdrop-filter:blur(8px);
+  position:relative;overflow:hidden;
+}
+.pm-share-btn::before{
+  content:'';position:absolute;inset:0;opacity:0;transition:opacity .22s;
+}
+.pm-share-btn:hover{transform:translateY(-2px);}
+.pm-share-btn:active{transform:scale(.95);}
+
+/* WA */
+.pm-share-wa{border-color:rgba(37,211,102,.3);}
+.pm-share-wa::before{background:linear-gradient(135deg,rgba(37,211,102,.15),rgba(18,140,126,.08));}
+.pm-share-wa:hover{border-color:rgba(37,211,102,.6);box-shadow:0 6px 20px rgba(37,211,102,.2);}
+.pm-share-wa:hover::before{opacity:1;}
+.pm-share-wa .pm-share-icon{font-size:22px;}
+
+/* IG */
+.pm-share-ig{border-color:rgba(225,48,108,.3);}
+.pm-share-ig::before{background:linear-gradient(135deg,rgba(240,148,51,.12),rgba(225,48,108,.12),rgba(188,24,136,.08));}
+.pm-share-ig:hover{border-color:rgba(225,48,108,.6);box-shadow:0 6px 20px rgba(225,48,108,.15);}
+.pm-share-ig:hover::before{opacity:1;}
+.pm-share-ig .pm-share-icon{font-size:22px;}
+
+/* Copy link */
+.pm-share-copy{border-color:rgba(96,165,250,.25);}
+.pm-share-copy::before{background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(6,182,212,.08));}
+.pm-share-copy:hover{border-color:rgba(96,165,250,.5);box-shadow:0 6px 20px rgba(37,99,235,.15);}
+.pm-share-copy:hover::before{opacity:1;}
+.pm-share-copy .pm-share-icon{font-size:22px;}
+
+.pm-share-icon{position:relative;z-index:1;}
+.pm-share-label{position:relative;z-index:1;color:var(--muted);}
+.pm-share-btn:hover .pm-share-label{color:var(--text);}
+
+/* Share divider */
+.pm-share-divider{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.pm-share-divider::before,.pm-share-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.pm-share-divider-txt{
+  font-size:10px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.5px;white-space:nowrap;
+}
 @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .product-card{cursor:pointer;}
@@ -1219,11 +1597,14 @@ body.on-page-faq .wa-float{display:none!important;}
 /* ══════════════════════════════════════
    ADMIN PRODUK MANAGEMENT
 ══════════════════════════════════════ */
-.admin-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;}
+.admin-tabs-wrap{position:relative;margin-bottom:16px;display:flex;align-items:center;gap:4px;}
+.admin-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;flex:1;}
 .admin-tabs::-webkit-scrollbar{display:none;}
-.admin-tab{white-space:nowrap;flex-shrink:0;}
-.admin-tab{flex:1;padding:9px 6px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .25s;letter-spacing:.3px;}
+.admin-tab{white-space:nowrap;flex-shrink:0;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .25s;letter-spacing:.3px;}
 .admin-tab.active{border-color:var(--blue-bright);background:rgba(59,130,246,.14);color:var(--blue-light);}
+.admin-tabs-arrow{display:none;flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--muted);font-size:14px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;}
+.admin-tabs-arrow:hover{background:rgba(59,130,246,.15);border-color:var(--blue-bright);color:var(--blue-light);}
+.admin-tabs-arrow.visible{display:flex;}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 
@@ -1728,6 +2109,435 @@ body.on-page-faq .wa-float{display:none!important;}
   background:rgba(96,165,250,.25);
   transform:translateX(3px);
 }
+
+/* ══════════════════════════════════════
+   LIGHT MODE
+══════════════════════════════════════ */
+body.light-mode {
+  --bg:          #eef2ff;
+  --surface:     #ffffff;
+  --surface2:    #dde8ff;
+  --blue:        #1d4ed8;
+  --blue-bright: #1e40af;
+  --blue-light:  #1d4ed8;
+  --blue-pale:   #1e3a8a;
+  --blue-mid:    #93c5fd;
+  --blue-glow:   #2563eb;
+  --cyan:        #0369a1;
+  --cyan-light:  #0c4a6e;
+  --purple:      #6d28d9;
+  --purple-light:#5b21b6;
+  --text:        #0f172a;
+  --muted:       #334e7a;
+  --border:      rgba(29,78,216,0.22);
+  --border-hi:   rgba(29,78,216,0.5);
+  --glass:       rgba(238,242,255,0.92);
+  --green:       #15803d;
+  --yellow:      #b45309;
+  --red:         #b91c1c;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* Background */
+body.light-mode .bg-fx {
+  background:linear-gradient(135deg,#dbeafe 0%,#e0e7ff 40%,#ede9fe 70%,#dbeafe 100%);
+}
+body.light-mode .bg-grid {
+  background-image:
+    linear-gradient(rgba(29,78,216,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(29,78,216,.07) 1px,transparent 1px);
+}
+
+/* Nav */
+body.light-mode .nav-inner {
+  background:linear-gradient(160deg,rgba(238,242,255,0.97) 0%,rgba(219,234,254,0.98) 100%);
+  border-color:rgba(29,78,216,0.35);
+  box-shadow:0 -2px 0 rgba(29,78,216,.2),0 8px 40px rgba(0,0,0,.12),0 2px 0 rgba(255,255,255,.9) inset;
+}
+body.light-mode .nav-btn { color:rgba(29,78,216,0.55); }
+body.light-mode .nav-btn.active { color:#1d4ed8; }
+body.light-mode .nav-fab-label { color:rgba(29,78,216,0.55); }
+
+/* Cards */
+body.light-mode .link-card,
+body.light-mode .product-card,
+body.light-mode .stat-card,
+body.light-mode .testi-card,
+body.light-mode .member-order-card,
+body.light-mode .refund-history-item,
+body.light-mode .iklan-admin-item,
+body.light-mode .acc-box,
+body.light-mode .info-box,
+body.light-mode .result-card,
+body.light-mode .rt-bar,
+body.light-mode .faq-msg.bot,
+body.light-mode .app-chip {
+  background:rgba(255,255,255,.9);
+  border-color:rgba(29,78,216,.18);
+}
+body.light-mode .iklan-box { background:#fff; }
+
+/* Text visibility fixes */
+body.light-mode .card-title,
+body.light-mode .product-name,
+body.light-mode .testi-name,
+body.light-mode .moc-app,
+body.light-mode .rhi-app,
+body.light-mode .stat-number,
+body.light-mode .iklan-title,
+body.light-mode .result-app-name,
+body.light-mode .breakdown-key,
+body.light-mode .breakdown-val,
+body.light-mode .ri-name,
+body.light-mode .refund-modal-title,
+body.light-mode h1,body.light-mode h2,body.light-mode h3 { color:#0f172a !important; }
+
+body.light-mode .card-sub,
+body.light-mode .store-tagline,
+body.light-mode .stat-label,
+body.light-mode .testi-text,
+body.light-mode .moc-resi,
+body.light-mode .rhi-date,
+body.light-mode .ri-date,
+body.light-mode .iklan-desc,
+body.light-mode .rt-label,
+body.light-mode .rt-time,
+body.light-mode .sec-label { color:#334e7a !important; }
+
+body.light-mode .moc-chip { background:rgba(29,78,216,.07); border-color:rgba(29,78,216,.15); color:#334e7a; }
+body.light-mode .moc-chip strong { color:#0f172a; }
+
+/* Profile / header */
+body.light-mode .store-name { color:#0f172a; }
+body.light-mode .badge { background:rgba(29,78,216,.1); border-color:rgba(29,78,216,.25); color:#1d4ed8; }
+body.light-mode .beranda-panda-bubble { background:#fff; color:#0f172a; border-color:rgba(29,78,216,.2); }
+
+/* Page header */
+body.light-mode .page-header h2 { color:#0f172a !important; }
+body.light-mode .page-header p   { color:#334e7a; }
+
+/* Toast stays dark */
+body.light-mode .toast { background:rgba(15,23,42,.92); color:#fff; }
+
+/* Section label */
+body.light-mode .sec-label { color:#1d4ed8 !important; }
+
+/* Refund page */
+body.light-mode .refund-hero {
+  background:linear-gradient(135deg,rgba(29,78,216,.08),rgba(6,182,212,.05));
+  border-color:rgba(29,78,216,.22);
+}
+body.light-mode .rf-label { color:#334e7a !important; }
+body.light-mode .rf-input {
+  background:#fff;
+  border-color:rgba(29,78,216,.25);
+  color:#0f172a;
+}
+body.light-mode .rf-input:focus { border-color:#1d4ed8; }
+body.light-mode .reason-card {
+  background:#fff;
+  border-color:rgba(29,78,216,.18);
+  color:#0f172a;
+}
+body.light-mode .reason-card .rc-label { color:#0f172a; }
+body.light-mode .reason-card.active { background:rgba(29,78,216,.1); border-color:#1d4ed8; }
+body.light-mode .refund-info-badge { background:rgba(180,83,9,.08); border-color:rgba(180,83,9,.2); }
+body.light-mode .dur-pill {
+  background:rgba(29,78,216,.08);
+  border-color:rgba(29,78,216,.2);
+  color:#1d4ed8;
+}
+body.light-mode .dur-pill.active { background:#1d4ed8; color:#fff; }
+body.light-mode .result-card-header,
+body.light-mode .result-breakdown,
+body.light-mode .result-amount-wrap { background:rgba(255,255,255,.92); }
+body.light-mode .refund-empty,
+body.light-mode .reminder-empty { color:#334e7a; }
+
+/* Settings panel */
+body.light-mode .settings-panel {
+  background:rgba(255,255,255,.98);
+  border-color:rgba(29,78,216,.2);
+  box-shadow:0 12px 40px rgba(29,78,216,.15);
+}
+body.light-mode .settings-title { color:#1d4ed8; }
+body.light-mode .settings-row { border-color:rgba(29,78,216,.1); }
+body.light-mode .settings-row-label { color:#0f172a; }
+body.light-mode .toggle-track { background:rgba(0,0,0,.1); border-color:rgba(29,78,216,.25); }
+
+/* Reminder modal */
+body.light-mode .reminder-modal { background:#f0f4ff; }
+body.light-mode .reminder-modal-title { color:#0f172a; }
+body.light-mode .reminder-modal-sub { color:#334e7a; }
+body.light-mode .reminder-label { color:#334e7a; }
+body.light-mode .reminder-input {
+  background:#fff;
+  border-color:rgba(29,78,216,.2);
+  color:#0f172a;
+}
+body.light-mode .reminder-item {
+  background:rgba(255,255,255,.9);
+  border-color:rgba(29,78,216,.15);
+}
+
+/* Member dots menu dropdown */
+body.light-mode #memberDropdown {
+  background:rgba(255,255,255,.98);
+  border-color:rgba(29,78,216,.3);
+  box-shadow:0 8px 32px rgba(29,78,216,.15);
+}
+body.light-mode #memberDropdown button { color:#0f172a !important; }
+
+/* Cek Resi page */
+body.light-mode .result-head { background:rgba(255,255,255,.9); }
+body.light-mode .result-app-name { color:#0f172a; }
+body.light-mode .result-resi { color:#334e7a; }
+body.light-mode .info-label { color:#334e7a; }
+body.light-mode .info-value { color:#0f172a; }
+body.light-mode .dur-labels { color:#334e7a; }
+body.light-mode .dur-track { background:rgba(29,78,216,.12); }
+body.light-mode .acc-row .acc-key { color:#334e7a; }
+body.light-mode .acc-row .acc-val { color:#0f172a; }
+
+/* Admin */
+body.light-mode .tab-btn { color:#334e7a; }
+body.light-mode .tab-btn.active { color:#1d4ed8; }
+body.light-mode .form-group label { color:#334e7a; }
+body.light-mode input,body.light-mode select,body.light-mode textarea {
+  background:#fff !important;
+  color:#0f172a !important;
+  border-color:rgba(29,78,216,.2) !important;
+}
+body.light-mode .err-box { background:rgba(185,28,28,.08); border-color:rgba(185,28,28,.25); color:#b91c1c; }
+
+/* FAQ */
+body.light-mode .faq-msg.user { color:#fff; }
+body.light-mode .faq-msg.bot { color:#0f172a; }
+
+/* Topup banner */
+body.light-mode .topup-banner {
+  background:linear-gradient(135deg,rgba(29,78,216,.1),rgba(6,182,212,.07),rgba(109,40,217,.08));
+  border-color:rgba(29,78,216,.35);
+}
+
+/* ══════════════════════════════════════
+   SETTINGS PANEL (Theme + Language + Reminders)
+══════════════════════════════════════ */
+.settings-fab {
+  position:fixed;
+  bottom:calc(var(--nav-h) + 80px);
+  right:16px;
+  width:46px;height:46px;
+  border-radius:50%;
+  background:rgba(8,15,28,.85);
+  border:1px solid rgba(96,165,250,.3);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;z-index:99;
+  box-shadow:0 4px 16px rgba(0,0,0,.45);
+  transition:transform .2s,box-shadow .2s;
+}
+body.light-mode .settings-fab {
+  background:rgba(255,255,255,.92);
+  border-color:rgba(37,99,235,.3);
+  box-shadow:0 4px 16px rgba(37,99,235,.18);
+}
+.settings-fab:hover { transform:scale(1.08); }
+.settings-fab:active { transform:scale(.93); }
+
+.settings-panel {
+  position:fixed;top:60px;right:14px;
+  width:270px;
+  background:rgba(8,14,30,.96);
+  border:1px solid rgba(96,165,250,.25);
+  border-radius:20px;padding:18px 16px;
+  backdrop-filter:blur(24px);
+  z-index:200;
+  box-shadow:0 12px 48px rgba(0,0,0,.65);
+  transform:scale(.88) translateY(12px);
+  opacity:0;pointer-events:none;
+  transform-origin:top right;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;
+}
+body.light-mode .settings-panel {
+  background:rgba(255,255,255,.97);
+  border-color:rgba(37,99,235,.2);
+  box-shadow:0 12px 48px rgba(37,99,235,.15);
+}
+.settings-panel.open {
+  transform:scale(1) translateY(0);
+  opacity:1;pointer-events:all;
+}
+.settings-title {
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--blue-light);margin-bottom:14px;
+}
+.settings-row {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.settings-row:last-child { border-bottom:none; }
+.settings-row-label {
+  display:flex;align-items:center;gap:8px;
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  color:var(--text);
+}
+.settings-row-label span.si { font-size:16px; }
+
+/* Toggle switch */
+.toggle-sw {
+  position:relative;width:40px;height:22px;
+}
+.toggle-sw input { opacity:0;width:0;height:0; }
+.toggle-track {
+  position:absolute;inset:0;border-radius:100px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(96,165,250,.2);
+  cursor:pointer;transition:background .25s,border-color .25s;
+}
+body.light-mode .toggle-track { background:rgba(0,0,0,.1); }
+.toggle-sw input:checked + .toggle-track { background:var(--blue);border-color:var(--blue-bright); }
+.toggle-track::after {
+  content:'';position:absolute;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;top:2px;left:2px;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+.toggle-sw input:checked + .toggle-track::after { transform:translateX(18px); }
+
+/* Language pill */
+.lang-pill-wrap { display:flex;gap:5px; }
+.lang-pill {
+  padding:4px 10px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:800;letter-spacing:.5px;
+  border:1.5px solid rgba(96,165,250,.25);
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.lang-pill.active {
+  background:var(--blue);border-color:var(--blue);color:#fff;
+  box-shadow:0 0 10px rgba(37,99,235,.4);
+}
+.lang-pill:hover:not(.active) { border-color:rgba(96,165,250,.5);color:var(--text); }
+
+/* ── Reminder section in settings ── */
+.reminder-add-btn {
+  width:100%;padding:9px;border-radius:11px;margin-top:10px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;color:#fff;font-family:'Syne',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;
+  transition:opacity .2s,transform .2s;
+}
+.reminder-add-btn:hover { opacity:.88;transform:translateY(-1px); }
+
+/* ══════════════════════════════════════
+   REMINDER PAGE / MODAL
+══════════════════════════════════════ */
+.reminder-modal-overlay {
+  position:fixed;inset:0;z-index:1500;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0;
+  animation:fadeIn .25s ease;
+}
+.reminder-modal-overlay.hidden { display:none; }
+.reminder-modal {
+  width:100%;max-width:480px;
+  background:var(--surface);
+  border:1px solid var(--border-hi);
+  border-radius:26px 26px 0 0;
+  padding:24px 20px 32px;
+  animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes slideUp { from{transform:translateY(60px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+.reminder-modal-handle {
+  width:36px;height:4px;border-radius:100px;
+  background:rgba(96,165,250,.25);margin:0 auto 18px;
+}
+.reminder-modal-title {
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  color:var(--text);margin-bottom:4px;
+}
+.reminder-modal-sub { font-size:12px;color:var(--muted);margin-bottom:18px; }
+.reminder-input-group { margin-bottom:13px; }
+.reminder-label {
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:var(--muted);
+  margin-bottom:6px;display:block;
+}
+.reminder-input {
+  width:100%;padding:11px 13px;border-radius:12px;
+  background:rgba(4,10,22,.6);border:1px solid var(--border);
+  color:var(--text);font-family:'Syne',sans-serif;font-size:13px;
+  outline:none;box-sizing:border-box;transition:border-color .2s;
+}
+body.light-mode .reminder-input {
+  background:rgba(255,255,255,.9);
+  border-color:rgba(37,99,235,.2);color:#0f172a;
+}
+.reminder-input:focus { border-color:var(--blue-bright); }
+.reminder-save-btn {
+  width:100%;padding:13px;border-radius:13px;margin-top:4px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;color:#fff;font-family:'Syne',sans-serif;
+  font-size:13px;font-weight:800;cursor:pointer;
+  transition:opacity .2s,transform .2s;
+}
+.reminder-save-btn:hover { opacity:.88;transform:translateY(-1px); }
+.reminder-cancel-btn {
+  width:100%;padding:10px;border-radius:13px;margin-top:8px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.reminder-cancel-btn:hover { border-color:var(--border-hi);color:var(--text); }
+
+/* ── Reminder list items ── */
+.reminder-item {
+  display:flex;align-items:center;gap:11px;
+  padding:12px 13px;border-radius:14px;
+  background:rgba(4,12,28,.52);border:1px solid var(--border);
+  margin-bottom:8px;transition:all .2s;animation:fadeU .3s ease both;
+}
+body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
+.reminder-item:hover { border-color:var(--border-hi); }
+.ri-icon {
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  background:linear-gradient(135deg,rgba(37,99,235,.25),rgba(6,182,212,.15));
+}
+.ri-info { flex:1;min-width:0; }
+.ri-name {
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ri-date { font-size:10px;color:var(--muted);margin-top:2px; }
+.ri-badge {
+  padding:3px 8px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:9px;font-weight:800;
+  letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;
+}
+.ri-ok { background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green); }
+.ri-warn { background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--yellow); }
+.ri-exp { background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red); }
+.ri-del-btn {
+  width:28px;height:28px;border-radius:8px;border:none;
+  background:rgba(248,113,113,.1);color:var(--red);
+  font-size:13px;cursor:pointer;transition:background .2s;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ri-del-btn:hover { background:rgba(248,113,113,.25); }
+.reminder-empty { text-align:center;padding:22px;color:var(--muted);font-size:13px; }
+.reminder-notif-banner {
+  padding:10px 13px;border-radius:12px;margin-bottom:13px;
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);
+  font-size:11px;color:var(--yellow);line-height:1.5;
+}
+
 </style>
 </head>
 <body>
@@ -1738,6 +2548,65 @@ body.on-page-faq .wa-float{display:none!important;}
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- ============================================
+     SETTINGS PANEL (opened from dots menu)
+============================================ -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-title">⚙️ Pengaturan</div>
+  <!-- Dark/Light Mode -->
+  <div class="settings-row">
+    <div class="settings-row-label"><span class="si" id="themeIcon">🌙</span><span id="themeLabel">Mode Gelap</span></div>
+    <label class="toggle-sw"><input type="checkbox" id="themeToggle" onchange="toggleTheme(this.checked)"><span class="toggle-track"></span></label>
+  </div>
+  <!-- Music toggle -->
+  <div class="settings-row" style="border-bottom:none;">
+    <div class="settings-row-label"><span class="si">🎵</span><span>Musik Latar</span></div>
+    <label class="toggle-sw">
+      <input type="checkbox" id="musicToggleSetting" onchange="toggleMusicFromSettings(this.checked)">
+      <span class="toggle-track"></span>
+    </label>
+  </div>
+</div>
+
+<!-- ============================================
+     REMINDER MODAL
+============================================ -->
+<div class="reminder-modal-overlay hidden" id="reminderOverlay" onclick="closeReminderModal(event)">
+  <div class="reminder-modal" onclick="event.stopPropagation()">
+    <div class="reminder-modal-handle"></div>
+    <div class="reminder-modal-title" data-i18n="reminder_title">🔔 Pengingat Langganan</div>
+    <div class="reminder-modal-sub" data-i18n="reminder_sub">Notifikasi otomatis H-3 sebelum langganan habis</div>
+    <div class="reminder-notif-banner" id="reminderNotifBanner" style="display:none;">
+      ⚠️ <span data-i18n="notif_blocked">Izin notifikasi belum diberikan. Klik tombol di bawah agar pengingat bisa dikirim.</span><br>
+      <button onclick="requestNotifPermission()" style="margin-top:7px;padding:5px 12px;border-radius:8px;background:var(--yellow);border:none;color:#000;font-family:Syne,sans-serif;font-size:10px;font-weight:800;cursor:pointer;" data-i18n="notif_enable_btn">Aktifkan Notifikasi</button>
+    </div>
+    <div style="background:rgba(4,10,22,.4);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:14px;">
+      <div class="reminder-input-group">
+        <label class="reminder-label" data-i18n="reminder_app_label">Nama Aplikasi / Layanan</label>
+        <input class="reminder-input" id="riApp" type="text" placeholder="Netflix, Spotify, dll...">
+      </div>
+      <div class="reminder-input-group">
+        <label class="reminder-label" data-i18n="reminder_exp_label">Tanggal Kadaluarsa</label>
+        <input class="reminder-input" id="riExpiry" type="date">
+      </div>
+      <div class="reminder-input-group" style="margin-bottom:0;">
+        <label class="reminder-label" data-i18n="reminder_days_label">Ingatkan H- (hari sebelum)</label>
+        <select class="reminder-input" id="riDays">
+          <option value="1">1 hari sebelum</option>
+          <option value="3" selected>3 hari sebelum</option>
+          <option value="5">5 hari sebelum</option>
+          <option value="7">7 hari sebelum</option>
+          <option value="14">14 hari sebelum</option>
+        </select>
+      </div>
+      <button class="reminder-save-btn" onclick="addReminder()" data-i18n="reminder_add_btn">➕ Tambah Pengingat</button>
+    </div>
+    <div class="settings-title" style="margin-bottom:10px;" data-i18n="reminder_list_title">DAFTAR PENGINGAT</div>
+    <div id="reminderList"></div>
+    <button class="reminder-cancel-btn" onclick="closeReminderModal()" data-i18n="reminder_close_btn">Tutup</button>
+  </div>
+</div>
 
 <!-- WA Float -->
 <a href="https://wa.me/6289529101513" class="wa-float" title="Chat WhatsApp" style="overflow:hidden;"><img src="data:image/png;base64,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" style="width:100%;height:100%;object-fit:cover;" /></a>
@@ -1829,6 +2698,19 @@ body.on-page-faq .wa-float{display:none!important;}
        onmouseout="this.style.background='transparent'">
       <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">💸</span>
       <span>Kalkulator Refund</span>
+    </button>
+    <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
+    <!-- Settings -->
+    <button onclick="closeMemberMenu();openSettingsPanel();" id="settingsMenuBtn" style="
+      display:flex;align-items:center;gap:9px;width:100%;
+      background:transparent;border:none;
+      border-radius:10px;padding:10px 12px;
+      color:#e8f0ff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+      cursor:pointer;transition:background .18s;text-align:left;
+    " onmouseover="this.style.background='rgba(139,92,246,.14)'"
+       onmouseout="this.style.background='transparent'">
+      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">⚙️</span>
+      <span id="settingsMenuLabel">Pengaturan</span>
     </button>
     <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
     <!-- Logged in: Avatar + nama + logout -->
@@ -1979,6 +2861,11 @@ body.on-page-faq .wa-float{display:none!important;}
     <div class="stat-card d3"><div class="stat-number">2 Thn</div><div class="stat-label">Pengalaman</div></div>
   </div>
 
+  <!-- BANNER SLIDE -->
+  <div id="bannerSlideContainer">
+    <div class="banner-skeleton"></div>
+  </div>
+
   <div class="sec-label">🎯 Produk Unggulan</div>
   <div class="products-grid" id="berandaProdukGrid">
     <!-- Rendered by JS -->
@@ -2056,6 +2943,27 @@ body.on-page-faq .wa-float{display:none!important;}
   <div class="page-header">
     <h2>🎬 Produk Digital</h2>
     <p>Klik produk untuk lihat detail & harga</p>
+  </div>
+
+  <!-- ── SEARCH & FILTER BAR ── -->
+  <div class="sf-wrap" id="sfWrap" style="display:none;">
+    <div class="sf-search-row">
+      <div class="sf-search-box">
+        <span class="sf-search-icon">🔍</span>
+        <input class="sf-input" id="sfInput" type="text" placeholder="Cari produk..." oninput="sfOnInput(this)" autocomplete="off" />
+        <button class="sf-clear" id="sfClear" onclick="sfClearInput()">✕</button>
+      </div>
+      <div style="position:relative;">
+        <button class="sf-sort-btn" id="sfSortBtn" onclick="sfToggleSort(event)" title="Urutkan">⇅</button>
+      </div>
+    </div>
+    <div class="sf-cats" id="sfCats">
+      <div class="sf-cat active" data-cat="Semua" onclick="sfSetCat('Semua',this)">Semua</div>
+    </div>
+    <div class="sf-result-info" id="sfResultInfo" style="display:none;">
+      <div class="sf-result-count" id="sfResultCount"><span>0</span> produk ditemukan</div>
+      <button class="sf-reset-btn" onclick="sfReset()">✕ Reset</button>
+    </div>
   </div>
 
   <div id="produkContainer">
@@ -2171,13 +3079,19 @@ body.on-page-faq .wa-float{display:none!important;}
   <div id="adminPanel" class="hidden">
 
   <!-- Admin Tabs -->
-  <div class="admin-tabs">
-    <button class="admin-tab active" id="tabOrder" onclick="switchTab('order')">📦 Pesanan</button>
-    <button class="admin-tab" id="tabProduk" onclick="switchTab('produk')">🛍️ Produk</button>
-    <button class="admin-tab" id="tabTestimoni" onclick="switchTab('testimoni')">⭐ Testimoni</button>
-    <button class="admin-tab" id="tabIklan" onclick="switchTab('iklan')">📢 Iklan</button>
-    <button class="admin-tab" id="tabMusik" onclick="switchTab('musik')">🎵 Musik</button>
-    <button class="admin-tab" id="tabStatistik" onclick="switchTab('statistik')">📊 Statistik</button>
+  <div class="admin-tabs-wrap">
+    <button class="admin-tabs-arrow" id="adminTabPrev" onclick="scrollAdminTabs(-1)" aria-label="Geser kiri">&#8249;</button>
+    <div class="admin-tabs" id="adminTabsScroll">
+      <button class="admin-tab active" id="tabOrder" onclick="switchTab('order')">📦 Pesanan</button>
+      <button class="admin-tab" id="tabProduk" onclick="switchTab('produk')">🛍️ Produk</button>
+      <button class="admin-tab" id="tabTestimoni" onclick="switchTab('testimoni')">⭐ Testimoni</button>
+      <button class="admin-tab" id="tabIklan" onclick="switchTab('iklan')">📢 Iklan</button>
+      <button class="admin-tab" id="tabMusik" onclick="switchTab('musik')">🎵 Musik</button>
+      <button class="admin-tab" id="tabStatistik" onclick="switchTab('statistik')">📊 Statistik</button>
+      <button class="admin-tab" id="tabBanner" onclick="switchTab('banner')">🖼️ Banner</button>
+      <button class="admin-tab" id="tabPromo" onclick="switchTab('promo')">🎟️ Promo</button>
+    </div>
+    <button class="admin-tabs-arrow" id="adminTabNext" onclick="scrollAdminTabs(1)" aria-label="Geser kanan">&#8250;</button>
   </div>
 
   <!-- Tab: Pesanan -->
@@ -2395,6 +3309,30 @@ body.on-page-faq .wa-float{display:none!important;}
       </div>
     </div>
   </div><!-- /tab-statistik -->
+
+  <!-- Tab: Banner -->
+  <div id="tab-banner" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="card-heading" style="margin:0;">🖼️ Kelola Banner Beranda</div>
+        <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openBannerForm()">➕ Tambah</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">💡 Banner <strong style="color:var(--green);">Aktif</strong> akan tampil sebagai slideshow di bagian atas Beranda.</div>
+      <div id="bannerAdminList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
+    </div>
+  </div><!-- /tab-banner -->
+
+  <!-- Tab: Promo -->
+  <div id="tab-promo" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="card-heading" style="margin:0;">🎟️ Kelola Kode Promo</div>
+        <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openPromoForm()">➕ Tambah</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">💡 Pelanggan bisa pakai kode promo saat order untuk mendapat diskon otomatis.</div>
+      <div id="promoAdminList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
+    </div>
+  </div><!-- /tab-promo -->
 
   </div><!-- /adminPanel -->
 </div><!-- /page-admin -->
@@ -2638,6 +3576,7 @@ function goPage(id){
   document.body.className = document.body.className.replace(/on-page-\S+/g,'').trim();
   document.body.classList.add('on-page-'+id.replace('page-',''));
   if(id === 'page-home') loadAndShowIklanPopup();
+  if(id === 'page-home') renderBannerSlide();
   if(id === 'page-faq') initFaqPage();
   if(id === 'page-refund') initRefundPage();
 }
@@ -2970,6 +3909,7 @@ async function adminLogin(){
       adminLoggedIn=true;
       document.getElementById('adminLogin').classList.add('hidden');
       document.getElementById('adminPanel').classList.remove('hidden');
+      setTimeout(updateAdminTabArrows, 100);
       await renderAppsGrid();
       const today=new Date().toISOString().split('T')[0];
       document.getElementById('newMulai').value=today;
@@ -3298,7 +4238,7 @@ let _prodCache = null;
 async function fetchProduk(){
   if(_prodCache) return _prodCache;
   try{
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/Produk!A:G?key=${CFG.apiKey}`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/Produk!A:H?key=${CFG.apiKey}`;
     const res = await fetch(url);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
@@ -3326,32 +4266,223 @@ async function fetchProduk(){
 
 function clearProdCache(){ _prodCache = null; }
 
+/* ══════════════════════════════════════
+   SEARCH & FILTER ENGINE — v8
+══════════════════════════════════════ */
+let _sfAllProds  = [];   // semua produk (cache)
+let _sfQuery     = '';
+let _sfCat       = 'Semua';
+let _sfSort      = 'default';
+let _sfSortOpen  = false;
+
+function sfParsePrice(s){
+  if(!s) return 0;
+  return parseInt((s+'').replace(/[^\d]/g,''))||0;
+}
+
+function sfHighlight(text, q){
+  if(!q) return text;
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return text.replace(new RegExp('('+esc+')','gi'), '<mark class="sf-hl">$1</mark>');
+}
+
+function sfApplyAndRender(){
+  let prods = [..._sfAllProds];
+
+  // Filter by category
+  if(_sfCat && _sfCat !== 'Semua'){
+    prods = prods.filter(p => p.cat === _sfCat);
+  }
+
+  // Filter by search query
+  const q = _sfQuery.trim().toLowerCase();
+  if(q){
+    prods = prods.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.desc||'').toLowerCase().includes(q) ||
+      (p.cat||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Sort
+  if(_sfSort === 'az')   prods.sort((a,b)=>a.name.localeCompare(b.name));
+  if(_sfSort === 'za')   prods.sort((a,b)=>b.name.localeCompare(a.name));
+  if(_sfSort === 'low')  prods.sort((a,b)=>sfParsePrice(a.price)-sfParsePrice(b.price));
+  if(_sfSort === 'high') prods.sort((a,b)=>sfParsePrice(b.price)-sfParsePrice(a.price));
+
+  const wrap = document.getElementById('produkContainer');
+  const isFiltered = q || _sfCat !== 'Semua' || _sfSort !== 'default';
+  const riEl = document.getElementById('sfResultInfo');
+  const rcEl = document.getElementById('sfResultCount');
+
+  if(isFiltered){
+    riEl.style.display = 'flex';
+    rcEl.innerHTML = `<span>${prods.length}</span> produk ditemukan`;
+  } else {
+    riEl.style.display = 'none';
+  }
+
+  if(!prods.length){
+    wrap.innerHTML = `<div class="sf-empty">
+      <div class="sf-empty-icon">🔍</div>
+      <div class="sf-empty-title">Produk tidak ditemukan</div>
+      <div class="sf-empty-sub">Coba kata kunci lain<br>atau reset filter di atas</div>
+    </div>`;
+    return;
+  }
+
+  // Grouping — kalau ada filter/search, tampilkan flat (tidak per kategori)
+  let html = '';
+  if(isFiltered){
+    html += `<div class="products-grid">`;
+    prods.forEach((p,i)=>{
+      const hlName = sfHighlight(p.name, _sfQuery);
+      html += _sfProdCardHtml(p, hlName, i);
+    });
+    html += '</div>';
+  } else {
+    const cats = [...new Set(prods.map(p=>p.cat))];
+    cats.forEach(cat=>{
+      html += `<div class="sec-label">${cat}</div><div class="products-grid">`;
+      prods.filter(p=>p.cat===cat).forEach((p,i)=>{
+        html += _sfProdCardHtml(p, p.name, i);
+      });
+      html += '</div>';
+    });
+  }
+  wrap.innerHTML = html;
+}
+
+function _sfProdCardHtml(p, displayName, i){
+  const imgHtml = p.emoji && p.emoji.startsWith('data:image')
+    ? `<img src="${p.emoji}" class="product-img" />`
+    : (p.emoji||'📱');
+  return `<div class="product-card d${(i%4)+1}" onclick="openProdModal('${p.id}')">
+    <div class="product-emoji">${imgHtml}</div>
+    <div class="product-name">${displayName}</div>
+    <div class="product-price">${p.price}</div>
+    ${_stokBadgeHtml(p.stok)}
+    <div style="font-size:10px;color:var(--muted);margin-top:4px;">Tap untuk detail →</div>
+  </div>`;
+}
+
+function sfOnInput(el){
+  _sfQuery = el.value;
+  const clearBtn = document.getElementById('sfClear');
+  if(clearBtn) clearBtn.classList.toggle('show', !!el.value);
+  sfApplyAndRender();
+}
+
+function sfClearInput(){
+  const inp = document.getElementById('sfInput');
+  if(inp){ inp.value=''; _sfQuery=''; }
+  const clearBtn = document.getElementById('sfClear');
+  if(clearBtn) clearBtn.classList.remove('show');
+  sfApplyAndRender();
+  inp && inp.focus();
+}
+
+function sfSetCat(cat, el){
+  _sfCat = cat;
+  document.querySelectorAll('.sf-cat').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  sfApplyAndRender();
+}
+
+function sfToggleSort(e){
+  e.stopPropagation();
+  _sfSortOpen = !_sfSortOpen;
+  const popup = document.getElementById('sfSortPopup');
+  const btn   = document.getElementById('sfSortBtn');
+  if(_sfSortOpen && btn && popup){
+    // Portal positioning — anchor ke tombol sort
+    const r = btn.getBoundingClientRect();
+    popup.style.top  = (r.bottom + 8) + 'px';
+    popup.style.left = (r.right - popup.offsetWidth || r.right - 180) + 'px';
+    // Tunggu 1 frame supaya offsetWidth sudah terbaca
+    requestAnimationFrame(()=>{
+      popup.style.left = (r.right - popup.offsetWidth) + 'px';
+    });
+  }
+  if(popup) popup.classList.toggle('open', _sfSortOpen);
+  if(btn)   btn.classList.toggle('active', _sfSortOpen);
+}
+
+function sfSetSort(sort, el){
+  _sfSort = sort;
+  _sfSortOpen = false;
+  const popup = document.getElementById('sfSortPopup');
+  const btn   = document.getElementById('sfSortBtn');
+  if(popup){ popup.classList.remove('open'); }
+  document.querySelectorAll('.sf-sort-opt').forEach(o=>o.classList.remove('sel'));
+  if(el) el.classList.add('sel');
+  // Show badge on sort button if not default
+  if(btn){
+    btn.classList.toggle('active', sort !== 'default');
+    let badge = btn.querySelector('.sf-sort-badge');
+    if(sort !== 'default'){
+      if(!badge){ badge=document.createElement('span'); badge.className='sf-sort-badge'; btn.appendChild(badge); }
+      badge.textContent='1';
+    } else {
+      if(badge) badge.remove();
+    }
+  }
+  sfApplyAndRender();
+}
+
+function sfReset(){
+  _sfQuery=''; _sfCat='Semua'; _sfSort='default';
+  const inp = document.getElementById('sfInput');
+  if(inp) inp.value='';
+  const clearBtn = document.getElementById('sfClear');
+  if(clearBtn) clearBtn.classList.remove('show');
+  document.querySelectorAll('.sf-cat').forEach(c=>c.classList.toggle('active', c.dataset.cat==='Semua'));
+  document.querySelectorAll('.sf-sort-opt').forEach(o=>o.classList.toggle('sel', o.dataset.sort==='default'));
+  const btn = document.getElementById('sfSortBtn');
+  if(btn){ btn.classList.remove('active'); const b=btn.querySelector('.sf-sort-badge'); if(b) b.remove(); }
+  sfApplyAndRender();
+}
+
+// Close sort popup on outside click (portal — popup is now on body)
+document.addEventListener('click', function(e){
+  if(!_sfSortOpen) return;
+  const popup = document.getElementById('sfSortPopup');
+  const btn   = document.getElementById('sfSortBtn');
+  if(popup && !popup.contains(e.target) && btn && !btn.contains(e.target)){
+    _sfSortOpen=false;
+    popup.classList.remove('open');
+    if(btn) btn.classList.remove('active');
+  }
+});
+
 async function renderProductPage(){
   const wrap = document.getElementById('produkContainer');
   if(!wrap) return;
   wrap.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px;"><span class="spinner"></span> Memuat produk...</div>';
+
   const prods = await fetchProduk();
+  _sfAllProds = prods;
+
+  // Show / hide search bar
+  const sfWrap = document.getElementById('sfWrap');
+  if(sfWrap) sfWrap.style.display = prods.length ? '' : 'none';
+
   if(!prods.length){
     wrap.innerHTML = '<div style="text-align:center;padding:28px;color:var(--muted);font-size:13px;">Belum ada produk. Tambah di Admin → Tab Produk.</div>';
     return;
   }
-  const cats = [...new Set(prods.map(p=>p.cat))];
-  let html = '';
-  cats.forEach(cat=>{
-    html += `<div class="sec-label">${cat}</div><div class="products-grid">`;
-    prods.filter(p=>p.cat===cat).forEach((p,i)=>{
-      html += `<div class="product-card d${(i%4)+1}" onclick="openProdModal('${p.id}')">
-        <div class="product-emoji">${p.emoji&&p.emoji.startsWith('data:image')
-          ? `<img src="${p.emoji}" class="product-img" />`
-          : (p.emoji||'📱')}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-price">${p.price}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Tap untuk detail →</div>
-      </div>`;
-    });
-    html += '</div>';
-  });
-  wrap.innerHTML = html;
+
+  // Build category pills
+  const cats = [...new Set(prods.map(p=>p.cat).filter(Boolean))];
+  const catsEl = document.getElementById('sfCats');
+  if(catsEl){
+    catsEl.innerHTML = '<div class="sf-cat active" data-cat="Semua" onclick="sfSetCat(\'Semua\',this)">Semua</div>'
+      + cats.map(c=>`<div class="sf-cat" data-cat="${c}" onclick="sfSetCat('${c}',this)">${c}</div>`).join('');
+  }
+
+  // Reset state & render
+  _sfQuery=''; _sfCat='Semua'; _sfSort='default'; _sfSortOpen=false;
+  sfApplyAndRender();
 }
 
 async function renderBerandaProducts(){
@@ -3368,15 +4499,21 @@ async function renderBerandaProducts(){
       <div class="product-emoji">${imgHtml}</div>
       <div class="product-name">${p.name}</div>
       <div class="product-price">${p.price}</div>
+      ${_stokBadgeHtml(p.stok)}
     </div>`;
   }).join('');
 }
 
 /* ── Product Detail Modal ── */
+/* ── Currently open product (for share) ── */
+let _pmCurrentProd = null;
+
 async function openProdModal(id){
   const prods = await fetchProduk();
   const p = prods.find(x=>x.id===id);
   if(!p) return;
+  _pmCurrentProd = p;
+
   const pmEl = document.getElementById('pmEmoji');
   if(p.emoji && p.emoji.startsWith('data:image')){
     pmEl.innerHTML = `<img src="${p.emoji}" class="prod-modal-img" />`;
@@ -3387,8 +4524,65 @@ async function openProdModal(id){
   document.getElementById('pmPrice').textContent  = p.price;
   document.getElementById('pmDesc').textContent   = p.desc||'';
   document.getElementById('pmFeatures').innerHTML = (p.features||[]).map(f=>`<li>${f}</li>`).join('');
-  const waMsg = encodeURIComponent(`Halo Rizanta Store, saya mau order ${p.name} (${p.price})!`);
-  document.getElementById('pmOrderBtn').onclick = ()=> window.open(`https://wa.me/6289529101513?text=${waMsg}`,'_blank');
+  document.getElementById('pmOrderBtn').onclick = ()=> {
+    let hargaAkhir = '';
+    let promoTxt = '';
+    if(_appliedPromo){
+      const rawPrice = (p.price||'').replace(/[^0-9]/g,'');
+      const hargaAsli = parseInt(rawPrice)||0;
+      let hargaDiskon = hargaAsli;
+      if(_appliedPromo.jenis === 'persen'){
+        const potongan = Math.round(hargaAsli * (parseFloat(_appliedPromo.nilai)||0) / 100);
+        hargaDiskon = hargaAsli - potongan;
+        promoTxt = '\n\n🎟️ Kode Promo: ' + _appliedPromo.kode
+          + ' (' + (_appliedPromo.nama || 'Diskon ' + _appliedPromo.nilai + '%') + ')'
+          + '\n💸 Potongan: Rp ' + potongan.toLocaleString('id-ID')
+          + '\n✅ Harga Setelah Diskon: Rp ' + hargaDiskon.toLocaleString('id-ID');
+      } else if(_appliedPromo.jenis === 'nominal'){
+        const potongan = parseInt(_appliedPromo.nilai)||0;
+        hargaDiskon = Math.max(0, hargaAsli - potongan);
+        promoTxt = '\n\n🎟️ Kode Promo: ' + _appliedPromo.kode
+          + ' (' + (_appliedPromo.nama || 'Diskon Rp ' + potongan.toLocaleString('id-ID')) + ')'
+          + '\n💸 Potongan: Rp ' + potongan.toLocaleString('id-ID')
+          + '\n✅ Harga Setelah Diskon: Rp ' + hargaDiskon.toLocaleString('id-ID');
+      } else {
+        promoTxt = '\n\n🎟️ Kode Promo: ' + _appliedPromo.kode
+          + ' (' + (_appliedPromo.nama || 'Bonus Spesial') + ')';
+      }
+    }
+    const waMsg = encodeURIComponent('Halo Rizanta Store, saya mau order ' + p.name + ' (' + p.price + ')!' + promoTxt);
+    window.open('https://wa.me/6289529101513?text=' + waMsg, '_blank');
+  };
+
+  // Stok badge
+  const stokRow = document.getElementById('pmStokRow');
+  if(stokRow){
+    const badgeHtml = _stokBadgeHtml(p.stok);
+    if(badgeHtml){ stokRow.innerHTML = badgeHtml; stokRow.style.display='flex'; }
+    else { stokRow.style.display='none'; }
+  }
+  // Disable order btn if stok 0
+  const orderBtn = document.getElementById('pmOrderBtn');
+  if(orderBtn && p.stok !== undefined && p.stok !== '' && parseInt(p.stok) === 0){
+    orderBtn.disabled = true;
+    orderBtn.textContent = '⛔ Stok Habis';
+    orderBtn.style.opacity = '0.5';
+  } else if(orderBtn){
+    orderBtn.disabled = false;
+    orderBtn.textContent = '💬 Order via WhatsApp';
+    orderBtn.style.opacity = '';
+  }
+  // Reset voucher
+  const vi = document.getElementById('voucherInput'); if(vi) vi.value='';
+  const vr = document.getElementById('voucherResult'); if(vr){ vr.style.display='none'; vr.textContent=''; }
+  _appliedPromo = null;
+
+  // Reset copy button state
+  const copyIcon  = document.getElementById('pmShareCopyIcon');
+  const copyLabel = document.getElementById('pmShareCopyLabel');
+  if(copyIcon)  copyIcon.textContent  = '🔗';
+  if(copyLabel) copyLabel.textContent = 'Salin Link';
+
   document.getElementById('prodModal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -3398,8 +4592,89 @@ function closeProdModal(){
 }
 
 /* ══════════════════════════════════════
+   SHARE PRODUK
+══════════════════════════════════════ */
+function _buildShareText(p){
+  const features = (p.features||[]).slice(0,3).map(f=>`✅ ${f}`).join('\n');
+  return `${p.emoji||'📱'} *${p.name}*\n💰 Harga: *${p.price}*\n\n${p.desc||''}\n\n${features}\n\n🛍️ Order & info lebih lanjut:\n${WEBSITE_URL}`;
+}
+
+function _buildShareUrl(p){
+  // Deep link ke halaman produk (pakai hash param agar bisa dibuka langsung)
+  return `${WEBSITE_URL}#produk-${p.id}`;
+}
+
+function shareProdWa(){
+  if(!_pmCurrentProd) return;
+  const text = _buildShareText(_pmCurrentProd);
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareProdIg(){
+  if(!_pmCurrentProd) return;
+  const p = _pmCurrentProd;
+  // Instagram tidak support deep-link share text langsung —
+  // pakai Web Share API kalau tersedia (mobile), fallback copy ke clipboard
+  const text = _buildShareText(p);
+  if(navigator.share){
+    navigator.share({
+      title: `${p.name} — Rizanta Store`,
+      text: `${p.emoji||'📱'} ${p.name} | ${p.price}\n${p.desc||''}\n\n${WEBSITE_URL}`,
+      url: _buildShareUrl(p)
+    }).catch(()=>{});
+  } else {
+    // Fallback: salin teks, buka IG story di browser
+    navigator.clipboard.writeText(text).then(()=>{
+      showToast('📋 Teks disalin! Buka Instagram dan paste di Story/Caption.');
+      setTimeout(()=> window.open('https://www.instagram.com/', '_blank'), 1000);
+    }).catch(()=>{
+      showToast('⚠️ Tidak bisa menyalin. Coba buka Instagram manual ya!');
+      window.open('https://www.instagram.com/', '_blank');
+    });
+  }
+}
+
+function shareProdCopy(){
+  if(!_pmCurrentProd) return;
+  const p = _pmCurrentProd;
+  const url = _buildShareUrl(p);
+  const fullText = `${_buildShareText(p)}\n\n🔗 ${url}`;
+
+  const copyIcon  = document.getElementById('pmShareCopyIcon');
+  const copyLabel = document.getElementById('pmShareCopyLabel');
+
+  navigator.clipboard.writeText(fullText).then(()=>{
+    if(copyIcon)  copyIcon.textContent  = '✅';
+    if(copyLabel) copyLabel.textContent = 'Tersalin!';
+    showToast('✅ Info produk berhasil disalin!');
+    setTimeout(()=>{
+      if(copyIcon)  copyIcon.textContent  = '🔗';
+      if(copyLabel) copyLabel.textContent = 'Salin Link';
+    }, 2500);
+  }).catch(()=>{
+    showToast('⚠️ Gagal menyalin. Coba lagi ya!');
+  });
+}
+
+/* ══════════════════════════════════════
    ADMIN: TAB SWITCH
 ══════════════════════════════════════ */
+function scrollAdminTabs(dir){
+  const el = document.getElementById('adminTabsScroll');
+  if(!el) return;
+  el.scrollBy({left: dir * 150, behavior:'smooth'});
+  setTimeout(updateAdminTabArrows, 300);
+}
+function updateAdminTabArrows(){
+  const el = document.getElementById('adminTabsScroll');
+  const prev = document.getElementById('adminTabPrev');
+  const next = document.getElementById('adminTabNext');
+  if(!el||!prev||!next) return;
+  const canLeft  = el.scrollLeft > 4;
+  const canRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+  prev.classList.toggle('visible', canLeft);
+  next.classList.toggle('visible', canRight);
+}
 function switchTab(tab){
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
@@ -3413,6 +4688,8 @@ function switchTab(tab){
   if(tab==='iklan') renderAdminIklan();
   if(tab==='musik') renderAdminMusik();
   if(tab==='statistik') renderStatistik();
+  if(tab==='banner') renderAdminBanner();
+  if(tab==='promo') renderAdminPromo();
 }
 
 /* ══════════════════════════════════════
@@ -3434,6 +4711,7 @@ async function renderAdminProducts(){
         <div class="prod-admin-name">${p.name}</div>
         <div class="prod-admin-cat">${p.cat}</div>
         <div class="prod-admin-price">${p.price}</div>
+        <div style="margin-top:2px;">${_stokBadgeHtml(p.stok)}</div>
       </div>
       <div class="prod-admin-actions">
         <button class="btn-edit" onclick="openProdForm('${p.id}')">✏️</button>
@@ -3464,6 +4742,7 @@ async function openProdForm(id){
   document.getElementById('pfPrice').value = p ? p.price         : '';
   document.getElementById('pfCat').value   = p ? p.cat           : '';
   document.getElementById('pfDesc').value  = p ? (p.desc||'')    : '';
+  document.getElementById('pfStok').value  = p ? (p.stok!==undefined ? p.stok : '') : '';
   const featsList = document.getElementById('pfFeatsList');
   featsList.innerHTML = '';
   (p ? (p.features||[]) : []).forEach(f => addFeatField(f));
@@ -3489,6 +4768,7 @@ async function saveProd(){
   const price = document.getElementById('pfPrice').value.trim();
   const cat   = document.getElementById('pfCat').value.trim();
   const desc  = document.getElementById('pfDesc').value.trim();
+  const stok  = document.getElementById('pfStok').value.trim();
   if(!name||!price||!cat){ showToast('⚠️ Nama, harga, dan kategori wajib diisi!'); return; }
   const features = [...document.querySelectorAll('.prod-feat-input')].map(i=>i.value.trim()).filter(Boolean);
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
@@ -3503,7 +4783,7 @@ async function saveProd(){
       action: _editProdId ? 'edit' : 'add',
       id:     _editProdId || ('p'+Date.now()),
       emoji:  emoji||'', nama: name, harga: price,
-      kategori: cat, deskripsi: desc, fitur: features
+      kategori: cat, deskripsi: desc, fitur: features, stok: stok
     };
     await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify(payload)});
     clearProdCache();
@@ -4270,6 +5550,38 @@ async function renderBerandaTestimoni(){
     <div class="prod-modal-price" id="pmPrice"></div>
     <div class="prod-modal-desc" id="pmDesc"></div>
     <ul class="prod-modal-features" id="pmFeatures"></ul>
+
+    <!-- Share row -->
+    <div class="pm-share-row">
+      <button class="pm-share-btn pm-share-wa" id="pmShareWa" onclick="shareProdWa()">
+        <span class="pm-share-icon">💬</span>
+        <span class="pm-share-label">WhatsApp</span>
+      </button>
+      <button class="pm-share-btn pm-share-ig" onclick="shareProdIg()">
+        <span class="pm-share-icon">📸</span>
+        <span class="pm-share-label">Instagram</span>
+      </button>
+      <button class="pm-share-btn pm-share-copy" id="pmShareCopy" onclick="shareProdCopy()">
+        <span class="pm-share-icon" id="pmShareCopyIcon">🔗</span>
+        <span class="pm-share-label" id="pmShareCopyLabel">Salin Link</span>
+      </button>
+    </div>
+
+    <div class="pm-share-divider"><span class="pm-share-divider-txt">ATAU ORDER LANGSUNG</span></div>
+
+    <!-- Stok badge -->
+    <div class="pm-stok-row" id="pmStokRow" style="display:none;"></div>
+
+    <!-- Voucher / Kode Promo -->
+    <div style="margin-bottom:10px;">
+      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">🎟️ Punya Kode Promo?</div>
+      <div class="voucher-row">
+        <input class="voucher-input" id="voucherInput" placeholder="Masukkan kode promo" />
+        <button class="voucher-btn" onclick="applyVoucher()">Pakai</button>
+      </div>
+      <div class="voucher-result" id="voucherResult"></div>
+    </div>
+
     <button class="prod-order-btn" id="pmOrderBtn">
       💬 Order via WhatsApp
     </button>
@@ -4343,6 +5655,7 @@ async function renderBerandaTestimoni(){
     <div class="field"><label>Kategori</label>
       <input id="pfCat" placeholder="🔥 Streaming / 🎵 Musik & Kreasi / dll" />
     </div>
+    <div class="field"><label>Stok Tersedia (0 = habis, kosong = tidak ditampilkan)</label><input id="pfStok" type="number" min="0" placeholder="Contoh: 10" /></div>
     <div class="field"><label>Deskripsi Singkat</label>
       <textarea id="pfDesc" rows="3" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;" placeholder="Deskripsi produk..."></textarea>
     </div>
@@ -4481,6 +5794,77 @@ async function renderBerandaTestimoni(){
   </div>
 </div>
 
+
+<!-- ══════════════════════════════════
+     BANNER FORM MODAL (ADMIN)
+══════════════════════════════════ -->
+<div class="prod-form-modal hidden" id="bannerFormModal">
+  <div class="prod-form-inner">
+    <h3 id="bannerFormTitle">➕ Tambah Banner</h3>
+    <div class="field">
+      <label>Gambar Banner</label>
+      <div class="img-upload-area" id="bannerImgUploadArea" onclick="document.getElementById('bannerImgFile').click()">
+        <input type="file" id="bannerImgFile" accept="image/*" onchange="handleBannerImgUpload(event)" style="display:none;" />
+        <div id="bannerImgPreviewWrap">
+          <div class="img-upload-placeholder"><span class="up-icon">🖼️</span>Tap untuk upload gambar banner</div>
+          <div class="img-upload-hint">JPG, PNG, WebP • Rasio 16:9 atau 2:1 lebih bagus</div>
+        </div>
+      </div>
+      <input type="hidden" id="bannerImgData" />
+    </div>
+    <div class="field"><label>Judul Banner</label><input id="bannerJudul" placeholder="Promo Spesial Akhir Bulan!" /></div>
+    <div class="field"><label>Deskripsi (opsional)</label>
+      <textarea id="bannerDeskripsi" rows="2" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;" placeholder="Deskripsi singkat..."></textarea>
+    </div>
+    <div class="field"><label>Link Tombol (opsional)</label><input id="bannerLink" placeholder="https://wa.me/6289529101513" /></div>
+    <div class="field"><label>Teks Tombol CTA</label><input id="bannerCtaTeks" placeholder="Lihat Promo →" /></div>
+    <div class="field">
+      <label>Status</label>
+      <select id="bannerStatus" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="aktif">🟢 Aktif (tampil di beranda)</option>
+        <option value="nonaktif">🔴 Nonaktif (disembunyikan)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeBannerForm()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="bannerSaveBtn" onclick="saveBanner()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PROMO FORM MODAL (ADMIN)
+══════════════════════════════════ -->
+<div class="prod-form-modal hidden" id="promoFormModal">
+  <div class="prod-form-inner">
+    <h3 id="promoFormTitle">➕ Tambah Kode Promo</h3>
+    <div class="field"><label>Kode Promo</label><input id="promoKode" placeholder="HEMAT10" style="letter-spacing:2px;text-transform:uppercase;font-weight:700;" oninput="this.value=this.value.toUpperCase()" /></div>
+    <div class="field"><label>Nama / Keterangan</label><input id="promoNama" placeholder="Diskon 10% untuk semua produk" /></div>
+    <div class="field">
+      <label>Jenis Diskon</label>
+      <select id="promoJenis" onchange="updatePromoPlaceholder()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="persen">% Persentase (misal: 10%)</option>
+        <option value="nominal">Rp Nominal Tetap (misal: Rp 5.000)</option>
+        <option value="gratis_ongkir">Gratis Ongkir / Bonus Khusus</option>
+      </select>
+    </div>
+    <div class="field" id="promoNilaiWrap"><label id="promoNilaiLabel">Nilai Diskon (%)</label><input id="promoNilai" type="number" min="0" placeholder="10" /></div>
+    <div class="field"><label>Minimum Order (Rp, opsional)</label><input id="promoMinOrder" type="number" min="0" placeholder="0 = tanpa minimum" /></div>
+    <div class="field"><label>Batas Pemakaian (opsional, 0 = unlimited)</label><input id="promoBatas" type="number" min="0" placeholder="0" /></div>
+    <div class="field"><label>Berlaku Hingga (opsional)</label><input id="promoExp" type="date" /></div>
+    <div class="field">
+      <label>Status</label>
+      <select id="promoStatus" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="aktif">🟢 Aktif</option>
+        <option value="nonaktif">🔴 Nonaktif</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closePromoForm()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="promoSaveBtn" onclick="savePromo()">Simpan</button>
+    </div>
+  </div>
+</div>
 <!-- ══════════════════════════════════
      FLOATING MUSIC BAR
 ══════════════════════════════════ -->
@@ -5211,8 +6595,7 @@ async function renderStatistik(){
   </div>
 </div>
 
-</body>
-</html><!-- ══════════════════════════════════════
+<!-- ══════════════════════════════════════
      MEMBER LOGIN & DASHBOARD SCRIPT
 ══════════════════════════════════════ -->
 <script>
@@ -5922,3 +7305,760 @@ function initRefundPage(){
   renderRefundHistory();
 }
 </script>
+<script>
+/* ══════════════════════════════════════════════════════
+   FEATURE 1: DARK / LIGHT MODE TOGGLE
+══════════════════════════════════════════════════════ */
+(function initTheme(){
+  const saved = localStorage.getItem('rz_theme') || 'dark';
+  if(saved === 'light') applyTheme(true, false);
+})();
+
+function applyTheme(isLight, save=true){
+  document.body.classList.toggle('light-mode', isLight);
+  const toggle = document.getElementById('themeToggle');
+  const icon   = document.getElementById('themeIcon');
+  const label  = document.getElementById('themeLabel');
+  if(toggle) toggle.checked = isLight;
+  if(icon)   icon.textContent = isLight ? '☀️' : '🌙';
+  if(label)  label.textContent = isLight ? t('themeLabel_light') : t('themeLabel_dark');
+  if(save) localStorage.setItem('rz_theme', isLight ? 'light' : 'dark');
+}
+
+function toggleTheme(isLight){
+  applyTheme(isLight);
+  showToast(isLight ? '☀️ ' + t('themeLabel_light') : '🌙 ' + t('themeLabel_dark'));
+}
+
+/* ══════════════════════════════════════════════════════
+   FEATURE 2: MULTI-LANGUAGE (ID / EN)
+══════════════════════════════════════════════════════ */
+let currentLang = localStorage.getItem('rz_lang') || 'id';
+
+const i18n = {
+  id: {
+    // Settings
+    'lang_label':'Bahasa','reminder_label':'Pengingat','reminder_manage':'Kelola',
+    'music_label':'Musik Latar',
+    'themeLabel_dark':'Mode Gelap','themeLabel_light':'Mode Terang',
+    // Nav labels
+    'nav_home':'Beranda','nav_produk':'Produk','nav_cek':'Cek Resi','nav_faq':'Tanya Bot','nav_admin':'Admin',
+    // Dots menu
+    'menu_check':'Cek Langganan','menu_refund':'Kalkulator Refund','menu_settings':'Pengaturan',
+    'menu_logout':'Keluar',
+    // Page: Home
+    'home_tagline':'Terpercaya · Cepat · Bergaransi',
+    'home_stat1_label':'Pembeli','home_stat2_label':'Rating','home_stat3_label':'Pengalaman',
+    'home_sec_products':'🛒 Produk Unggulan','home_sec_links':'🔗 Toko & Sosmed',
+    'home_sec_testi':'⭐ Testimoni Pembeli',
+    'home_wa_title':'Katalog Lengkap & Order','home_wa_sub':'Hubungi kami via WhatsApp',
+    'home_testi_btn_title':'Bagikan Testimoni','home_testi_btn_sub':'Ceritakan pengalaman belanjamu!',
+    // Page: Cek Resi
+    'cek_h2':'🔍 Cek Resi','cek_desc':'Masukkan kode resi untuk melihat status langgananmu',
+    'cek_placeholder':'Masukkan kode resi...','cek_btn':'🔍 Cek Sekarang',
+    // Page: Refund
+    'refund_h2':'💸 Kalkulator Refund','refund_desc':'Hitung estimasi refund kamu secara otomatis',
+    // Page: FAQ
+    'faq_h2':'🤖 Tanya Bot','faq_desc':'Tanyakan apapun tentang produk Rizanta Store',
+    'faq_placeholder':'Ketik pertanyaan...',
+    // Reminder modal
+    'reminder_title':'🔔 Pengingat Langganan','reminder_sub':'Notifikasi otomatis sebelum langganan habis',
+    'notif_blocked':'Izin notifikasi belum diberikan. Klik tombol di bawah agar pengingat bisa dikirim.',
+    'notif_enable_btn':'Aktifkan Notifikasi',
+    'reminder_app_label':'Nama Aplikasi / Layanan','reminder_exp_label':'Tanggal Kadaluarsa',
+    'reminder_days_label':'Ingatkan H- (hari sebelum)','reminder_add_btn':'➕ Tambah Pengingat',
+    'reminder_list_title':'DAFTAR PENGINGAT','reminder_close_btn':'Tutup',
+    // Toast
+    'toast_reminder_added':'✅ Pengingat ditambahkan!','toast_reminder_deleted':'🗑️ Pengingat dihapus',
+    'toast_notif_ok':'🔔 Notifikasi aktif!','toast_notif_denied':'❌ Izin notifikasi ditolak',
+    'toast_lang_id':'🇮🇩 Bahasa Indonesia','toast_lang_en':'🇬🇧 English mode',
+    'toast_music_on':'🎵 Musik aktif','toast_music_off':'🔇 Musik dimatikan',
+    // Reminder item
+    'ri_days_left':' hari lagi','ri_today':'Hari ini!','ri_expired':'Kadaluarsa',
+    'ri_active':'Aktif','ri_expiring':'Segera Habis',
+    'ri_expires':'Kadaluarsa','ri_remind':'Ingatkan',
+    // Misc
+    'reminder_empty_text':'Belum ada pengingat. Tambahkan langganan pertamamu!',
+  },
+  en: {
+    'lang_label':'Language','reminder_label':'Reminders','reminder_manage':'Manage',
+    'music_label':'Background Music',
+    'themeLabel_dark':'Dark Mode','themeLabel_light':'Light Mode',
+    'nav_home':'Home','nav_produk':'Products','nav_cek':'Track Order','nav_faq':'Ask Bot','nav_admin':'Admin',
+    'menu_check':'Check Subscription','menu_refund':'Refund Calculator','menu_settings':'Settings',
+    'menu_logout':'Logout',
+    'home_tagline':'Trusted · Fast · Guaranteed',
+    'home_stat1_label':'Buyers','home_stat2_label':'Rating','home_stat3_label':'Experience',
+    'home_sec_products':'🛒 Featured Products','home_sec_links':'🔗 Store & Social',
+    'home_sec_testi':'⭐ Buyer Reviews',
+    'home_wa_title':'Full Catalog & Orders','home_wa_sub':'Contact us via WhatsApp',
+    'home_testi_btn_title':'Share a Review','home_testi_btn_sub':'Tell us about your experience!',
+    'cek_h2':'🔍 Track Order','cek_desc':'Enter your order code to check subscription status',
+    'cek_placeholder':'Enter order code...','cek_btn':'🔍 Check Now',
+    'refund_h2':'💸 Refund Calculator','refund_desc':'Automatically calculate your refund estimate',
+    'faq_h2':'🤖 Ask Bot','faq_desc':'Ask anything about Rizanta Store products',
+    'faq_placeholder':'Type your question...',
+    'reminder_title':'🔔 Subscription Reminders','reminder_sub':'Auto notification before subscription ends',
+    'notif_blocked':'Notification permission not granted. Click below to enable reminders.',
+    'notif_enable_btn':'Enable Notifications',
+    'reminder_app_label':'App / Service Name','reminder_exp_label':'Expiry Date',
+    'reminder_days_label':'Remind me (days before)','reminder_add_btn':'➕ Add Reminder',
+    'reminder_list_title':'REMINDERS','reminder_close_btn':'Close',
+    'toast_reminder_added':'✅ Reminder added!','toast_reminder_deleted':'🗑️ Reminder deleted',
+    'toast_notif_ok':'🔔 Notifications enabled!','toast_notif_denied':'❌ Notification permission denied',
+    'toast_lang_id':'🇮🇩 Bahasa Indonesia','toast_lang_en':'🇬🇧 English mode',
+    'toast_music_on':'🎵 Music on','toast_music_off':'🔇 Music off',
+    'ri_days_left':' days left','ri_today':'Today!','ri_expired':'Expired',
+    'ri_active':'Active','ri_expiring':'Expiring Soon',
+    'ri_expires':'Expires','ri_remind':'Remind',
+    'reminder_empty_text':'No reminders yet. Add your first subscription!',
+  }
+};
+
+function t(key){ return (i18n[currentLang]||i18n.id)[key] || (i18n.id[key]) || key; }
+
+function applyLang(){
+  // 1. Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    const val = t(k);
+    if(val) el.textContent = val;
+  });
+  // 2. Lang pill active state
+  document.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('active'));
+  const ap = document.getElementById('lang-' + currentLang);
+  if(ap) ap.classList.add('active');
+  // 3. Nav labels
+  const navMap = {
+    'nav-home':'nav_home','nav-produk':'nav_produk','nav-cek':'nav_cek',
+    'nav-faq':'nav_faq','nav-admin':'nav_admin'
+  };
+  Object.entries(navMap).forEach(([btnId, key]) => {
+    const btn = document.getElementById(btnId);
+    if(btn){
+      const label = btn.querySelector('.nav-label, .nav-fab-label');
+      if(label) label.textContent = t(key);
+    }
+  });
+  // 4. Dots menu items
+  const memberLoginBtn = document.getElementById('memberLoginBtn');
+  if(memberLoginBtn){ const sp = memberLoginBtn.querySelector('span:last-child'); if(sp) sp.textContent = t('menu_check'); }
+  const settingsMenuLabel = document.getElementById('settingsMenuLabel');
+  if(settingsMenuLabel) settingsMenuLabel.textContent = t('menu_settings');
+  // 5. Page: Cek Resi
+  const cekH2 = document.querySelector('#page-cek .page-header h2');
+  if(cekH2) cekH2.textContent = t('cek_h2');
+  const cekDesc = document.querySelector('#page-cek .page-header p');
+  if(cekDesc) cekDesc.textContent = t('cek_desc');
+  const resiInput = document.getElementById('resiInput');
+  if(resiInput) resiInput.placeholder = t('cek_placeholder');
+  const cekBtnEl = document.getElementById('cekBtn');
+  if(cekBtnEl && !cekBtnEl.disabled) cekBtnEl.textContent = t('cek_btn');
+  // 6. Page: Refund
+  const rfH2 = document.querySelector('#page-refund .refund-page-title');
+  if(rfH2) rfH2.textContent = t('refund_h2');
+  // 7. Page: FAQ
+  const faqH2 = document.querySelector('#page-faq .page-header h2');
+  if(faqH2) faqH2.textContent = t('faq_h2');
+  const faqDesc = document.querySelector('#page-faq .page-header p');
+  if(faqDesc) faqDesc.textContent = t('faq_desc');
+  const faqInput = document.getElementById('faqInput') || document.querySelector('#page-faq textarea') || document.querySelector('#page-faq input[type=text]');
+  if(faqInput) faqInput.placeholder = t('faq_placeholder');
+  // 8. Home section labels
+  const homeSecs = document.querySelectorAll('#page-home .sec-label');
+  // We match by order — products first, then links, then testi
+  // 9. Home tagline
+  const tagline = document.querySelector('.store-tagline');
+  if(tagline) tagline.textContent = t('home_tagline');
+  // 10. Home stat labels
+  const statLabels = document.querySelectorAll('#page-home .stat-label');
+  if(statLabels[0]) statLabels[0].textContent = t('home_stat1_label');
+  if(statLabels[1]) statLabels[1].textContent = t('home_stat2_label');
+  if(statLabels[2]) statLabels[2].textContent = t('home_stat3_label');
+  // 11. Theme label
+  const isLight = document.body.classList.contains('light-mode');
+  const tLabel = document.getElementById('themeLabel');
+  if(tLabel) tLabel.textContent = isLight ? t('themeLabel_light') : t('themeLabel_dark');
+  // 12. Reminder select options
+  const riDays = document.getElementById('riDays');
+  if(riDays){
+    const dayLabels = currentLang === 'en'
+      ? ['1 day before','3 days before','5 days before','7 days before','14 days before']
+      : ['1 hari sebelum','3 hari sebelum','5 hari sebelum','7 hari sebelum','14 hari sebelum'];
+    const vals = ['1','3','5','7','14'];
+    const cur = riDays.value;
+    riDays.innerHTML = vals.map((v,i)=>`<option value="${v}"${v===cur?' selected':''}>${dayLabels[i]}</option>`).join('');
+  }
+  // 13. Re-render reminder list
+  renderReminderList();
+}
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('rz_lang', lang);
+  applyLang();
+  showToast(lang === 'en' ? t('toast_lang_en') : t('toast_lang_id'));
+}
+
+/* ══════════════════════════════════════════════════════
+   SETTINGS PANEL — open/close from dots menu
+══════════════════════════════════════════════════════ */
+function openSettingsPanel(){
+  const panel = document.getElementById('settingsPanel');
+  panel.classList.add('open');
+  syncMusicToggle();
+}
+function closeSettingsPanel(){
+  const panel = document.getElementById('settingsPanel');
+  if(panel) panel.classList.remove('open');
+}
+function toggleSettings(){
+  const panel = document.getElementById('settingsPanel');
+  if(panel.classList.contains('open')) closeSettingsPanel();
+  else openSettingsPanel();
+}
+// Tutup settings kalau klik di luar (pakai listener persistent — sama seperti dots menu)
+document.addEventListener('click', function(e){
+  const panel = document.getElementById('settingsPanel');
+  const dotsBtn = document.getElementById('memberDotsBtn');
+  const settingsBtn = document.getElementById('settingsMenuBtn');
+  if(!panel) return;
+  if(!panel.classList.contains('open')) return;
+  // Jangan tutup kalau klik di dalam panel atau di tombol yang membukanya
+  if(panel.contains(e.target)) return;
+  if(dotsBtn && dotsBtn.contains(e.target)) return;
+  if(settingsBtn && settingsBtn.contains(e.target)) return;
+  closeSettingsPanel();
+});
+
+/* ══════════════════════════════════════════════════════
+   MUSIC from Settings toggle
+══════════════════════════════════════════════════════ */
+function syncMusicToggle(){
+  const toggle = document.getElementById('musicToggleSetting');
+  if(!toggle) return;
+  const audio = document.getElementById('bgMusic');
+  const bar   = document.getElementById('musicBar');
+  const isPlaying = audio && audio.src && !audio.muted && !audio.paused;
+  const isLoaded  = bar && !bar.classList.contains('hidden');
+  toggle.checked = isLoaded && !audio.muted;
+}
+
+async function toggleMusicFromSettings(checked){
+  const audio = document.getElementById('bgMusic');
+  const bar   = document.getElementById('musicBar');
+  if(checked){
+    // Turn on music
+    if(!audio || !audio.src){
+      // Music not loaded yet — trigger init
+      if(typeof initMusicPlayer === 'function'){
+        await initMusicPlayer();
+        // After init, unmute
+        if(audio && audio.src){
+          audio.muted = false;
+          const icon = document.getElementById('musicBarIcon');
+          if(icon) icon.classList.add('playing');
+          if(bar) bar.classList.remove('is-muted');
+          showToast(t('toast_music_on'));
+        }
+      }
+    } else {
+      audio.muted = false;
+      if(audio.paused) audio.play().catch(()=>{});
+      const icon = document.getElementById('musicBarIcon');
+      if(icon) icon.classList.add('playing');
+      if(bar){ bar.classList.remove('is-muted'); bar.classList.remove('hidden'); }
+      showToast(t('toast_music_on'));
+    }
+  } else {
+    // Turn off music
+    if(audio){ audio.muted = true; }
+    const icon = document.getElementById('musicBarIcon');
+    if(icon) icon.classList.remove('playing');
+    if(bar) bar.classList.add('is-muted');
+    showToast(t('toast_music_off'));
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   FEATURE 3: SUBSCRIPTION REMINDERS + BROWSER NOTIFICATIONS
+══════════════════════════════════════════════════════ */
+const RZ_REMINDERS_KEY = 'rz_reminders_v1';
+function getReminders(){ try{ return JSON.parse(localStorage.getItem(RZ_REMINDERS_KEY)||'[]'); }catch(e){ return []; } }
+function saveReminders(arr){ localStorage.setItem(RZ_REMINDERS_KEY, JSON.stringify(arr)); }
+
+function openReminderModal(){
+  document.getElementById('reminderOverlay').classList.remove('hidden');
+  checkNotifPermission();
+  renderReminderList();
+  const today = new Date().toISOString().split('T')[0];
+  const riExp = document.getElementById('riExpiry');
+  if(riExp && !riExp.value) riExp.value = today;
+}
+function closeReminderModal(e){
+  if(!e || e.target === document.getElementById('reminderOverlay'))
+    document.getElementById('reminderOverlay').classList.add('hidden');
+}
+function checkNotifPermission(){
+  const banner = document.getElementById('reminderNotifBanner');
+  if(!banner) return;
+  if(!('Notification' in window)){ banner.style.display='block'; return; }
+  banner.style.display = (Notification.permission === 'granted') ? 'none' : 'block';
+}
+function requestNotifPermission(){
+  if(!('Notification' in window)){ showToast('❌ Browser tidak mendukung notifikasi'); return; }
+  Notification.requestPermission().then(perm => {
+    if(perm === 'granted'){
+      showToast(t('toast_notif_ok'));
+      checkNotifPermission();
+      try{ new Notification('🔔 Rizanta Store', { body: 'Notifikasi pengingat langganan aktif!' }); }catch(e){}
+    } else {
+      showToast(t('toast_notif_denied'));
+    }
+  });
+}
+function addReminder(){
+  const app    = document.getElementById('riApp').value.trim();
+  const expiry = document.getElementById('riExpiry').value;
+  const days   = parseInt(document.getElementById('riDays').value) || 3;
+  if(!app || !expiry){ showToast('⚠️ ' + (currentLang==='en'?'Fill in app name and expiry date!':'Lengkapi nama dan tanggal kadaluarsa!')); return; }
+  const reminders = getReminders();
+  reminders.unshift({ id: Date.now(), app, expiry, days, created: new Date().toISOString() });
+  saveReminders(reminders);
+  document.getElementById('riApp').value = '';
+  renderReminderList();
+  showToast(t('toast_reminder_added'));
+  checkAndFireReminders();
+}
+function deleteReminder(id){
+  saveReminders(getReminders().filter(r => r.id !== id));
+  renderReminderList();
+  showToast(t('toast_reminder_deleted'));
+}
+function renderReminderList(){
+  const wrap = document.getElementById('reminderList');
+  if(!wrap) return;
+  const reminders = getReminders();
+  if(!reminders.length){
+    wrap.innerHTML = `<div class="reminder-empty">${t('reminder_empty_text')}</div>`;
+    return;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  wrap.innerHTML = reminders.map(r => {
+    const exp  = new Date(r.expiry); exp.setHours(23,59,59);
+    const diff = Math.ceil((exp - today) / 86400000);
+    let badge, badgeCls;
+    if(diff < 0){      badge = t('ri_expired');  badgeCls = 'ri-exp'; }
+    else if(diff === 0){ badge = t('ri_today');   badgeCls = 'ri-warn'; }
+    else if(diff <= r.days){ badge = diff + t('ri_days_left'); badgeCls = 'ri-warn'; }
+    else { badge = t('ri_active'); badgeCls = 'ri-ok'; }
+    const fmtExp = new Date(r.expiry).toLocaleDateString(currentLang==='en'?'en-GB':'id-ID',{day:'2-digit',month:'short',year:'numeric'});
+    return `<div class="reminder-item">
+      <div class="ri-icon">🔔</div>
+      <div class="ri-info">
+        <div class="ri-name">${r.app}</div>
+        <div class="ri-date">${t('ri_expires')}: ${fmtExp} &nbsp;·&nbsp; H-${r.days}</div>
+      </div>
+      <span class="ri-badge ${badgeCls}">${badge}</span>
+      <button class="ri-del-btn" onclick="deleteReminder(${r.id})">🗑️</button>
+    </div>`;
+  }).join('');
+}
+function checkAndFireReminders(){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  const reminders = getReminders();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayKey = today.toISOString().split('T')[0];
+  let notified = {};
+  try{ notified = JSON.parse(localStorage.getItem('rz_notified_today')||'{}'); }catch(e){}
+  reminders.forEach(r => {
+    const exp  = new Date(r.expiry); exp.setHours(23,59,59);
+    const diff = Math.ceil((exp - today) / 86400000);
+    const nKey = `${r.id}_${todayKey}`;
+    if(diff >= 0 && diff <= r.days && !notified[nKey]){
+      const body = diff === 0
+        ? `${r.app} kadaluarsa HARI INI! Segera perpanjang.`
+        : `${r.app} kadaluarsa dalam ${diff} hari (${new Date(r.expiry).toLocaleDateString('id-ID',{day:'2-digit',month:'short'})})`;
+      try{ new Notification('🔔 Rizanta Store — Pengingat Langganan', { body }); notified[nKey]=true; }catch(e){}
+    }
+  });
+  localStorage.setItem('rz_notified_today', JSON.stringify(notified));
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT ALL NEW FEATURES
+══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  // Apply saved language
+  applyLang();
+  // Apply saved theme
+  const savedTheme = localStorage.getItem('rz_theme') || 'dark';
+  applyTheme(savedTheme === 'light', false);
+  // Check reminders on load
+  checkAndFireReminders();
+  // Load banner slide on beranda init
+  renderBannerSlide();
+  setInterval(checkAndFireReminders, 30 * 60 * 1000);
+});
+</script>
+<script>
+/* ══════════════════════════════════════
+   BANNER SLIDE — Google Sheets backed
+══════════════════════════════════════ */
+let _bannerCache = null;
+let _editBannerIdx = null;
+let _bannerTimer = null;
+let _bannerCurrent = 0;
+
+async function fetchBanner(){
+  if(_bannerCache) return _bannerCache;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=banner');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _bannerCache = Array.isArray(data) ? data : [];
+    return _bannerCache;
+  }catch(e){ _bannerCache = []; return []; }
+}
+function clearBannerCache(){ _bannerCache = null; }
+
+async function renderBannerSlide(){
+  const container = document.getElementById('bannerSlideContainer');
+  if(!container) return;
+  try{
+    const items = await fetchBanner();
+    const aktif = items.filter(b => (b.status||'aktif').toLowerCase() === 'aktif');
+    if(!aktif.length){ container.innerHTML = ''; return; }
+    if(aktif.length === 1 && !aktif[0].gambar){ container.innerHTML = ''; return; }
+    
+    _bannerCurrent = 0;
+    const slides = aktif.map((b, i) => {
+      const imgHtml = b.gambar && b.gambar.startsWith('data:image')
+        ? '<img src="' + b.gambar + '" alt="Banner" />'
+        : '';
+      const bodyHtml = (b.judul || b.deskripsi) ? `<div class="banner-slide-body">
+        <div class="banner-slide-tag">📢 Info</div>
+        <div class="banner-slide-title">${b.judul||''}</div>
+        ${b.deskripsi ? '<div class="banner-slide-desc">' + b.deskripsi + '</div>' : ''}
+        ${b.link ? '<a class="banner-slide-cta" href="'+b.link+'" target="_blank">'+(b.ctateks||'Lihat Selengkapnya →')+'</a>' : ''}
+      </div>` : '';
+      return `<div class="banner-slide">${imgHtml}${bodyHtml}</div>`;
+    }).join('');
+    
+    const dots = aktif.length > 1 ? '<div class="banner-dots">' + aktif.map((_,i)=>`<div class="banner-dot${i===0?' active':''}"></div>`).join('') + '</div>' : '';
+    const arrows = aktif.length > 1 ? '<button class="banner-arrow prev" onclick="bannerPrev()">‹</button><button class="banner-arrow next" onclick="bannerNext()">›</button>' : '';
+    
+    container.innerHTML = `<div class="banner-slide-wrap" id="bannerSlideWrap">
+      ${arrows}
+      <div class="banner-slides" id="bannerSlides">${slides}</div>
+      ${dots}
+    </div>`;
+    
+    if(aktif.length > 1) _startBannerAuto(aktif.length);
+  }catch(e){ document.getElementById('bannerSlideContainer').innerHTML = ''; }
+}
+
+function _startBannerAuto(total){
+  if(_bannerTimer) clearInterval(_bannerTimer);
+  _bannerTimer = setInterval(() => bannerGoTo((_bannerCurrent + 1) % total), 4500);
+}
+
+function bannerGoTo(idx){
+  const slides = document.getElementById('bannerSlides');
+  const dots   = document.querySelectorAll('#bannerSlideWrap .banner-dot');
+  if(!slides) return;
+  _bannerCurrent = idx;
+  slides.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function bannerNext(){
+  const total = document.querySelectorAll('#bannerSlides .banner-slide').length;
+  bannerGoTo((_bannerCurrent + 1) % total);
+}
+function bannerPrev(){
+  const total = document.querySelectorAll('#bannerSlides .banner-slide').length;
+  bannerGoTo((_bannerCurrent - 1 + total) % total);
+}
+
+/* ── Admin: Render Banner list ── */
+async function renderAdminBanner(){
+  const wrap = document.getElementById('bannerAdminList');
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearBannerCache();
+  const items = await fetchBanner();
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Belum ada banner. Klik Tambah!</div>';
+    return;
+  }
+  wrap.innerHTML = items.map((b, i) => {
+    const isAktif = (b.status||'aktif').toLowerCase() === 'aktif';
+    const thumbHtml = b.gambar && b.gambar.startsWith('data:image')
+      ? '<img src="' + b.gambar + '" />' : '<span>🖼️</span>';
+    return `<div class="banner-admin-item">
+      <div class="banner-admin-thumb">${thumbHtml}</div>
+      <div class="banner-admin-info">
+        <div class="banner-admin-title">${b.judul||'(tanpa judul)'}</div>
+        <div class="banner-admin-meta"><span class="iklan-status-dot ${isAktif?'dot-aktif':'dot-nonaktif'}"></span>${isAktif?'Aktif':'Nonaktif'}</div>
+      </div>
+      <div class="banner-admin-actions">
+        <button class="btn-edit-banner" onclick="openBannerForm(${i})">✏️</button>
+        <button class="btn-del-banner" onclick="deleteBanner(${i})">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openBannerForm(idx){
+  _editBannerIdx = (idx !== undefined && idx !== null) ? idx : null;
+  const items = _editBannerIdx !== null ? await fetchBanner() : [];
+  const b = _editBannerIdx !== null ? items[_editBannerIdx] : null;
+  document.getElementById('bannerFormTitle').textContent = b ? '✏️ Edit Banner' : '➕ Tambah Banner';
+  document.getElementById('bannerJudul').value    = b ? (b.judul||'') : '';
+  document.getElementById('bannerDeskripsi').value= b ? (b.deskripsi||'') : '';
+  document.getElementById('bannerLink').value     = b ? (b.link||'') : '';
+  document.getElementById('bannerCtaTeks').value  = b ? (b.ctateks||'Lihat Selengkapnya →') : 'Lihat Selengkapnya →';
+  document.getElementById('bannerStatus').value   = b ? (b.status||'aktif') : 'aktif';
+  const existingImg = b ? (b.gambar||'') : '';
+  document.getElementById('bannerImgData').value = existingImg;
+  const pw = document.getElementById('bannerImgPreviewWrap');
+  if(existingImg && existingImg.startsWith('data:image')){
+    pw.innerHTML = '<img src="'+existingImg+'" class="img-upload-preview" /><div class="img-upload-hint" style="margin-top:4px;">Tap untuk ganti gambar</div>';
+  } else {
+    pw.innerHTML = '<div class="img-upload-placeholder"><span class="up-icon">🖼️</span>Tap untuk upload gambar banner</div><div class="img-upload-hint">JPG, PNG, WebP • Rasio 16:9 lebih bagus</div>';
+  }
+  document.getElementById('bannerFormModal').classList.remove('hidden');
+}
+function closeBannerForm(){
+  document.getElementById('bannerFormModal').classList.add('hidden');
+  _editBannerIdx = null;
+}
+
+function handleBannerImgUpload(event){
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxW = 800, maxH = 400;
+      const ratio = Math.min(maxW/w, maxH/h, 1);
+      w = Math.round(w*ratio); h = Math.round(h*ratio);
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      let q = 0.78;
+      let dataUrl = canvas.toDataURL('image/jpeg', q);
+      if(dataUrl.length > 400*1024*1.37){ q=0.55; dataUrl=canvas.toDataURL('image/jpeg',q); }
+      document.getElementById('bannerImgData').value = dataUrl;
+      document.getElementById('bannerImgPreviewWrap').innerHTML = '<img src="'+dataUrl+'" class="img-upload-preview" /><div class="img-upload-hint" style="margin-top:4px;">Tap untuk ganti gambar</div>';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveBanner(){
+  const judul     = document.getElementById('bannerJudul').value.trim();
+  const deskripsi = document.getElementById('bannerDeskripsi').value.trim();
+  const link      = document.getElementById('bannerLink').value.trim();
+  const ctateks   = document.getElementById('bannerCtaTeks').value.trim() || 'Lihat Selengkapnya →';
+  const status    = document.getElementById('bannerStatus').value;
+  const gambar    = document.getElementById('bannerImgData').value;
+  if(!judul && !gambar){ showToast('⚠️ Minimal isi judul atau upload gambar!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  const btn = document.getElementById('bannerSaveBtn');
+  btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true;
+  try{
+    if(_editBannerIdx !== null){
+      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'delete',idx:_editBannerIdx})});
+      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar})});
+      showToast('✅ Banner diperbarui!');
+    } else {
+      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar})});
+      showToast('✅ Banner ditambahkan!');
+    }
+    clearBannerCache();
+    await renderAdminBanner();
+    await renderBannerSlide();
+    closeBannerForm();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+  btn.innerHTML = 'Simpan'; btn.disabled = false;
+}
+
+async function deleteBanner(idx){
+  if(!confirm('Hapus banner ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'delete',idx})});
+    clearBannerCache(); await renderAdminBanner(); await renderBannerSlide();
+    showToast('🗑️ Banner dihapus!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+/* ══════════════════════════════════════
+   KODE PROMO — Google Sheets backed
+══════════════════════════════════════ */
+let _promoCache = null;
+let _editPromoIdx = null;
+let _appliedPromo = null; // promo yang aktif di product modal
+
+async function fetchPromo(){
+  if(_promoCache) return _promoCache;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=promo');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _promoCache = Array.isArray(data) ? data : [];
+    return _promoCache;
+  }catch(e){ _promoCache = []; return []; }
+}
+function clearPromoCache(){ _promoCache = null; }
+
+/* Validasi kode promo — dipanggil dari product modal */
+async function applyVoucher(){
+  const kode = (document.getElementById('voucherInput').value||'').trim().toUpperCase();
+  const resultEl = document.getElementById('voucherResult');
+  if(!kode){ resultEl.textContent='⚠️ Masukkan kode promo dulu!'; resultEl.className='voucher-result voucher-err'; resultEl.style.display='block'; return; }
+  resultEl.textContent='⏳ Memeriksa kode...'; resultEl.className='voucher-result voucher-ok'; resultEl.style.display='block';
+  try{
+    const promos = await fetchPromo();
+    const today = new Date().toISOString().split('T')[0];
+    const found = promos.find(p => {
+      if((p.kode||'').toUpperCase() !== kode) return false;
+      if((p.status||'aktif').toLowerCase() !== 'aktif') return false;
+      if(p.exp && p.exp < today) return false;
+      return true;
+    });
+    if(!found){ _appliedPromo=null; resultEl.textContent='❌ Kode promo tidak valid atau sudah tidak berlaku.'; resultEl.className='voucher-result voucher-err'; return; }
+    _appliedPromo = found;
+    let msg = '✅ Kode '+found.kode+' berhasil! ';
+    if(found.jenis==='persen') msg += 'Diskon '+(found.nilai||0)+'%';
+    else if(found.jenis==='nominal') msg += 'Diskon Rp '+parseInt(found.nilai||0).toLocaleString('id-ID');
+    else msg += found.nama || 'Bonus spesial aktif!';
+    resultEl.textContent = msg;
+    resultEl.className='voucher-result voucher-ok';
+    showToast('🎟️ Kode promo diterapkan!');
+  }catch(e){ resultEl.textContent='❌ Gagal memeriksa kode. Coba lagi.'; resultEl.className='voucher-result voucher-err'; }
+}
+
+/* ── Admin: Render Promo list ── */
+async function renderAdminPromo(){
+  const wrap = document.getElementById('promoAdminList');
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearPromoCache();
+  const items = await fetchPromo();
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Belum ada kode promo. Klik Tambah!</div>';
+    return;
+  }
+  wrap.innerHTML = items.map((p, i) => {
+    const isAktif = (p.status||'aktif').toLowerCase() === 'aktif';
+    let diskonTxt = '';
+    if(p.jenis==='persen') diskonTxt = 'Diskon '+(p.nilai||0)+'%';
+    else if(p.jenis==='nominal') diskonTxt = 'Diskon Rp '+parseInt(p.nilai||0).toLocaleString('id-ID');
+    else diskonTxt = 'Bonus Khusus';
+    const expTxt = p.exp ? ' · Berlaku s/d '+new Date(p.exp).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}) : '';
+    return `<div class="promo-admin-item">
+      <div class="promo-admin-code">${p.kode||'-'}</div>
+      <div class="promo-admin-info">
+        <div class="promo-admin-name">${p.nama||diskonTxt}</div>
+        <div class="promo-admin-meta"><span class="iklan-status-dot ${isAktif?'dot-aktif':'dot-nonaktif'}"></span>${isAktif?'Aktif':'Nonaktif'} · ${diskonTxt}${expTxt}</div>
+      </div>
+      <div class="promo-admin-actions">
+        <button class="btn-edit-promo" onclick="openPromoForm(${i})">✏️</button>
+        <button class="btn-del-promo" onclick="deletePromo(${i})">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openPromoForm(idx){
+  _editPromoIdx = (idx !== undefined && idx !== null) ? idx : null;
+  const items = _editPromoIdx !== null ? await fetchPromo() : [];
+  const p = _editPromoIdx !== null ? items[_editPromoIdx] : null;
+  document.getElementById('promoFormTitle').textContent = p ? '✏️ Edit Kode Promo' : '➕ Tambah Kode Promo';
+  document.getElementById('promoKode').value      = p ? (p.kode||'') : '';
+  document.getElementById('promNama')?.setAttribute('id','promoNama');
+  document.getElementById('promoNama').value      = p ? (p.nama||'') : '';
+  document.getElementById('promoJenis').value     = p ? (p.jenis||'persen') : 'persen';
+  document.getElementById('promoNilai').value     = p ? (p.nilai||'') : '';
+  document.getElementById('promoMinOrder').value  = p ? (p.minorder||'') : '';
+  document.getElementById('promoBatas').value     = p ? (p.batas||'0') : '0';
+  document.getElementById('promoExp').value       = p ? (p.exp||'') : '';
+  document.getElementById('promoStatus').value    = p ? (p.status||'aktif') : 'aktif';
+  updatePromoPlaceholder();
+  document.getElementById('promoFormModal').classList.remove('hidden');
+}
+function closePromoForm(){ document.getElementById('promoFormModal').classList.add('hidden'); _editPromoIdx=null; }
+
+function updatePromoPlaceholder(){
+  const jenis = document.getElementById('promoJenis').value;
+  const wrap  = document.getElementById('promoNilaiWrap');
+  const label = document.getElementById('promoNilaiLabel');
+  if(jenis==='gratis_ongkir'){ wrap.style.display='none'; } else { wrap.style.display=''; }
+  if(jenis==='persen') label.textContent='Nilai Diskon (%)';
+  else if(jenis==='nominal') label.textContent='Nilai Diskon (Rp)';
+}
+
+async function savePromo(){
+  const kode      = document.getElementById('promoKode').value.trim().toUpperCase();
+  const nama      = document.getElementById('promoNama').value.trim();
+  const jenis     = document.getElementById('promoJenis').value;
+  const nilai     = document.getElementById('promoNilai').value.trim();
+  const minorder  = document.getElementById('promoMinOrder').value.trim();
+  const batas     = document.getElementById('promoBatas').value.trim();
+  const exp       = document.getElementById('promoExp').value;
+  const status    = document.getElementById('promoStatus').value;
+  if(!kode){ showToast('⚠️ Kode promo wajib diisi!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  const btn = document.getElementById('promoSaveBtn');
+  btn.innerHTML='<span class="spinner"></span> Menyimpan...'; btn.disabled=true;
+  try{
+    if(_editPromoIdx !== null){
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'delete',idx:_editPromoIdx})});
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status})});
+      showToast('✅ Promo diperbarui!');
+    } else {
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status})});
+      showToast('✅ Kode promo ditambahkan!');
+    }
+    clearPromoCache(); await renderAdminPromo(); closePromoForm();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+  btn.innerHTML='Simpan'; btn.disabled=false;
+}
+
+async function deletePromo(idx){
+  if(!confirm('Hapus kode promo ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'delete',idx})});
+    clearPromoCache(); await renderAdminPromo();
+    showToast('🗑️ Kode promo dihapus!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+/* ══════════════════════════════════════
+   STOK — integrasi ke produk
+   Field stok tersimpan di sheet Produk
+══════════════════════════════════════ */
+function _stokBadgeHtml(stok){
+  if(stok === undefined || stok === null || stok === '') return ''; // tidak ditampilkan
+  const n = parseInt(stok);
+  if(isNaN(n)) return '';
+  if(n === 0) return '<span class="stok-badge stok-out">⛔ Habis</span>';
+  if(n <= 3)  return '<span class="stok-badge stok-low">⚠️ Stok: '+n+'</span>';
+  return '<span class="stok-badge stok-ok">✅ Stok: '+n+'</span>';
+}
+
+</script>
+<!-- Sort popup portal — di luar semua stacking context -->
+<div class="sf-sort-popup" id="sfSortPopup">
+  <div class="sf-sort-opt sel" data-sort="default" onclick="sfSetSort('default',this)"><span class="sf-sort-opt-icon">📋</span>Default</div>
+  <div class="sf-sort-opt" data-sort="az"      onclick="sfSetSort('az',this)"><span class="sf-sort-opt-icon">🔤</span>A → Z</div>
+  <div class="sf-sort-opt" data-sort="za"      onclick="sfSetSort('za',this)"><span class="sf-sort-opt-icon">🔤</span>Z → A</div>
+  <div class="sf-sort-opt" data-sort="low"     onclick="sfSetSort('low',this)"><span class="sf-sort-opt-icon">💸</span>Harga Terendah</div>
+  <div class="sf-sort-opt" data-sort="high"    onclick="sfSetSort('high',this)"><span class="sf-sort-opt-icon">💰</span>Harga Tertinggi</div>
+</div>
+
+</body>
+</html>
