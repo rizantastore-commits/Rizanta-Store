@@ -212,6 +212,122 @@
 .stok-low{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--yellow);}
 .stok-out{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);}
 
+/* ══════════════════════════════════════
+   BULK EDIT STYLES
+══════════════════════════════════════ */
+.bulk-bar{
+  display:none;
+  align-items:center;gap:10px;
+  padding:10px 14px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.12));
+  border:1px solid rgba(96,165,250,.35);
+  margin-bottom:12px;
+  animation:fadeU .3s ease both;
+}
+.bulk-bar.visible{ display:flex; }
+.bulk-bar-count{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--blue-light);flex:1;
+}
+.bulk-btn{
+  padding:7px 12px;border-radius:10px;border:none;
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.bulk-btn-del{ background:rgba(248,113,113,.15);color:var(--red); }
+.bulk-btn-del:hover{ background:rgba(248,113,113,.3); }
+.bulk-btn-ext{ background:rgba(34,197,94,.13);color:var(--green); }
+.bulk-btn-ext:hover{ background:rgba(34,197,94,.25); }
+.bulk-btn-msg{ background:rgba(59,130,246,.15);color:var(--blue-light); }
+.bulk-btn-msg:hover{ background:rgba(59,130,246,.28); }
+.bulk-btn-cancel{ background:rgba(255,255,255,.07);color:var(--muted); }
+.bulk-btn-cancel:hover{ background:rgba(255,255,255,.12);color:var(--text); }
+
+/* Checkbox pada baris tabel order */
+.order-cb{
+  width:16px;height:16px;border-radius:5px;
+  accent-color:var(--blue);cursor:pointer;flex-shrink:0;
+}
+.tb-row-sel{ background:rgba(37,99,235,.07)!important; }
+
+/* Bulk select-all header */
+.bulk-selall-wrap{
+  display:flex;align-items:center;gap:7px;
+  margin-bottom:8px;
+}
+.bulk-selall-wrap label{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  color:var(--muted);cursor:pointer;
+}
+
+/* ── Order Search Bar ── */
+.order-search-wrap{
+  position:relative;margin-bottom:12px;
+}
+.order-search-input{
+  width:100%;padding:10px 36px 10px 38px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:12px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
+  outline:none;box-sizing:border-box;
+  transition:border-color .2s,background .2s;
+}
+.order-search-input:focus{
+  border-color:var(--blue-bright);
+  background:rgba(37,99,235,.06);
+}
+.order-search-icon{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  font-size:15px;pointer-events:none;opacity:.5;
+}
+.order-search-clear{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:14px;padding:2px 4px;border-radius:5px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.order-search-clear.show{opacity:1;pointer-events:all;}
+.order-search-clear:hover{color:var(--text);}
+.order-search-info{
+  font-size:11px;color:var(--muted);margin-bottom:8px;
+  font-family:'Syne',sans-serif;
+}
+.order-search-info span{color:var(--blue-light);font-weight:700;}
+
+/* ── Duplicate button ── */
+.tb-dup{
+  width:28px;height:28px;border-radius:8px;border:none;
+  background:rgba(139,92,246,.13);color:#a78bfa;
+  font-size:13px;cursor:pointer;transition:background .2s;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.tb-dup:hover{background:rgba(139,92,246,.28);}
+
+/* Dup confirm flash on row */
+@keyframes dupFlash{
+  0%{background:rgba(139,92,246,.18);}
+  100%{background:transparent;}
+}
+.dup-flash{ animation:dupFlash .6s ease both; }
+
+/* Bulk Extend modal */
+.bulk-ext-modal{
+  position:fixed;inset:0;z-index:3000;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.bulk-ext-modal.hidden{ display:none; }
+.bulk-ext-box{
+  background:var(--surface);border:1px solid var(--border-hi);
+  border-radius:22px;padding:24px 20px;width:100%;max-width:360px;
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+.bulk-ext-title{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  color:var(--text);margin-bottom:6px;
+}
+.bulk-ext-sub{ font-size:12px;color:var(--muted);margin-bottom:16px; }
+
 /* On product modal */
 .pm-stok-row{
   display:flex;align-items:center;gap:8px;
@@ -3175,8 +3291,29 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="card d2">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <div class="card-heading" style="margin:0;">📋 Data Pelanggan</div>
-        <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="loadOrders()">🔄 Refresh</button>
+        <div style="display:flex;gap:7px;">
+          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="toggleBulkMode()" id="bulkModeBtn">☑️ Pilih</button>
+          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="loadOrders()">🔄 Refresh</button>
+        </div>
       </div>
+
+      <!-- Bulk action bar (muncul saat mode pilih aktif) -->
+      <div class="bulk-bar" id="bulkBar">
+        <span class="bulk-bar-count" id="bulkCount">0 dipilih</span>
+        <button class="bulk-btn bulk-btn-ext" onclick="bulkExtend()">🗓️ Perpanjang</button>
+        <button class="bulk-btn bulk-btn-msg" onclick="bulkSendWa()">💬 WA Massal</button>
+        <button class="bulk-btn bulk-btn-del" onclick="bulkDelete()">🗑️ Hapus</button>
+        <button class="bulk-btn bulk-btn-cancel" onclick="cancelBulkMode()">✕</button>
+      </div>
+
+      <!-- Search bar orderan -->
+      <div class="order-search-wrap">
+        <span class="order-search-icon">🔍</span>
+        <input class="order-search-input" id="orderSearchInput" placeholder="Cari nama, resi, HP, atau produk..." oninput="orderSearchOnInput(this)" />
+        <button class="order-search-clear" id="orderSearchClear" onclick="orderSearchClear()">✕</button>
+      </div>
+      <div class="order-search-info hidden" id="orderSearchInfo">Menampilkan <span id="orderSearchCount">0</span> hasil pencarian</div>
+
       <div id="ordersTable"><div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Klik Refresh untuk memuat data</div></div>
     </div>
 
@@ -4047,9 +4184,26 @@ async function loadOrders(){
       const appThumb = (mp&&mp.emoji&&mp.emoji.startsWith('data:image'))
         ? `<img src="${mp.emoji}" style="width:20px;height:20px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:5px;" />`
         : `<span style="margin-right:4px;">${app.emoji}</span>`;
-      return`<tr style="${d<=7&&d>=0?'background:rgba(251,191,36,.04);':''}${d<0?'background:rgba(248,113,113,.04);':''}"><td><strong style="font-size:11.5px;">${o.resi||'-'}</strong> <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px;" title="Copy resi">📋</button></td><td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${o.hp||o['no hp']||o.phone||'-'}</span></td><td><div class="tb-app">${appThumb}${app.name}</div></td><td><span class="tb-badge ${st.tcls}">${st.dot} ${d<0?0:d}h</span></td><td>${fmtDate(o.selesai||o['tanggal selesai']||'')}</td><td style="display:flex;gap:5px;"><button class="tb-msg" onclick="openTmplModal('${o.resi}')" title="Template Pesan">💬</button><button class="tb-edit" onclick="openEditOrder('${o.resi}')" title="Edit Pesanan">✏️</button><button class="tb-del" onclick="hapusOrder('${o.resi}')">🗑️</button></td></tr>`;
+      const cbHtml = _bulkMode ? `<td><input type="checkbox" class="order-cb" data-resi="${o.resi}" onchange="onBulkCbChange(this)"></td>` : '';
+      return`<tr class="order-row" data-resi="${o.resi}" style="${d<=7&&d>=0?'background:rgba(251,191,36,.04);':''}${d<0?'background:rgba(248,113,113,.04);':''}">
+        ${cbHtml}
+        <td><strong style="font-size:11.5px;">${o.resi||'-'}</strong> <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px;" title="Copy resi">📋</button></td>
+        <td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${o.hp||o['no hp']||o.phone||'-'}</span></td>
+        <td><div class="tb-app">${appThumb}${app.name}</div></td>
+        <td><span class="tb-badge ${st.tcls}">${st.dot} ${d<0?0:d}h</span></td>
+        <td>${fmtDate(o.selesai||o['tanggal selesai']||'')}</td>
+        <td style="display:flex;gap:5px;">
+          <button class="tb-msg" onclick="openTmplModal('${o.resi}')" title="Template Pesan">💬</button>
+          <button class="tb-dup" onclick="dupOrder('${o.resi}')" title="Duplikat Order">📋</button>
+          <button class="tb-edit" onclick="openEditOrder('${o.resi}')" title="Edit Pesanan">✏️</button>
+          <button class="tb-del" onclick="hapusOrder('${o.resi}')">🗑️</button>
+        </td>
+      </tr>`;
     }).join('');
-    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Sisa</th><th>Selesai</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const cbHeader = _bulkMode ? `<th><input type="checkbox" class="order-cb" id="bulkSelectAll" onchange="bulkSelectAllToggle(this)" title="Pilih Semua"></th>` : '';
+    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Sisa</th><th>Selesai</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    // Re-apply search filter setelah render
+    if(_orderSearchQuery) _applyOrderSearch();
   }catch(e){wrap.innerHTML=errBox(e.message);}
 }
 async function hapusOrder(resi){
@@ -4057,6 +4211,121 @@ async function hapusOrder(resi){
   if(!CFG.scriptUrl){showToast('⚠️ Apps Script URL belum diisi!');return;}
   try{await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({action:'delete',resi})});showToast('🗑️ Order dihapus!');await loadOrders();}
   catch(e){showToast('❌ Gagal: '+e.message);}
+}
+
+/* ══════════════════════════════════════
+   DUPLIKAT ORDER — Admin
+   Salin semua data, generate resi baru,
+   tanggal mulai = hari ini, selesai = +30 hari
+══════════════════════════════════════ */
+async function dupOrder(resi){
+  if(!_lastOrders){ showToast('⚠️ Data belum dimuat!'); return; }
+  const o = _lastOrders.find(x => x.resi === resi);
+  if(!o){ showToast('⚠️ Order tidak ditemukan!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+
+  // Generate resi baru otomatis
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const rand = String(Math.floor(Math.random()*9000)+1000);
+  const newResi = `RS-${yy}${mm}-${rand}`;
+
+  // Tanggal mulai = hari ini, selesai = +30 hari
+  const today = now.toISOString().split('T')[0];
+  const endDate = new Date(now); endDate.setDate(endDate.getDate()+30);
+  const newSelesai = endDate.toISOString().split('T')[0];
+
+  const payload = {
+    action: 'add',
+    resi:     newResi,
+    nama:     o.nama || o.name || '',
+    hp:       o.hp || o['no hp'] || o.phone || '',
+    app:      o.app || o.aplikasi || '',
+    email:    o.email || '',
+    password: o.password || '',
+    mulai:    today,
+    selesai:  newSelesai,
+    catatan:  o.catatan || o.note || '',
+  };
+
+  // Flash baris sumber sebagai feedback visual
+  const srcRow = document.querySelector(`.order-row[data-resi="${resi}"]`);
+  if(srcRow) srcRow.classList.add('dup-flash');
+
+  try{
+    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify(payload)});
+    showToast(`📋 Diduplikat! Resi baru: ${newResi}`);
+    // Isi form tambah order dengan data duplikat biar admin bisa langsung review
+    document.getElementById('newResi').value    = newResi;
+    document.getElementById('newNama').value    = payload.nama;
+    document.getElementById('newHp').value      = payload.hp;
+    document.getElementById('newEmail').value   = payload.email;
+    document.getElementById('newPassword').value= payload.password;
+    document.getElementById('newMulai').value   = today;
+    document.getElementById('newSelesai').value = newSelesai;
+    document.getElementById('newCatatan').value = payload.catatan;
+    // Highlight app chip yang cocok
+    const appNm = payload.app.toLowerCase();
+    document.querySelectorAll('.app-chip').forEach(chip => {
+      const match = chip.textContent.trim().toLowerCase() === appNm;
+      chip.classList.toggle('sel', match);
+    });
+    selectedAppName = payload.app;
+    await loadOrders();
+    // Scroll ke form tambah order
+    document.querySelector('.card.d1')?.scrollIntoView({behavior:'smooth', block:'start'});
+  }catch(e){ showToast('❌ Gagal duplikat: '+e.message); }
+}
+
+/* ══════════════════════════════════════
+   SEARCH / FILTER TABEL ORDER — Admin
+══════════════════════════════════════ */
+let _orderSearchQuery = '';
+
+function orderSearchOnInput(el){
+  _orderSearchQuery = el.value.trim().toLowerCase();
+  const clearBtn = document.getElementById('orderSearchClear');
+  if(clearBtn) clearBtn.classList.toggle('show', !!el.value);
+  _applyOrderSearch();
+}
+
+function orderSearchClear(){
+  _orderSearchQuery = '';
+  const inp = document.getElementById('orderSearchInput');
+  if(inp) inp.value = '';
+  const clearBtn = document.getElementById('orderSearchClear');
+  if(clearBtn) clearBtn.classList.remove('show');
+  _applyOrderSearch();
+  inp && inp.focus();
+}
+
+function _applyOrderSearch(){
+  const q = _orderSearchQuery;
+  const infoEl  = document.getElementById('orderSearchInfo');
+  const countEl = document.getElementById('orderSearchCount');
+  const rows    = document.querySelectorAll('#ordersTable .order-row');
+
+  if(!rows.length) return;
+
+  if(!q){
+    rows.forEach(r => r.style.display = '');
+    if(infoEl) infoEl.classList.add('hidden');
+    return;
+  }
+
+  let visible = 0;
+  rows.forEach(r => {
+    const text = r.textContent.toLowerCase();
+    const show = text.includes(q);
+    r.style.display = show ? '' : 'none';
+    if(show) visible++;
+  });
+
+  if(infoEl){
+    infoEl.classList.remove('hidden');
+    if(countEl) countEl.textContent = visible;
+  }
 }
 
 /* ══════════════════════════════════════
@@ -4144,6 +4413,156 @@ async function saveEditOrder(){
   }
   btn.innerHTML = 'Simpan Perubahan';
   btn.disabled = false;
+}
+
+/* ══════════════════════════════════════
+   BULK EDIT ORDERS — Admin
+══════════════════════════════════════ */
+let _bulkMode = false;
+let _bulkSelected = new Set(); // set of resi strings
+
+function toggleBulkMode(){
+  if(_bulkMode){ cancelBulkMode(); return; }
+  _bulkMode = true;
+  _bulkSelected.clear();
+  document.getElementById('bulkModeBtn').textContent = '✕ Selesai';
+  document.getElementById('bulkModeBtn').style.color = 'var(--red)';
+  _updateBulkBar();
+  loadOrders(); // re-render dengan checkbox
+}
+
+function cancelBulkMode(){
+  _bulkMode = false;
+  _bulkSelected.clear();
+  document.getElementById('bulkModeBtn').textContent = '☑️ Pilih';
+  document.getElementById('bulkModeBtn').style.color = '';
+  document.getElementById('bulkBar').classList.remove('visible');
+  loadOrders(); // re-render tanpa checkbox
+}
+
+function onBulkCbChange(cb){
+  const resi = cb.dataset.resi;
+  const row  = cb.closest('tr');
+  if(cb.checked){
+    _bulkSelected.add(resi);
+    row.classList.add('tb-row-sel');
+  } else {
+    _bulkSelected.delete(resi);
+    row.classList.remove('tb-row-sel');
+    const allCb = document.getElementById('bulkSelectAll');
+    if(allCb) allCb.checked = false;
+  }
+  _updateBulkBar();
+}
+
+function bulkSelectAllToggle(masterCb){
+  const cbs = document.querySelectorAll('.order-cb[data-resi]');
+  cbs.forEach(cb => {
+    cb.checked = masterCb.checked;
+    onBulkCbChange(cb);
+  });
+}
+
+function _updateBulkBar(){
+  const n = _bulkSelected.size;
+  const bar = document.getElementById('bulkBar');
+  const countEl = document.getElementById('bulkCount');
+  bar.classList.toggle('visible', n > 0 || _bulkMode);
+  if(countEl) countEl.textContent = n > 0 ? `${n} order dipilih` : 'Belum ada yang dipilih';
+}
+
+function _getBulkOrders(){
+  if(!_lastOrders) return [];
+  return _lastOrders.filter(o => _bulkSelected.has(o.resi));
+}
+
+/* ── Bulk Delete ── */
+async function bulkDelete(){
+  const orders = _getBulkOrders();
+  if(!orders.length){ showToast('⚠️ Pilih order dulu!'); return; }
+  if(!confirm(`Hapus ${orders.length} order sekaligus?\nAksi ini tidak bisa dibatalkan.`)) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+
+  showToast(`⏳ Menghapus ${orders.length} order...`);
+  let ok = 0, fail = 0;
+  for(const o of orders){
+    try{
+      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi: o.resi})});
+      ok++;
+    }catch(e){ fail++; }
+  }
+  showToast(fail ? `✅ ${ok} terhapus, ❌ ${fail} gagal` : `🗑️ ${ok} order berhasil dihapus!`);
+  cancelBulkMode();
+  await loadOrders();
+}
+
+/* ── Bulk Extend ── */
+function bulkExtend(){
+  const orders = _getBulkOrders();
+  if(!orders.length){ showToast('⚠️ Pilih order dulu!'); return; }
+  document.getElementById('bulkExtSub').textContent = `Perpanjang ${orders.length} order yang dipilih`;
+  document.getElementById('bulkExtModal').classList.remove('hidden');
+}
+
+async function confirmBulkExtend(){
+  const orders = _getBulkOrders();
+  const durasi = parseInt(document.getElementById('bulkExtDurasi').value) || 30;
+  if(!orders.length || !CFG.scriptUrl){ showToast('⚠️ Cek pilihan & Script URL!'); return; }
+
+  const btn = document.getElementById('bulkExtSaveBtn');
+  btn.innerHTML = '<span class="spinner"></span> Memproses...'; btn.disabled = true;
+
+  let ok = 0, fail = 0;
+  for(const o of orders){
+    try{
+      // Hitung tanggal selesai baru
+      const oldSelesai = o.selesai || o['tanggal selesai'] || '';
+      const base = oldSelesai ? new Date(oldSelesai) : new Date();
+      if(base < new Date()) base.setTime(new Date().getTime()); // kalau sudah expired, mulai dari hari ini
+      base.setDate(base.getDate() + durasi);
+      const newSelesai = base.toISOString().split('T')[0];
+
+      const resi     = o.resi;
+      const nama     = o.nama || o.name || '';
+      const hp       = o.hp || o['no hp'] || o.phone || '';
+      const app      = o.app || o.aplikasi || '';
+      const email    = o.email || '';
+      const password = o.password || '';
+      const mulai    = o.mulai || o['tanggal mulai'] || '';
+      const catatan  = o.catatan || o.note || '';
+
+      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi})});
+      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai: newSelesai, catatan})});
+      ok++;
+    }catch(e){ fail++; }
+  }
+
+  btn.innerHTML = '✅ Perpanjang'; btn.disabled = false;
+  document.getElementById('bulkExtModal').classList.add('hidden');
+  showToast(fail ? `✅ ${ok} berhasil, ❌ ${fail} gagal` : `🗓️ ${ok} order berhasil diperpanjang!`);
+  cancelBulkMode();
+  await loadOrders();
+}
+
+/* ── Bulk WA Massal ── */
+function bulkSendWa(){
+  const orders = _getBulkOrders();
+  if(!orders.length){ showToast('⚠️ Pilih order dulu!'); return; }
+  if(!confirm(`Kirim pesan WA ke ${orders.length} pelanggan?\nSetiap pesan akan dibuka di tab baru.`)) return;
+
+  let count = 0;
+  orders.forEach((o, i) => {
+    const hp = (o.hp || o['no hp'] || o.phone || '').replace(/[^0-9]/g,'');
+    if(!hp) return;
+    const waHp = hp.startsWith('0') ? '62'+hp.slice(1) : hp;
+    const tmpls = buildTemplates(o);
+    const msg = tmpls[0]; // template Info Resi
+    setTimeout(() => {
+      window.open(`https://wa.me/${waHp}?text=${encodeURIComponent(msg)}`, '_blank');
+      count++;
+    }, i * 600); // delay 600ms antar buka tab
+  });
+  setTimeout(() => showToast(`💬 ${count} pesan WA dibuka!`), orders.length * 600 + 200);
 }
 
 /* ══════════════════════════════════════
@@ -6595,7 +7014,31 @@ async function renderStatistik(){
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
+<!-- ══════════════════════════════════
+     BULK EXTEND MODAL (ADMIN)
+══════════════════════════════════ -->
+<div class="bulk-ext-modal hidden" id="bulkExtModal">
+  <div class="bulk-ext-box">
+    <div class="bulk-ext-title">🗓️ Perpanjang Massal</div>
+    <div class="bulk-ext-sub" id="bulkExtSub">Perpanjang semua order yang dipilih</div>
+    <div class="field" style="margin-bottom:14px;">
+      <label style="font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Tambah Durasi</label>
+      <select id="bulkExtDurasi" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="30">+30 hari (1 bulan)</option>
+        <option value="60">+60 hari (2 bulan)</option>
+        <option value="90">+90 hari (3 bulan)</option>
+        <option value="180">+180 hari (6 bulan)</option>
+        <option value="365">+365 hari (1 tahun)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="document.getElementById('bulkExtModal').classList.add('hidden')">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="bulkExtSaveBtn" onclick="confirmBulkExtend()">✅ Perpanjang</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      MEMBER LOGIN & DASHBOARD SCRIPT
 ══════════════════════════════════════ -->
 <script>
