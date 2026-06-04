@@ -1237,6 +1237,98 @@ body{
 .btn-edit-testi:hover{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);}
 .btn-del-testi:hover{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);}
 
+/* ── Customer Submit Testimoni Modal ── */
+.cust-testi-modal-bg{
+  position:fixed;inset:0;z-index:3000;
+  background:rgba(0,0,0,.65);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0 0 0 0;
+  backdrop-filter:blur(6px);
+  animation:fadeIn .25s ease;
+}
+.cust-testi-modal-bg.hidden{display:none;}
+.cust-testi-modal{
+  width:100%;max-width:480px;
+  background:var(--surface);
+  border-radius:22px 22px 0 0;
+  padding:22px 20px 32px;
+  border-top:1px solid var(--border-hi);
+  animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.cust-testi-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;
+}
+.cust-testi-title{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  background:linear-gradient(90deg,var(--blue-light),var(--cyan-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.cust-testi-close{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.cust-testi-close:hover{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:var(--red);}
+.cust-star-row{display:flex;gap:6px;justify-content:center;margin:10px 0 16px;}
+.cust-star{font-size:32px;cursor:pointer;color:rgba(255,255,255,.13);transition:color .13s,transform .13s;user-select:none;}
+.cust-star.active{color:#fbbf24;}
+.cust-star:hover{transform:scale(1.18);}
+.cust-testi-submit{
+  width:100%;padding:13px;margin-top:14px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;border-radius:13px;
+  color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;transition:opacity .2s,transform .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.cust-testi-submit:hover{opacity:.88;transform:translateY(-1px);}
+.cust-testi-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.cust-testi-success{
+  text-align:center;padding:24px 16px;animation:fadeU .4s ease both;
+}
+.cust-testi-success .success-icon{font-size:40px;margin-bottom:10px;}
+.cust-testi-success h3{
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;
+}
+.cust-testi-success p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── Pending badge di admin ── */
+.testi-pending-badge{
+  display:inline-block;
+  background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.35);
+  color:#fbbf24;font-size:9px;font-weight:700;letter-spacing:.8px;
+  padding:2px 7px;border-radius:100px;font-family:'Syne',sans-serif;text-transform:uppercase;
+  vertical-align:middle;margin-left:5px;
+}
+.testi-approve-btn,.testi-reject-btn{
+  padding:5px 10px;border-radius:8px;border:1px solid;
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.testi-approve-btn{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:var(--green);}
+.testi-approve-btn:hover{background:rgba(34,197,94,.25);}
+.testi-reject-btn{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:var(--red);}
+.testi-reject-btn:hover{background:rgba(248,113,113,.25);}
+.testi-pending-section{
+  background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.2);
+  border-radius:14px;padding:12px 14px;margin-bottom:14px;
+}
+.testi-pending-label{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:#fbbf24;margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.testi-pending-count{
+  background:#fbbf24;color:#000;font-size:9px;font-weight:800;
+  padding:1px 6px;border-radius:100px;
+}
+/* link-card tombol untuk submit testimoni (customer) */
+.link-card.testi-submit-card{cursor:pointer;}
+.link-card.testi-submit-card:hover .card-icon{transform:scale(1.1);}
+
+
 /* ══════════════════════════════════════
    CEK RESI PAGE
 ══════════════════════════════════════ */
@@ -3110,11 +3202,11 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     </div>
   </div>
 
-  <a href="https://wa.me/6289529101513?text=Halo%2C%20saya%20mau%20kasih%20testimoni!" class="link-card d7">
+  <div class="link-card d7 testi-submit-card" onclick="openCustTestiModal()">
     <div class="card-icon ic-rev">⭐</div>
     <div class="card-info"><div class="card-title">Bagikan Testimoni</div><div class="card-sub">Ceritakan pengalaman belanjamu!</div></div>
     <div class="card-arrow">→</div>
-  </a>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -3344,6 +3436,17 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
         <div class="card-heading" style="margin:0;">⭐ Kelola Testimoni</div>
         <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openTestiForm()">➕ Tambah</button>
       </div>
+
+      <!-- Pending section -->
+      <div class="testi-pending-section" id="testiPendingSection" style="display:none;">
+        <div class="testi-pending-label">
+          ⏳ Menunggu Persetujuan
+          <span class="testi-pending-count" id="testiPendingCount">0</span>
+        </div>
+        <div id="testiPendingList"><!-- Dynamic --></div>
+      </div>
+
+      <!-- Approved list -->
       <div id="testiAdminList">
         <!-- Dynamic -->
       </div>
@@ -5106,7 +5209,7 @@ function switchTab(tab){
   if(tab !== 'order') stopAdminRt();
   if(tab==='produk') renderAdminProducts();
   if(tab==='order'){ renderAppsGrid(); if(adminLoggedIn){ startAdminRt(); _rtSetBar('adminRtBar','adminRtDot','adminRtLabel','adminRtTime','live'); } }
-  if(tab==='testimoni') renderAdminTestimoni();
+  if(tab==='testimoni'){ renderAdminTestimoni(); renderAdminTestimoniPending(); }
   if(tab==='iklan') renderAdminIklan();
   if(tab==='musik') renderAdminMusik();
   if(tab==='statistik') renderStatistik();
@@ -5363,6 +5466,160 @@ async function deleteTesti(idx){
     await renderAdminTestimoni();
     await renderBerandaTestimoni();
     showToast('🗑️ Testimoni dihapus!');
+  }catch(e){
+    showToast('❌ Gagal: '+e.message);
+  }
+}
+
+/* ══════════════════════════════════════
+   CUSTOMER SUBMIT TESTIMONI (pending)
+══════════════════════════════════════ */
+let _ctRating = 5;
+let _testiPendingCache = null;
+
+function openCustTestiModal(){
+  // Reset form
+  document.getElementById('ctNama').value = '';
+  document.getElementById('ctProduk').value = '';
+  document.getElementById('ctPesan').value = '';
+  _ctRating = 5;
+  pickCustStar(5);
+  document.getElementById('custTestiForm').style.display = '';
+  document.getElementById('custTestiSuccess').style.display = 'none';
+  document.getElementById('ctSubmitBtn').innerHTML = '✉️ Kirim Testimoni';
+  document.getElementById('ctSubmitBtn').disabled = false;
+  document.getElementById('custTestiModal').classList.remove('hidden');
+}
+
+function closeCustTestiModal(){
+  document.getElementById('custTestiModal').classList.add('hidden');
+}
+
+function pickCustStar(val){
+  _ctRating = val;
+  document.getElementById('ctRating').value = val;
+  document.querySelectorAll('.cust-star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+  });
+}
+
+async function submitCustTesti(){
+  const nama  = (document.getElementById('ctNama').value||'').trim();
+  const pesan = (document.getElementById('ctPesan').value||'').trim();
+  const produk= (document.getElementById('ctProduk').value||'').trim();
+  const rating= _ctRating || 5;
+  if(!nama){ showToast('⚠️ Nama wajib diisi!'); return; }
+  if(!pesan){ showToast('⚠️ Ulasan wajib diisi!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Toko belum dikonfigurasi!'); return; }
+
+  const btn = document.getElementById('ctSubmitBtn');
+  btn.innerHTML = '<span class="spinner"></span> Mengirim...';
+  btn.disabled = true;
+
+  const tanggal = new Date().toISOString().split('T')[0];
+  try{
+    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({
+      sheet: 'testi_pending',
+      action: 'add',
+      nama, rating, produk, pesan, tanggal
+    })});
+    // Show success state
+    document.getElementById('custTestiForm').style.display = 'none';
+    document.getElementById('custTestiSuccess').style.display = '';
+    _testiPendingCache = null; // invalidate admin cache
+  }catch(e){
+    showToast('❌ Gagal mengirim. Coba lagi!');
+    btn.innerHTML = '✉️ Kirim Testimoni';
+    btn.disabled = false;
+  }
+}
+
+/* ══════════════════════════════════════
+   ADMIN: PENDING TESTIMONI
+══════════════════════════════════════ */
+async function fetchTestiPending(){
+  if(_testiPendingCache) return _testiPendingCache;
+  try{
+    const res = await fetch(`${CFG.scriptUrl}?sheet=testi_pending`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _testiPendingCache = Array.isArray(data) ? data : [];
+    return _testiPendingCache;
+  }catch(e){
+    _testiPendingCache = [];
+    return [];
+  }
+}
+
+function clearPendingCache(){ _testiPendingCache = null; }
+
+async function renderAdminTestimoniPending(){
+  const section = document.getElementById('testiPendingSection');
+  const list    = document.getElementById('testiPendingList');
+  const countEl = document.getElementById('testiPendingCount');
+  if(!section||!list) return;
+
+  clearPendingCache();
+  const items = await fetchTestiPending();
+
+  if(!items.length){
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  if(countEl) countEl.textContent = items.length;
+
+  list.innerHTML = items.map((t,i)=>{
+    const initials = (t.nama||'?').charAt(0).toUpperCase();
+    const stars    = '★'.repeat(Math.min(5, Math.max(1, parseInt(t.rating)||5)));
+    return `<div class="testi-admin-item" style="border-color:rgba(251,191,36,.25);">
+      <div class="testi-admin-av" style="background:linear-gradient(135deg,#92400e,#d97706);">${initials}</div>
+      <div class="testi-admin-info">
+        <div class="testi-admin-name">${t.nama||'-'} <span class="testi-pending-badge">pending</span></div>
+        <div class="testi-admin-meta" style="color:#fbbf24;">${stars} ${t.produk ? '· '+t.produk : ''} · ${t.tanggal||'-'}</div>
+        <div class="testi-admin-msg">${t.pesan||''}</div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <button class="testi-approve-btn" onclick="approveTesti(${i})">✅ Setujui</button>
+          <button class="testi-reject-btn"  onclick="rejectTesti(${i})">❌ Tolak</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function approveTesti(idx){
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    const items = await fetchTestiPending();
+    const t = items[idx];
+    if(!t){ showToast('⚠️ Data tidak ditemukan!'); return; }
+    // Hapus dari pending
+    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testi_pending', action:'delete', idx})});
+    // Tambah ke testimoni approved
+    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({
+      sheet:'testimoni', action:'add',
+      nama: t.nama, rating: t.rating, produk: t.produk, pesan: t.pesan, tanggal: t.tanggal
+    })});
+    showToast('✅ Testimoni disetujui & ditampilkan!');
+    clearPendingCache();
+    clearTestiCache();
+    await renderAdminTestimoniPending();
+    await renderAdminTestimoni();
+    await renderBerandaTestimoni();
+  }catch(e){
+    showToast('❌ Gagal: '+e.message);
+  }
+}
+
+async function rejectTesti(idx){
+  if(!confirm('Tolak dan hapus testimoni ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testi_pending', action:'delete', idx})});
+    showToast('🗑️ Testimoni ditolak & dihapus!');
+    clearPendingCache();
+    await renderAdminTestimoniPending();
   }catch(e){
     showToast('❌ Gagal: '+e.message);
   }
@@ -8497,6 +8754,55 @@ function _stokBadgeHtml(stok){
 }
 
 </script>
+<!-- ══════════════════════════════════
+     CUSTOMER SUBMIT TESTIMONI MODAL
+══════════════════════════════════ -->
+<div class="cust-testi-modal-bg hidden" id="custTestiModal">
+  <div class="cust-testi-modal">
+    <div id="custTestiForm">
+      <div class="cust-testi-header">
+        <div class="cust-testi-title">⭐ Tulis Testimonimu</div>
+        <button class="cust-testi-close" onclick="closeCustTestiModal()">✕</button>
+      </div>
+      <div class="field">
+        <label class="field-label">Nama Kamu <span style="color:var(--red);">*</span></label>
+        <input class="input" type="text" id="ctNama" placeholder="Masukkan namamu..." maxlength="60" />
+      </div>
+      <div class="field">
+        <label class="field-label">Rating</label>
+        <div class="cust-star-row" id="custStarRow">
+          <span class="cust-star active" data-val="1" onclick="pickCustStar(1)">★</span>
+          <span class="cust-star active" data-val="2" onclick="pickCustStar(2)">★</span>
+          <span class="cust-star active" data-val="3" onclick="pickCustStar(3)">★</span>
+          <span class="cust-star active" data-val="4" onclick="pickCustStar(4)">★</span>
+          <span class="cust-star active" data-val="5" onclick="pickCustStar(5)">★</span>
+        </div>
+        <input type="hidden" id="ctRating" value="5" />
+      </div>
+      <div class="field">
+        <label class="field-label">Produk yang Dibeli</label>
+        <input class="input" type="text" id="ctProduk" placeholder="Nama produk (opsional)..." maxlength="80" />
+      </div>
+      <div class="field">
+        <label class="field-label">Ulasan <span style="color:var(--red);">*</span></label>
+        <textarea class="input" id="ctPesan" rows="4" placeholder="Ceritakan pengalamanmu berbelanja di sini..." maxlength="500" style="resize:none;"></textarea>
+      </div>
+      <button class="cust-testi-submit" id="ctSubmitBtn" onclick="submitCustTesti()">
+        ✉️ Kirim Testimoni
+      </button>
+      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;">Testimonimu akan ditampilkan setelah disetujui admin 👍</p>
+    </div>
+    <div id="custTestiSuccess" style="display:none;">
+      <div class="cust-testi-success">
+        <div class="success-icon">🎉</div>
+        <h3>Testimoni Terkirim!</h3>
+        <p>Terima kasih sudah berbagi pengalamanmu.<br>Testimonimu sedang menunggu persetujuan admin dan akan segera ditampilkan.</p>
+        <button class="cust-testi-submit" style="margin-top:18px;" onclick="closeCustTestiModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Sort popup portal — di luar semua stacking context -->
 <div class="sf-sort-popup" id="sfSortPopup">
   <div class="sf-sort-opt sel" data-sort="default" onclick="sfSetSort('default',this)"><span class="sf-sort-opt-icon">📋</span>Default</div>
