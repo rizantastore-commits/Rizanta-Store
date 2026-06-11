@@ -409,6 +409,74 @@
 .btn-del-promo{background:rgba(248,113,113,.12);color:var(--red);}
 .btn-del-promo:hover{background:rgba(248,113,113,.25);}
 
+/* ══════════════════════════════════════
+   VIDEO BERANDA
+══════════════════════════════════════ */
+.video-beranda-wrap{
+  position:relative;width:100%;border-radius:18px;overflow:hidden;
+  margin-bottom:16px;
+  background:var(--surface2);
+  box-shadow:0 8px 28px rgba(0,0,0,.35);
+  animation:fadeU .5s ease both;
+}
+.video-beranda-label{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px 0;
+}
+.video-beranda-tag{
+  display:inline-block;background:linear-gradient(90deg,#f87171,#f59e0b);
+  color:#fff;font-size:9px;font-weight:800;letter-spacing:1.2px;
+  padding:3px 9px;border-radius:100px;
+  font-family:'Syne',sans-serif;text-transform:uppercase;
+}
+.video-beranda-title{
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  color:#fff;margin:0 0 2px;flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.video-iframe-wrap{
+  position:relative;width:100%;padding-top:56.25%;/* 16:9 */
+  background:#000;
+}
+.video-iframe-wrap iframe{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  border:none;display:block;
+}
+.video-mute-hint{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:7px;
+  font-size:11px;color:var(--muted);
+  background:rgba(4,10,22,.6);
+}
+.video-mute-hint span{font-size:13px;}
+
+/* Video admin list */
+.video-admin-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;border-radius:14px;
+  background:rgba(4,12,28,.52);border:1px solid var(--border);
+  margin-bottom:9px;backdrop-filter:blur(12px);
+}
+.video-admin-thumb{
+  width:72px;height:48px;border-radius:10px;
+  flex-shrink:0;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;
+}
+.video-admin-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.video-admin-info{flex:1;min-width:0;}
+.video-admin-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.video-admin-meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.video-admin-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-edit-video,.btn-del-video{
+  width:32px;height:32px;border-radius:9px;border:none;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.btn-edit-video{background:rgba(59,130,246,.15);color:var(--blue-light);}
+.btn-edit-video:hover{background:rgba(59,130,246,.3);}
+.btn-del-video{background:rgba(248,113,113,.12);color:var(--red);}
+.btn-del-video:hover{background:rgba(248,113,113,.25);}
+
 /* Banner admin list */
 .banner-admin-item{
   display:flex;align-items:center;gap:12px;
@@ -3094,6 +3162,9 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="banner-skeleton"></div>
   </div>
 
+  <!-- VIDEO BERANDA -->
+  <div id="videoBerandaContainer"></div>
+
   <div class="sec-label">🎯 Produk Unggulan</div>
   <div class="products-grid" id="berandaProdukGrid">
     <!-- Rendered by JS -->
@@ -3317,6 +3388,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab" id="tabMusik" onclick="switchTab('musik')">🎵 Musik</button>
       <button class="admin-tab" id="tabStatistik" onclick="switchTab('statistik')">📊 Statistik</button>
       <button class="admin-tab" id="tabBanner" onclick="switchTab('banner')">🖼️ Banner</button>
+      <button class="admin-tab" id="tabVideo" onclick="switchTab('video')">▶️ Video</button>
       <button class="admin-tab" id="tabPromo" onclick="switchTab('promo')">🎟️ Promo</button>
     </div>
     <button class="admin-tabs-arrow" id="adminTabNext" onclick="scrollAdminTabs(1)" aria-label="Geser kanan">&#8250;</button>
@@ -3582,6 +3654,22 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     </div>
   </div><!-- /tab-banner -->
 
+  <!-- Tab: Video -->
+  <div id="tab-video" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="card-heading" style="margin:0;">▶️ Kelola Video Beranda</div>
+        <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openVideoForm()">➕ Tambah</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+        💡 Video <strong style="color:var(--green);">Aktif</strong> akan auto-play (muted) di bagian atas Beranda. Masukkan link YouTube. Hanya 1 video aktif yang ditampilkan.
+      </div>
+      <div id="videoAdminList">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div>
+      </div>
+    </div>
+  </div><!-- /tab-video -->
+
   <!-- Tab: Promo -->
   <div id="tab-promo" class="tab-content">
     <div class="card d1">
@@ -3837,6 +3925,7 @@ function goPage(id){
   document.body.classList.add('on-page-'+id.replace('page-',''));
   if(id === 'page-home') loadAndShowIklanPopup();
   if(id === 'page-home') renderBannerSlide();
+  if(id === 'page-home') renderVideoBeranda();
   if(id === 'page-faq') initFaqPage();
   if(id === 'page-refund') initRefundPage();
 }
@@ -5231,6 +5320,7 @@ function switchTab(tab){
   if(tab==='musik') renderAdminMusik();
   if(tab==='statistik') renderStatistik();
   if(tab==='banner') renderAdminBanner();
+  if(tab==='video') renderAdminVideo();
   if(tab==='promo') renderAdminPromo();
 }
 
@@ -5913,17 +6003,22 @@ function closeIklanPopup(){
   }
   document.getElementById('iklanOverlay').classList.add('hidden');
 
-  // Auto-unmute musik saat iklan ditutup (user sudah interaksi = boleh play)
-  const audio   = document.getElementById('bgMusic');
-  const icon    = document.getElementById('musicBarIcon');
-  const bar     = document.getElementById('musicBar');
-  if(audio && audio.src && audio.muted){
-    audio.muted = false;
-    if(icon)    icon.classList.add('playing');
-    if(bar)     { bar.classList.remove('is-muted'); bar.setAttribute('data-tooltip','🔊 Tap untuk mute'); }
-    _updateMusicSubtitle(false);
-    if(audio.paused) audio.play().catch(()=>{});
-  }
+  // Auto-unmute musik saat iklan ditutup — tapi hanya kalau tidak ada video aktif
+  _adaVideoAktif().then(adaVideo => {
+    if(adaVideo) return; // ada video → musik tetap diam
+    const audio   = document.getElementById('bgMusic');
+    const icon    = document.getElementById('musicBarIcon');
+    const bar     = document.getElementById('musicBar');
+    if(audio && audio.src && audio.muted){
+      audio.muted = false;
+      if(icon)    icon.classList.add('playing');
+      if(bar)     { bar.classList.remove('is-muted'); bar.setAttribute('data-tooltip','🔊 Tap untuk mute'); }
+      _updateMusicSubtitle(false);
+      if(audio.paused) audio.play().catch(()=>{});
+    } else if(!_musicLoaded){
+      initMusicPlayer();
+    }
+  });
 }
 
 /* ══════════════════════════════════════
@@ -5931,6 +6026,7 @@ function closeIklanPopup(){
 ══════════════════════════════════════ */
 let _musikCache = null;
 let _editMusikIdx = null;
+let _musikPausedByVideo = false; // true = musik dimatiin karena ada video aktif
 
 async function fetchMusik(){
   if(_musikCache) return _musikCache;
@@ -6047,6 +6143,8 @@ async function initMusicPlayer(){
   _musicLoaded = false;
   clearMusikCache();
   try{
+    // Kalau ada video aktif, musik tidak perlu dijalankan
+    if(await _adaVideoAktif()) return;
     const items = await fetchMusik();
     const aktif = items.filter(m => (m.status||'aktif').toLowerCase() === 'aktif');
     if(!aktif.length) return;
@@ -6524,6 +6622,32 @@ async function renderBerandaTestimoni(){
     <div style="display:flex;gap:9px;margin-top:10px;">
       <button class="btn btn-outline" style="flex:1;" onclick="closeBannerForm()">Batal</button>
       <button class="btn btn-primary" style="flex:1;" id="bannerSaveBtn" onclick="saveBanner()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     VIDEO FORM MODAL (ADMIN)
+══════════════════════════════════ -->
+<div class="prod-form-modal hidden" id="videoFormModal">
+  <div class="prod-form-inner">
+    <h3 id="videoFormTitle">➕ Tambah Video Beranda</h3>
+    <div class="field">
+      <label>Link YouTube <span style="color:var(--red);">*</span></label>
+      <input id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." />
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;">Bisa pakai link biasa (watch?v=), youtu.be/, atau embed. Auto-play muted.</div>
+    </div>
+    <div class="field"><label>Judul Video (opsional)</label><input id="videoJudul" placeholder="Video Promo Rizanta Store" /></div>
+    <div class="field">
+      <label>Status</label>
+      <select id="videoStatus" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="aktif">🟢 Aktif (tampil di beranda)</option>
+        <option value="nonaktif">🔴 Nonaktif (disembunyikan)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeVideoForm()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="videoSaveBtn" onclick="saveVideo()">Simpan</button>
     </div>
   </div>
 </div>
@@ -8429,6 +8553,7 @@ document.addEventListener('DOMContentLoaded', function(){
   checkAndFireReminders();
   // Load banner slide on beranda init
   renderBannerSlide();
+  renderVideoBeranda();
   setInterval(checkAndFireReminders, 30 * 60 * 1000);
 });
 </script>
@@ -8623,6 +8748,182 @@ async function deleteBanner(idx){
     await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'delete',idx})});
     clearBannerCache(); await renderAdminBanner(); await renderBannerSlide();
     showToast('🗑️ Banner dihapus!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+/* ══════════════════════════════════════
+   VIDEO BERANDA — Google Sheets backed
+══════════════════════════════════════ */
+let _videoCache = null;
+let _editVideoIdx = null;
+
+async function fetchVideo(){
+  if(_videoCache) return _videoCache;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=video');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _videoCache = Array.isArray(data) ? data : [];
+    return _videoCache;
+  }catch(e){ _videoCache = []; return []; }
+}
+function clearVideoCache(){ _videoCache = null; }
+
+/* Ekstrak YouTube video ID dari berbagai format URL */
+function _ytVideoId(url){
+  if(!url) return null;
+  url = url.trim();
+  // youtu.be/ID
+  let m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if(m) return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if(m) return m[1];
+  // youtube.com/embed/ID
+  m = url.match(/embed\/([A-Za-z0-9_-]{11})/);
+  if(m) return m[1];
+  // youtube.com/shorts/ID
+  m = url.match(/shorts\/([A-Za-z0-9_-]{11})/);
+  if(m) return m[1];
+  return null;
+}
+
+async function renderVideoBeranda(){
+  const container = document.getElementById('videoBerandaContainer');
+  if(!container) return;
+  try{
+    const items = await fetchVideo();
+    const aktif = items.filter(v => (v.status||'aktif').toLowerCase() === 'aktif');
+    if(!aktif.length){
+      container.innerHTML = '';
+      // Tidak ada video aktif → boleh play musik
+      _musikPausedByVideo = false;
+      if(!_musicLoaded) initMusicPlayer();
+      return;
+    }
+    const v = aktif[0];
+    const vidId = _ytVideoId(v.url||'');
+    if(!vidId){
+      container.innerHTML = '';
+      _musikPausedByVideo = false;
+      if(!_musicLoaded) initMusicPlayer();
+      return;
+    }
+    // Ada video aktif → matiin musik
+    _stopMusicForVideo();
+    const origin = encodeURIComponent(window.location.origin || 'https://rizantastore.com');
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&mute=1&loop=1&playlist=${vidId}&rel=0&modestbranding=1&controls=1&enablejsapi=1&playsinline=1&origin=${origin}`;
+    container.innerHTML = `<div class="video-beranda-wrap">
+      <div class="video-beranda-label">
+        <span class="video-beranda-tag">▶ Video</span>
+        ${v.judul ? `<div class="video-beranda-title">${v.judul}</div>` : ''}
+      </div>
+      <div class="video-iframe-wrap">
+        <iframe src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${v.judul||'Video Rizanta Store'}"></iframe>
+      </div>
+      <div class="video-mute-hint"><span>🔇</span> Auto-play muted — tap ikon suara di video untuk mengaktifkan audio</div>
+    </div>`;
+  }catch(e){ container.innerHTML = ''; }
+}
+
+/* Matiin musik karena ada video aktif */
+function _stopMusicForVideo(){
+  const audio = document.getElementById('bgMusic');
+  const bar   = document.getElementById('musicBar');
+  if(audio && audio.src){ audio.pause(); }
+  if(bar) bar.classList.add('hidden');
+  _musikPausedByVideo = true;
+}
+
+/* Cek apakah ada video aktif di beranda */
+async function _adaVideoAktif(){
+  try{
+    const items = await fetchVideo();
+    return items.some(v => (v.status||'aktif').toLowerCase() === 'aktif' && _ytVideoId(v.url||''));
+  }catch(e){ return false; }
+}
+
+/* ── Admin: Render Video list ── */
+async function renderAdminVideo(){
+  const wrap = document.getElementById('videoAdminList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearVideoCache();
+  const items = await fetchVideo();
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Belum ada video. Klik Tambah!</div>';
+    return;
+  }
+  wrap.innerHTML = items.map((v, i) => {
+    const isAktif = (v.status||'aktif').toLowerCase() === 'aktif';
+    const vidId = _ytVideoId(v.url||'');
+    const thumbHtml = vidId
+      ? `<img src="https://img.youtube.com/vi/${vidId}/mqdefault.jpg" alt="thumb" />`
+      : `<span>▶️</span>`;
+    return `<div class="video-admin-item">
+      <div class="video-admin-thumb">${thumbHtml}</div>
+      <div class="video-admin-info">
+        <div class="video-admin-title">${v.judul||'(tanpa judul)'}</div>
+        <div class="video-admin-meta"><span class="iklan-status-dot ${isAktif?'dot-aktif':'dot-nonaktif'}"></span>${isAktif?'Aktif':'Nonaktif'} · ${v.url||'-'}</div>
+      </div>
+      <div class="video-admin-actions">
+        <button class="btn-edit-video" onclick="openVideoForm(${i})">✏️</button>
+        <button class="btn-del-video" onclick="deleteVideo(${i})">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openVideoForm(idx){
+  _editVideoIdx = (idx !== undefined && idx !== null) ? idx : null;
+  const items = _editVideoIdx !== null ? await fetchVideo() : [];
+  const v = _editVideoIdx !== null ? items[_editVideoIdx] : null;
+  document.getElementById('videoFormTitle').textContent = v ? '✏️ Edit Video' : '➕ Tambah Video Beranda';
+  document.getElementById('videoUrl').value   = v ? (v.url||'') : '';
+  document.getElementById('videoJudul').value = v ? (v.judul||'') : '';
+  document.getElementById('videoStatus').value= v ? (v.status||'aktif') : 'aktif';
+  document.getElementById('videoFormModal').classList.remove('hidden');
+}
+function closeVideoForm(){
+  document.getElementById('videoFormModal').classList.add('hidden');
+  _editVideoIdx = null;
+}
+
+async function saveVideo(){
+  const url    = document.getElementById('videoUrl').value.trim();
+  const judul  = document.getElementById('videoJudul').value.trim();
+  const status = document.getElementById('videoStatus').value;
+  if(!url){ showToast('⚠️ Link YouTube wajib diisi!'); return; }
+  if(!_ytVideoId(url)){ showToast('⚠️ Link YouTube tidak valid. Coba format: youtube.com/watch?v=...'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  const btn = document.getElementById('videoSaveBtn');
+  btn.innerHTML='<span class="spinner"></span> Menyimpan...'; btn.disabled=true;
+  try{
+    if(_editVideoIdx !== null){
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'delete',idx:_editVideoIdx})});
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'add',url,judul,status})});
+      showToast('✅ Video diperbarui!');
+    } else {
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'add',url,judul,status})});
+      showToast('✅ Video ditambahkan!');
+    }
+    clearVideoCache();
+    await renderAdminVideo();
+    await renderVideoBeranda();
+    closeVideoForm();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+  btn.innerHTML='Simpan'; btn.disabled=false;
+}
+
+async function deleteVideo(idx){
+  if(!confirm('Hapus video ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'delete',idx})});
+    clearVideoCache();
+    await renderAdminVideo();
+    await renderVideoBeranda();
+    showToast('🗑️ Video dihapus!');
   }catch(e){ showToast('❌ Gagal: '+e.message); }
 }
 
