@@ -6003,9 +6003,14 @@ function closeIklanPopup(){
   }
   document.getElementById('iklanOverlay').classList.add('hidden');
 
-  // Auto-unmute musik saat iklan ditutup — tapi hanya kalau tidak ada video aktif
+  // Saat iklan ditutup → unmute video ATAU musik (tergantung mana yang aktif)
   _adaVideoAktif().then(adaVideo => {
-    if(adaVideo) return; // ada video → musik tetap diam
+    if(adaVideo){
+      // Ada video aktif → unmute video langsung
+      _ytDoUnmute();
+      return;
+    }
+    // Tidak ada video → unmute / play musik seperti biasa
     const audio   = document.getElementById('bgMusic');
     const icon    = document.getElementById('musicBarIcon');
     const bar     = document.getElementById('musicBar');
@@ -8811,18 +8816,20 @@ async function renderVideoBeranda(){
     }
     // Ada video aktif → matiin musik
     _stopMusicForVideo();
-    const origin = encodeURIComponent(window.location.origin || 'https://rizantastore.com');
-    const embedUrl = `https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&mute=1&loop=1&playlist=${vidId}&rel=0&modestbranding=1&controls=1&enablejsapi=1&playsinline=1&origin=${origin}`;
+    const originRaw = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://rizantastore.com';
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&mute=1&loop=1&playlist=${vidId}&rel=0&modestbranding=1&controls=1&enablejsapi=1&playsinline=1&origin=${encodeURIComponent(originRaw)}`;
     container.innerHTML = `<div class="video-beranda-wrap">
       <div class="video-beranda-label">
         <span class="video-beranda-tag">▶ Video</span>
         ${v.judul ? `<div class="video-beranda-title">${v.judul}</div>` : ''}
       </div>
-      <div class="video-iframe-wrap">
-        <iframe src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${v.judul||'Video Rizanta Store'}"></iframe>
+      <div class="video-iframe-wrap" style="position:relative;">
+        <iframe id="ytPlayerIframe" src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${v.judul||'Video Rizanta Store'}"></iframe>
+
       </div>
-      <div class="video-mute-hint"><span>🔇</span> Auto-play muted — tap ikon suara di video untuk mengaktifkan audio</div>
+      <div class="video-mute-hint" id="ytMuteHint"><span>🔇</span> Tutup iklan untuk aktifkan suara</div>
     </div>`;
+
   }catch(e){ container.innerHTML = ''; }
 }
 
@@ -8833,6 +8840,30 @@ function _stopMusicForVideo(){
   if(audio && audio.src){ audio.pause(); }
   if(bar) bar.classList.add('hidden');
   _musikPausedByVideo = true;
+}
+
+/* Setup auto-unmute on first user interaction */
+function _ytSetupUnmute(){
+  const handler = () => {
+    _ytDoUnmute();
+  };
+  document.addEventListener('click', handler, { once: true });
+  document.addEventListener('touchstart', handler, { once: true });
+  document.addEventListener('scroll', handler, { once: true, passive: true });
+}
+
+function _ytDoUnmute(){
+  const iframe = document.getElementById('ytPlayerIframe');
+  const overlay = document.getElementById('ytUnmuteOverlay');
+  const hint = document.getElementById('ytMuteHint');
+  if(iframe){
+    try {
+      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
+      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[80]}), '*');
+    } catch(e){}
+  }
+  if(overlay){ overlay.style.opacity='0'; setTimeout(()=>{overlay.style.display='none';},400); }
+  if(hint){ hint.innerHTML='<span>🔊</span> Suara aktif'; }
 }
 
 /* Cek apakah ada video aktif di beranda */
