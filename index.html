@@ -449,6 +449,18 @@
   background:rgba(4,10,22,.6);
 }
 .video-mute-hint span{font-size:13px;}
+.video-unmute-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-left:8px;
+  padding:4px 12px;border-radius:100px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  border:none;cursor:pointer;
+  transition:opacity .2s,transform .2s;
+  white-space:nowrap;
+}
+.video-unmute-btn:hover{opacity:.85;transform:scale(1.05);}
+.video-unmute-btn.hidden{display:none;}
 
 /* Video admin list */
 .video-admin-item{
@@ -8827,7 +8839,7 @@ async function renderVideoBeranda(){
         <iframe id="ytPlayerIframe" src="${embedUrl}" allow="autoplay; encrypted-media; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${v.judul||'Video Rizanta Store'}"></iframe>
 
       </div>
-      <div class="video-mute-hint" id="ytMuteHint"><span>🔇</span> Tutup iklan untuk aktifkan suara</div>
+      <div class="video-mute-hint" id="ytMuteHint"><span>🔇</span> Tutup iklan untuk aktifkan suara<button class="video-unmute-btn" id="ytUnmuteBtn" onclick="_ytDoUnmute()">🔊 Aktifkan Suara</button></div>
     </div>`;
 
   }catch(e){ container.innerHTML = ''; }
@@ -8854,16 +8866,16 @@ function _ytSetupUnmute(){
 
 function _ytDoUnmute(){
   const iframe = document.getElementById('ytPlayerIframe');
-  const overlay = document.getElementById('ytUnmuteOverlay');
-  const hint = document.getElementById('ytMuteHint');
+  const hint   = document.getElementById('ytMuteHint');
+  const btn    = document.getElementById('ytUnmuteBtn');
   if(iframe){
     try {
       iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');
       iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[80]}), '*');
     } catch(e){}
   }
-  if(overlay){ overlay.style.opacity='0'; setTimeout(()=>{overlay.style.display='none';},400); }
   if(hint){ hint.innerHTML='<span>🔊</span> Suara aktif'; }
+  if(btn){ btn.classList.add('hidden'); }
 }
 
 /* Cek apakah ada video aktif di beranda */
