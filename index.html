@@ -36,6 +36,82 @@
 }
 
 /* ══════════════════════════════════════
+   RUNNING TEXT / TICKER BAR
+══════════════════════════════════════ */
+.ticker-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 200;
+  overflow: hidden;
+  height: 32px;
+  background: linear-gradient(90deg, var(--blue-glow), var(--cyan) 60%, var(--blue-glow));
+  background-size: 200% 100%;
+  animation: tickerBg 6s linear infinite;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(6,182,212,.35);
+}
+.ticker-wrap.hidden { display: none !important; }
+@keyframes tickerBg {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.ticker-label {
+  flex-shrink: 0;
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid rgba(255,255,255,.18);
+  white-space: nowrap;
+  gap: 5px;
+}
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+.ticker-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
+  will-change: transform;
+  animation: tickerScroll linear infinite;
+}
+.ticker-inner span {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  padding: 0 32px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.ticker-sep {
+  color: rgba(255,255,255,.5);
+  font-size: 14px;
+  margin: 0 2px;
+}
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* Tambah offset ke body agar konten tidak ketutupan */
+body { padding-top: 32px; }
+/* Kalau ticker nonaktif/kosong, hilangkan offset-nya */
+body.ticker-hidden { padding-top: 0; }
+
+/* ══════════════════════════════════════
    IKLAN / POPUP AD
 ══════════════════════════════════════ */
 .iklan-overlay{
@@ -2851,6 +2927,14 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 <div class="bg-fx"><span></span><span></span><span></span></div>
 <div class="bg-grid"></div>
 
+<!-- Running Text / Ticker -->
+<div class="ticker-wrap hidden" id="tickerWrap">
+  <div class="ticker-label">📢 INFO</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -2950,7 +3034,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 <!-- ══════════════════════════════════════
      MEMBER LOGIN BUTTON (top-right fixed)
 ══════════════════════════════════════ -->
-<div id="memberBtnWrap" style="position:fixed;top:14px;right:16px;z-index:150;">
+<div id="memberBtnWrap" style="position:fixed;top:14px;right:16px;z-index:150;transition:top .3s ease;">
   <!-- Dots menu button -->
   <button id="memberDotsBtn" onclick="toggleMemberMenu(event)" style="
     width:38px;height:38px;
@@ -3169,13 +3253,13 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="stat-card d3"><div class="stat-number">2 Thn</div><div class="stat-label">Pengalaman</div></div>
   </div>
 
+  <!-- VIDEO BERANDA -->
+  <div id="videoBerandaContainer"></div>
+
   <!-- BANNER SLIDE -->
   <div id="bannerSlideContainer">
     <div class="banner-skeleton"></div>
   </div>
-
-  <!-- VIDEO BERANDA -->
-  <div id="videoBerandaContainer"></div>
 
   <div class="sec-label">🎯 Produk Unggulan</div>
   <div class="products-grid" id="berandaProdukGrid">
@@ -3402,6 +3486,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab" id="tabBanner" onclick="switchTab('banner')">🖼️ Banner</button>
       <button class="admin-tab" id="tabVideo" onclick="switchTab('video')">▶️ Video</button>
       <button class="admin-tab" id="tabPromo" onclick="switchTab('promo')">🎟️ Promo</button>
+      <button class="admin-tab" id="tabRunningtext" onclick="switchTab('runningtext')">📢 Running Text</button>
     </div>
     <button class="admin-tabs-arrow" id="adminTabNext" onclick="scrollAdminTabs(1)" aria-label="Geser kanan">&#8250;</button>
   </div>
@@ -3693,6 +3778,176 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <div id="promoAdminList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
     </div>
   </div><!-- /tab-promo -->
+
+  <!-- Tab: Running Text -->
+  <div id="tab-runningtext" class="tab-content">
+    <div class="card d1">
+      <div class="card-heading">📢 Running Text / Ticker</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">
+        💡 Teks berjalan yang tampil di bagian <strong style="color:var(--cyan);">paling atas</strong> website. Bisa dipakai untuk info promo, pengumuman, atau pesan penting.
+      </div>
+
+      <!-- Status Toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);">Status Running Text</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="rtStatusDesc">Memuat...</div>
+        </div>
+        <label class="toggle-sw">
+          <input type="checkbox" id="rtStatusToggle" onchange="saveRunningTextStatus(this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+
+      <!-- Kecepatan -->
+      <div class="field" style="margin-bottom:14px;">
+        <label>Kecepatan Gulir</label>
+        <select id="rtSpeed" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+          <option value="20">🐢 Lambat (20s)</option>
+          <option value="14" selected>🚶 Normal (14s)</option>
+          <option value="8">🏃 Cepat (8s)</option>
+          <option value="5">⚡ Sangat Cepat (5s)</option>
+        </select>
+      </div>
+
+      <!-- ✨ MODIFIKASI TAMPILAN -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;">🎨 Modifikasi Tampilan</div>
+
+        <!-- Preset Tema Cepat -->
+        <div style="margin-bottom:14px;">
+          <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;">Tema Cepat</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="rtThemePresets">
+            <button onclick="applyRtTheme('default')" class="rt-preset-btn" data-theme="default" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(29,78,216,.5);background:linear-gradient(90deg,#1d4ed8,#06b6d4);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🌊 Default</button>
+            <button onclick="applyRtTheme('fire')" class="rt-preset-btn" data-theme="fire" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(234,88,12,.5);background:linear-gradient(90deg,#dc2626,#ea580c);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🔥 Fire</button>
+            <button onclick="applyRtTheme('gold')" class="rt-preset-btn" data-theme="gold" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(180,83,9,.5);background:linear-gradient(90deg,#92400e,#d97706);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">✨ Gold</button>
+            <button onclick="applyRtTheme('green')" class="rt-preset-btn" data-theme="green" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(21,128,61,.5);background:linear-gradient(90deg,#166534,#16a34a);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🌿 Hijau</button>
+            <button onclick="applyRtTheme('purple')" class="rt-preset-btn" data-theme="purple" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(109,40,217,.5);background:linear-gradient(90deg,#6d28d9,#a855f7);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">💜 Ungu</button>
+            <button onclick="applyRtTheme('dark')" class="rt-preset-btn" data-theme="dark" style="padding:6px 11px;border-radius:9px;border:1.5px solid rgba(100,100,100,.5);background:linear-gradient(90deg,#111827,#374151);color:#e5e7eb;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🖤 Gelap</button>
+          </div>
+        </div>
+
+        <!-- Warna Teks -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;">Warna Teks</div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input type="color" id="rtTextColor" value="#ffffff" onchange="applyRtCustomStyle()" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:rgba(255,255,255,.05);">
+              <div style="flex:1;">
+                <div id="rtTextColorPreview" style="height:20px;border-radius:6px;background:#fff;border:1px solid rgba(255,255,255,.15);"></div>
+                <div id="rtTextColorHex" style="font-size:10px;color:var(--muted);margin-top:2px;">#ffffff</div>
+              </div>
+            </div>
+            <!-- Warna cepat -->
+            <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+              <div onclick="setRtTextColor('#ffffff')" style="width:20px;height:20px;border-radius:5px;background:#ffffff;cursor:pointer;border:1.5px solid rgba(255,255,255,.3);" title="Putih"></div>
+              <div onclick="setRtTextColor('#fbbf24')" style="width:20px;height:20px;border-radius:5px;background:#fbbf24;cursor:pointer;" title="Kuning"></div>
+              <div onclick="setRtTextColor('#f87171')" style="width:20px;height:20px;border-radius:5px;background:#f87171;cursor:pointer;" title="Merah"></div>
+              <div onclick="setRtTextColor('#34d399')" style="width:20px;height:20px;border-radius:5px;background:#34d399;cursor:pointer;" title="Hijau"></div>
+              <div onclick="setRtTextColor('#000000')" style="width:20px;height:20px;border-radius:5px;background:#000;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);" title="Hitam"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;">Warna Label</div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input type="color" id="rtLabelColor" value="#ffffff" onchange="applyRtCustomStyle()" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:rgba(255,255,255,.05);">
+              <div style="flex:1;">
+                <div id="rtLabelColorPreview" style="height:20px;border-radius:6px;background:#fff;border:1px solid rgba(255,255,255,.15);"></div>
+                <div id="rtLabelColorHex" style="font-size:10px;color:var(--muted);margin-top:2px;">#ffffff</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+              <div onclick="setRtLabelColor('#ffffff')" style="width:20px;height:20px;border-radius:5px;background:#ffffff;cursor:pointer;border:1.5px solid rgba(255,255,255,.3);" title="Putih"></div>
+              <div onclick="setRtLabelColor('#fbbf24')" style="width:20px;height:20px;border-radius:5px;background:#fbbf24;cursor:pointer;" title="Kuning"></div>
+              <div onclick="setRtLabelColor('#f87171')" style="width:20px;height:20px;border-radius:5px;background:#f87171;cursor:pointer;" title="Merah"></div>
+              <div onclick="setRtLabelColor('#34d399')" style="width:20px;height:20px;border-radius:5px;background:#34d399;cursor:pointer;" title="Hijau"></div>
+              <div onclick="setRtLabelColor('#000000')" style="width:20px;height:20px;border-radius:5px;background:#000;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);" title="Hitam"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ukuran & Style Font -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;">Ukuran Font</div>
+            <select id="rtFontSize" onchange="applyRtCustomStyle()" style="width:100%;padding:9px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+              <option value="10">🔍 Kecil (10px)</option>
+              <option value="12" selected>📝 Normal (12px)</option>
+              <option value="14">📌 Sedang (14px)</option>
+              <option value="16">🔠 Besar (16px)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;">Style Teks</div>
+            <div style="display:flex;gap:5px;">
+              <button id="rtBoldBtn" onclick="toggleRtBold()" title="Bold" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-weight:900;font-size:14px;cursor:pointer;transition:all .2s;font-family:Georgia,serif;">B</button>
+              <button id="rtItalicBtn" onclick="toggleRtItalic()" title="Italic" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-style:italic;font-size:14px;cursor:pointer;transition:all .2s;font-family:Georgia,serif;">I</button>
+              <button id="rtUpperBtn" onclick="toggleRtUpper()" title="UPPERCASE" style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-size:10px;font-weight:800;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.5px;">AA</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Efek Latar -->
+        <div>
+          <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;">Efek Bayangan Teks</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button onclick="setRtShadow('none')" id="rtShadow-none" style="padding:5px 11px;border-radius:9px;border:1.5px solid var(--border-hi);background:rgba(96,165,250,.15);color:var(--text);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;">✕ Tidak Ada</button>
+            <button onclick="setRtShadow('soft')" id="rtShadow-soft" style="padding:5px 11px;border-radius:9px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;">💫 Soft</button>
+            <button onclick="setRtShadow('glow')" id="rtShadow-glow" style="padding:5px 11px;border-radius:9px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;">✨ Glow</button>
+            <button onclick="setRtShadow('dark')" id="rtShadow-dark" style="padding:5px 11px;border-radius:9px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;">🌑 Tebal</button>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;">Preview Langsung</div>
+          <div id="rtStylePreview" style="border-radius:12px;overflow:hidden;height:36px;display:flex;align-items:center;background:linear-gradient(90deg,#1d4ed8,#06b6d4);box-shadow:0 2px 10px rgba(6,182,212,.3);">
+            <div style="background:rgba(0,0,0,.35);height:100%;padding:0 10px;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,.15);">
+              <span id="rtPreviewLabel" style="font-family:'Syne',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;">📢 INFO</span>
+            </div>
+            <div style="flex:1;padding:0 16px;overflow:hidden;">
+              <span id="rtPreviewText" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:#fff;white-space:nowrap;">🔥 Promo spesial! Diskon 50% untuk semua produk • Hubungi admin sekarang!</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="rtSaveStyleBtn" class="btn btn-primary" style="margin-top:12px;width:100%;" onclick="saveRtStyle()">💾 Simpan Gaya</button>
+        <button onclick="resetRtStyle()" style="margin-top:7px;width:100%;padding:10px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--border-hi)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↩️ Reset ke Default</button>
+      </div>
+
+      <!-- Daftar Teks -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);">Daftar Teks</div>
+        <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openRtForm()">➕ Tambah</button>
+      </div>
+      <div id="rtAdminList" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;"><span class="spinner"></span></div>
+      </div>
+
+      <!-- Form Tambah/Edit -->
+      <div id="rtForm" style="display:none;margin-top:16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;" id="rtFormTitle">➕ Tambah Teks</div>
+        <div class="field">
+          <label>Isi Teks <span style="color:var(--muted);font-weight:400;font-size:10px;">(gunakan ✨🔥💥 emoji biar lebih menarik!)</span></label>
+          <input id="rtFormText" placeholder="Contoh: 🔥 Promo Akhir Tahun! Diskon hingga 50% • " />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="rtFormStatus" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+            <option value="aktif">✅ Aktif</option>
+            <option value="nonaktif">❌ Nonaktif</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="saveRtItem()">💾 Simpan</button>
+          <button class="btn btn-outline" style="width:auto;padding:11px 16px;" onclick="closeRtForm()">✕</button>
+        </div>
+      </div>
+
+      <!-- Simpan Pengaturan -->
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="saveRunningTextSettings()">💾 Simpan & Terapkan</button>
+    </div>
+  </div><!-- /tab-runningtext -->
 
   </div><!-- /adminPanel -->
 </div><!-- /page-admin -->
@@ -5334,6 +5589,7 @@ function switchTab(tab){
   if(tab==='banner') renderAdminBanner();
   if(tab==='video') renderAdminVideo();
   if(tab==='promo') renderAdminPromo();
+  if(tab==='runningtext') renderAdminRt();
 }
 
 /* ══════════════════════════════════════
@@ -8571,6 +8827,8 @@ document.addEventListener('DOMContentLoaded', function(){
   // Load banner slide on beranda init
   renderBannerSlide();
   renderVideoBeranda();
+  // Render running text / ticker
+  renderTicker();
   setInterval(checkAndFireReminders, 30 * 60 * 1000);
 });
 </script>
@@ -8826,6 +9084,19 @@ async function renderVideoBeranda(){
       if(!_musicLoaded) initMusicPlayer();
       return;
     }
+
+    // ── FIX: Kalau iframe dengan video ID yang sama sudah ada, jangan re-render ──
+    // Ini mencegah video restart dari awal ketika balik ke Beranda
+    const existingIframe = document.getElementById('ytPlayerIframe');
+    if(existingIframe){
+      const currentSrc = existingIframe.src || '';
+      if(currentSrc.includes(vidId)){
+        // Video sama sudah berjalan, pastikan musik tetap mati dan keluar
+        _stopMusicForVideo();
+        return;
+      }
+    }
+
     // Ada video aktif → matiin musik
     _stopMusicForVideo();
     const originRaw = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://rizantastore.com';
@@ -9184,6 +9455,403 @@ function _stokBadgeHtml(stok){
   if(n === 0) return '<span class="stok-badge stok-out">⛔ Habis</span>';
   if(n <= 3)  return '<span class="stok-badge stok-low">⚠️ Stok: '+n+'</span>';
   return '<span class="stok-badge stok-ok">✅ Stok: '+n+'</span>';
+}
+
+/* ══════════════════════════════════════
+   RUNNING TEXT / TICKER — Google Sheets backed
+══════════════════════════════════════ */
+let _rtCache   = null;
+let _editRtIdx = null;
+
+async function fetchRunningText(){
+  if(_rtCache) return _rtCache;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=running_text');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _rtCache = Array.isArray(data) ? data : [];
+    return _rtCache;
+  }catch(e){ _rtCache = []; return []; }
+}
+function clearRtCache(){ _rtCache = null; }
+
+/* Ambil satu key dari sheet Config (rt_status / rt_speed) */
+async function _getRtConfig(key, fallback){
+  if(!CFG.scriptUrl) return fallback;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=config&action=get&key=' + encodeURIComponent(key));
+    if(!res.ok) return fallback;
+    const data = await res.json();
+    return (data && data.value !== undefined && data.value !== '') ? data.value : fallback;
+  }catch(e){ return fallback; }
+}
+
+/* Render ticker bar di bagian paling atas website */
+async function renderTicker(){
+  const wrap  = document.getElementById('tickerWrap');
+  const inner = document.getElementById('tickerInner');
+  if(!wrap || !inner) return;
+  try{
+    const rtStatus = await _getRtConfig('rt_status', 'nonaktif');
+    const rtSpeed  = await _getRtConfig('rt_speed', '14');
+    await _loadRtStyleFromSheet();
+    const items = await fetchRunningText();
+    const aktif = items.filter(t => (t.status||'aktif').toLowerCase() === 'aktif' && (t.teks||'').toString().trim() !== '');
+
+    if(rtStatus !== 'aktif' || !aktif.length){
+      wrap.classList.add('hidden');
+      document.body.classList.add('ticker-hidden');
+      const mb = document.getElementById('memberBtnWrap');
+      if(mb) mb.style.top = '14px';
+      return;
+    }
+
+    const spans = aktif.map(t => `<span>${t.teks}</span>`).join('<span class="ticker-sep">•</span>');
+    // Konten diduplikasi supaya animasi scroll terlihat looping mulus
+    inner.innerHTML = spans + '<span class="ticker-sep">•</span>' + spans + '<span class="ticker-sep">•</span>';
+    inner.style.animationDuration = (parseFloat(rtSpeed) || 14) + 's';
+    _applyRtStyleToDOM();
+
+    wrap.classList.remove('hidden');
+    document.body.classList.remove('ticker-hidden');
+    const mb = document.getElementById('memberBtnWrap');
+    if(mb) mb.style.top = '46px';
+  }catch(e){
+    wrap.classList.add('hidden');
+    document.body.classList.add('ticker-hidden');
+    const mb = document.getElementById('memberBtnWrap');
+    if(mb) mb.style.top = '14px';
+  }
+}
+
+/* ── Admin: render daftar teks + sinkronkan toggle status & kecepatan ── */
+async function renderAdminRt(){
+  const wrap = document.getElementById('rtAdminList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearRtCache();
+
+  // Muat status & kecepatan tersimpan dari sheet Config
+  const rtStatus = await _getRtConfig('rt_status', 'nonaktif');
+  const rtSpeed  = await _getRtConfig('rt_speed', '14');
+  const toggle   = document.getElementById('rtStatusToggle');
+  const desc     = document.getElementById('rtStatusDesc');
+  const speedSel = document.getElementById('rtSpeed');
+  if(toggle) toggle.checked = (rtStatus === 'aktif');
+  if(desc)   desc.textContent = (rtStatus === 'aktif') ? 'Aktif — sedang tampil di website' : 'Nonaktif — tidak tampil di website';
+  if(speedSel) speedSel.value = String(rtSpeed || '14');
+
+  const items = await fetchRunningText();
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Belum ada teks. Klik Tambah!</div>';
+    return;
+  }
+  wrap.innerHTML = items.map((t,i)=>{
+    const isAktif = (t.status||'aktif').toLowerCase() === 'aktif';
+    return `<div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:10px 12px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.teks||''}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;"><span class="iklan-status-dot ${isAktif?'dot-aktif':'dot-nonaktif'}"></span>${isAktif?'Aktif':'Nonaktif'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn-edit-video" onclick="openRtForm(${i})">✏️</button>
+        <button class="btn-del-video" onclick="deleteRtItem(${i})">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openRtForm(idx){
+  _editRtIdx = (idx !== undefined && idx !== null) ? idx : null;
+  const items = _editRtIdx !== null ? await fetchRunningText() : [];
+  const t = _editRtIdx !== null ? items[_editRtIdx] : null;
+  document.getElementById('rtFormTitle').textContent = t ? '✏️ Edit Teks' : '➕ Tambah Teks';
+  document.getElementById('rtFormText').value   = t ? (t.teks||'') : '';
+  document.getElementById('rtFormStatus').value = t ? (t.status||'aktif') : 'aktif';
+  document.getElementById('rtForm').style.display = 'block';
+}
+function closeRtForm(){
+  document.getElementById('rtForm').style.display = 'none';
+  _editRtIdx = null;
+}
+
+async function saveRtItem(){
+  const teks   = document.getElementById('rtFormText').value.trim();
+  const status = document.getElementById('rtFormStatus').value;
+  if(!teks){ showToast('⚠️ Isi teks wajib diisi!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    if(_editRtIdx !== null){
+      // Hapus baris lama lalu tambah baris baru (mengikuti pola fitur lain)
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'delete',idx:_editRtIdx})});
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'add',teks,status})});
+      showToast('✅ Teks diperbarui!');
+    } else {
+      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'add',teks,status})});
+      showToast('✅ Teks ditambahkan!');
+    }
+    clearRtCache();
+    await renderAdminRt();
+    await renderTicker();
+    closeRtForm();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+async function deleteRtItem(idx){
+  if(!confirm('Hapus teks ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'delete',idx})});
+    clearRtCache();
+    await renderAdminRt();
+    await renderTicker();
+    showToast('🗑️ Teks dihapus!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+/* ══════════════════════════════════════
+   RUNNING TEXT — MODIFIKASI TAMPILAN
+══════════════════════════════════════ */
+const RT_STYLE_KEY = 'rizanta_rt_style';
+
+// State saat ini
+let _rtStyle = {
+  textColor: '#ffffff',
+  labelColor: '#ffffff',
+  fontSize: '12',
+  bold: false,
+  italic: false,
+  uppercase: false,
+  shadow: 'none',
+  bgGradient: 'linear-gradient(90deg,#1d4ed8,#06b6d4 60%,#1d4ed8)'
+};
+
+function _loadRtStyleLocal(){
+  try{
+    const saved = localStorage.getItem(RT_STYLE_KEY);
+    if(saved) _rtStyle = Object.assign(_rtStyle, JSON.parse(saved));
+  }catch(e){}
+}
+function _saveRtStyleLocal(){
+  try{ localStorage.setItem(RT_STYLE_KEY, JSON.stringify(_rtStyle)); }catch(e){}
+}
+
+/* Load style dari Google Sheets Config (rt_style disimpan sebagai JSON string) */
+async function _loadRtStyleFromSheet(){
+  _loadRtStyleLocal(); // fallback dulu dari localStorage
+  if(!CFG.scriptUrl) return;
+  try{
+    const val = await _getRtConfig('rt_style', '');
+    if(val && val !== ''){
+      const parsed = JSON.parse(val);
+      _rtStyle = Object.assign(_rtStyle, parsed);
+      _saveRtStyleLocal(); // update cache lokal
+    }
+  }catch(e){}
+}
+
+/* Save style ke Google Sheets Config */
+async function _saveRtStyleToSheet(){
+  _saveRtStyleLocal();
+  if(!CFG.scriptUrl) return;
+  await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({
+    sheet:'running_text', action:'set_settings',
+    rt_style: JSON.stringify(_rtStyle)
+  })});
+}
+
+/* Alias lama tetap bisa dipanggil */
+function _loadRtStyle(){ _loadRtStyleLocal(); }
+
+/* Terapkan style ke elemen ticker */
+function _applyRtStyleToDOM(){
+  const wrap = document.getElementById('tickerWrap');
+  const inner = document.querySelectorAll('#tickerInner span:not(.ticker-sep)');
+  const label = document.querySelector('.ticker-label');
+  if(!wrap) return;
+
+  // Background
+  wrap.style.background = _rtStyle.bgGradient;
+  wrap.style.backgroundSize = '200% 100%';
+
+  // Teks
+  inner.forEach(el => {
+    el.style.color = _rtStyle.textColor;
+    el.style.fontSize = _rtStyle.fontSize + 'px';
+    el.style.fontWeight = _rtStyle.bold ? '800' : '500';
+    el.style.fontStyle = _rtStyle.italic ? 'italic' : 'normal';
+    el.style.textTransform = _rtStyle.uppercase ? 'uppercase' : 'none';
+    const s = _rtStyle.shadow;
+    el.style.textShadow = s === 'soft' ? '0 1px 4px rgba(0,0,0,.4)' :
+                           s === 'glow' ? '0 0 10px rgba(255,255,255,.8), 0 0 20px rgba(255,255,255,.4)' :
+                           s === 'dark' ? '0 2px 8px rgba(0,0,0,.9), 1px 1px 0 rgba(0,0,0,.8)' : 'none';
+  });
+
+  // Label
+  if(label) label.style.color = _rtStyle.labelColor;
+}
+
+/* Sync UI panel ke state saat ini */
+function _syncRtStyleUI(){
+  const tc = document.getElementById('rtTextColor');
+  const lc = document.getElementById('rtLabelColor');
+  const fs = document.getElementById('rtFontSize');
+  if(tc){ tc.value = _rtStyle.textColor; document.getElementById('rtTextColorPreview').style.background = _rtStyle.textColor; document.getElementById('rtTextColorHex').textContent = _rtStyle.textColor; }
+  if(lc){ lc.value = _rtStyle.labelColor; document.getElementById('rtLabelColorPreview').style.background = _rtStyle.labelColor; document.getElementById('rtLabelColorHex').textContent = _rtStyle.labelColor; }
+  if(fs) fs.value = _rtStyle.fontSize;
+  // Bold/italic/upper buttons
+  const bBtn = document.getElementById('rtBoldBtn');
+  const iBtn = document.getElementById('rtItalicBtn');
+  const uBtn = document.getElementById('rtUpperBtn');
+  if(bBtn) bBtn.style.background = _rtStyle.bold ? 'rgba(59,130,246,.35)' : 'rgba(255,255,255,.04)';
+  if(bBtn) bBtn.style.borderColor = _rtStyle.bold ? 'rgba(96,165,250,.7)' : 'var(--border)';
+  if(iBtn) iBtn.style.background = _rtStyle.italic ? 'rgba(59,130,246,.35)' : 'rgba(255,255,255,.04)';
+  if(iBtn) iBtn.style.borderColor = _rtStyle.italic ? 'rgba(96,165,250,.7)' : 'var(--border)';
+  if(uBtn) uBtn.style.background = _rtStyle.uppercase ? 'rgba(59,130,246,.35)' : 'rgba(255,255,255,.04)';
+  if(uBtn) uBtn.style.borderColor = _rtStyle.uppercase ? 'rgba(96,165,250,.7)' : 'var(--border)';
+  // Shadow buttons
+  ['none','soft','glow','dark'].forEach(s => {
+    const b = document.getElementById('rtShadow-' + s);
+    if(!b) return;
+    const active = s === _rtStyle.shadow;
+    b.style.background = active ? 'rgba(96,165,250,.2)' : 'rgba(255,255,255,.04)';
+    b.style.borderColor = active ? 'var(--border-hi)' : 'var(--border)';
+  });
+  // Preview
+  _updateRtPreview();
+}
+
+function _updateRtPreview(){
+  const pText = document.getElementById('rtPreviewText');
+  const pLabel = document.getElementById('rtPreviewLabel');
+  const pWrap = document.getElementById('rtStylePreview');
+  if(!pText || !pWrap) return;
+  pWrap.style.background = _rtStyle.bgGradient;
+  pText.style.color = _rtStyle.textColor;
+  pText.style.fontSize = _rtStyle.fontSize + 'px';
+  pText.style.fontWeight = _rtStyle.bold ? '800' : '500';
+  pText.style.fontStyle = _rtStyle.italic ? 'italic' : 'normal';
+  pText.style.textTransform = _rtStyle.uppercase ? 'uppercase' : 'none';
+  const s = _rtStyle.shadow;
+  pText.style.textShadow = s === 'soft' ? '0 1px 4px rgba(0,0,0,.4)' :
+                            s === 'glow' ? '0 0 10px rgba(255,255,255,.8)' :
+                            s === 'dark' ? '0 2px 8px rgba(0,0,0,.9)' : 'none';
+  if(pLabel) pLabel.style.color = _rtStyle.labelColor;
+}
+
+function applyRtCustomStyle(){
+  const tc = document.getElementById('rtTextColor');
+  const lc = document.getElementById('rtLabelColor');
+  const fs = document.getElementById('rtFontSize');
+  if(tc){ _rtStyle.textColor = tc.value; document.getElementById('rtTextColorPreview').style.background = tc.value; document.getElementById('rtTextColorHex').textContent = tc.value; }
+  if(lc){ _rtStyle.labelColor = lc.value; document.getElementById('rtLabelColorPreview').style.background = lc.value; document.getElementById('rtLabelColorHex').textContent = lc.value; }
+  if(fs) _rtStyle.fontSize = fs.value;
+  _updateRtPreview();
+}
+
+function setRtTextColor(hex){
+  _rtStyle.textColor = hex;
+  const tc = document.getElementById('rtTextColor');
+  if(tc) tc.value = hex;
+  document.getElementById('rtTextColorPreview').style.background = hex;
+  document.getElementById('rtTextColorHex').textContent = hex;
+  _updateRtPreview();
+}
+function setRtLabelColor(hex){
+  _rtStyle.labelColor = hex;
+  const lc = document.getElementById('rtLabelColor');
+  if(lc) lc.value = hex;
+  document.getElementById('rtLabelColorPreview').style.background = hex;
+  document.getElementById('rtLabelColorHex').textContent = hex;
+  _updateRtPreview();
+}
+function toggleRtBold(){
+  _rtStyle.bold = !_rtStyle.bold;
+  _syncRtStyleUI();
+}
+function toggleRtItalic(){
+  _rtStyle.italic = !_rtStyle.italic;
+  _syncRtStyleUI();
+}
+function toggleRtUpper(){
+  _rtStyle.uppercase = !_rtStyle.uppercase;
+  _syncRtStyleUI();
+}
+function setRtShadow(s){
+  _rtStyle.shadow = s;
+  _syncRtStyleUI();
+}
+
+const RT_THEMES = {
+  default:{ bgGradient:'linear-gradient(90deg,#1d4ed8,#06b6d4 60%,#1d4ed8)', textColor:'#ffffff', labelColor:'#ffffff' },
+  fire:   { bgGradient:'linear-gradient(90deg,#991b1b,#dc2626 60%,#ea580c)', textColor:'#fff7ed', labelColor:'#fbbf24' },
+  gold:   { bgGradient:'linear-gradient(90deg,#78350f,#d97706 60%,#78350f)', textColor:'#fef3c7', labelColor:'#fbbf24' },
+  green:  { bgGradient:'linear-gradient(90deg,#14532d,#16a34a 60%,#14532d)', textColor:'#dcfce7', labelColor:'#86efac' },
+  purple: { bgGradient:'linear-gradient(90deg,#4c1d95,#7c3aed 60%,#a855f7)', textColor:'#f5f3ff', labelColor:'#c4b5fd' },
+  dark:   { bgGradient:'linear-gradient(90deg,#111827,#1f2937 60%,#111827)', textColor:'#e5e7eb', labelColor:'#9ca3af' },
+};
+
+function applyRtTheme(name){
+  const t = RT_THEMES[name];
+  if(!t) return;
+  _rtStyle.bgGradient = t.bgGradient;
+  _rtStyle.textColor = t.textColor;
+  _rtStyle.labelColor = t.labelColor;
+  _syncRtStyleUI();
+}
+
+async function saveRtStyle(){
+  const btn = document.getElementById('rtSaveStyleBtn');
+  if(btn){ btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true; }
+  try{
+    await _saveRtStyleToSheet();
+    _applyRtStyleToDOM();
+    showToast('✅ Gaya running text disimpan ke cloud!');
+  }catch(e){
+    _saveRtStyleLocal();
+    _applyRtStyleToDOM();
+    showToast('✅ Gaya diterapkan (offline)');
+  }
+  if(btn){ btn.innerHTML = '💾 Simpan Gaya'; btn.disabled = false; }
+}
+
+function resetRtStyle(){
+  _rtStyle = { textColor:'#ffffff', labelColor:'#ffffff', fontSize:'12', bold:false, italic:false, uppercase:false, shadow:'none', bgGradient:'linear-gradient(90deg,#1d4ed8,#06b6d4 60%,#1d4ed8)' };
+  _saveRtStyleLocal();
+  _syncRtStyleUI();
+  _applyRtStyleToDOM();
+  showToast('↩️ Gaya direset ke default!');
+}
+
+/* Hook: panggil setelah renderTicker selesai + saat buka tab running text */
+async function initRtStylePanel(){
+  await _loadRtStyleFromSheet();
+  _syncRtStyleUI();
+  _applyRtStyleToDOM();
+}
+
+
+async function saveRunningTextStatus(checked){
+  const desc = document.getElementById('rtStatusDesc');
+  if(desc) desc.textContent = checked ? 'Aktif — sedang tampil di website' : 'Nonaktif — tidak tampil di website';
+  await saveRunningTextSettings(true);
+}
+
+/* Simpan status & kecepatan ke sheet Config (tombol "Simpan & Terapkan") */
+async function saveRunningTextSettings(silent){
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  const toggle = document.getElementById('rtStatusToggle');
+  const speedSel = document.getElementById('rtSpeed');
+  const rt_status = (toggle && toggle.checked) ? 'aktif' : 'nonaktif';
+  const rt_speed  = speedSel ? speedSel.value : '14';
+  const btn = document.querySelector('#tab-runningtext .btn-primary[onclick="saveRunningTextSettings()"]');
+  if(btn && !silent){ btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true; }
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'set_settings',rt_status,rt_speed,rt_style:JSON.stringify(_rtStyle)})});
+    await renderTicker();
+    if(!silent) showToast('✅ Pengaturan Running Text disimpan!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+  if(btn && !silent){ btn.innerHTML = '💾 Simpan & Terapkan'; btn.disabled = false; }
 }
 
 </script>
