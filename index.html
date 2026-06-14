@@ -87,7 +87,7 @@
   height: 100%;
   white-space: nowrap;
   will-change: transform;
-  animation: tickerScroll linear infinite;
+  /* Animasi diatur via JS requestAnimationFrame untuk smooth looping */
 }
 .ticker-inner span {
   font-family: 'DM Sans', sans-serif;
@@ -100,11 +100,8 @@
 .ticker-sep {
   color: rgba(255,255,255,.5);
   font-size: 14px;
-  margin: 0 2px;
-}
-@keyframes tickerScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  padding: 0 8px;
+  flex-shrink: 0;
 }
 /* Tambah offset ke body agar konten tidak ketutupan */
 body { padding-top: 32px; }
@@ -1544,6 +1541,7 @@ body{
 .s-aktif{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25);}
 .s-warn{background:rgba(251,191,36,.12);color:var(--yellow);border:1px solid rgba(251,191,36,.25);}
 .s-exp{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25);}
+.s-refund{background:rgba(249,115,22,.13);color:#fb923c;border:1px solid rgba(249,115,22,.3);}
 
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
 .info-box{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;padding:13px;}
@@ -1581,6 +1579,7 @@ body{
 .dash-card.dc-aktif{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(21,128,61,.06));border-color:rgba(34,197,94,.25);}
 .dash-card.dc-warn{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(180,83,9,.06));border-color:rgba(251,191,36,.25);}
 .dash-card.dc-exp{background:linear-gradient(135deg,rgba(248,113,113,.15),rgba(185,28,28,.06));border-color:rgba(248,113,113,.25);}
+.dash-card.dc-refund{background:linear-gradient(135deg,rgba(249,115,22,.16),rgba(194,65,12,.06));border-color:rgba(249,115,22,.28);}
 .dash-card.dc-revenue{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(249,115,22,.10));border-color:rgba(245,158,11,.4);grid-column:1/-1;}
 .dash-icon{font-size:22px;margin-bottom:8px;}
 .dash-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1;}
@@ -1593,6 +1592,7 @@ body{
 .dash-card.dc-aktif .dash-num{color:var(--green);}
 .dash-card.dc-warn .dash-num{color:var(--yellow);}
 .dash-card.dc-exp .dash-num{color:var(--red);}
+.dash-card.dc-refund .dash-num{color:#fb923c;}
 
 /* ══════════════════════════════════════
    ADMIN PAGE
@@ -1618,6 +1618,7 @@ tr:hover td{background:rgba(59,130,246,.03);}
 .tb-aktif{background:rgba(34,197,94,.12);color:var(--green);}
 .tb-warn{background:rgba(251,191,36,.12);color:var(--yellow);}
 .tb-exp{background:rgba(248,113,113,.12);color:var(--red);}
+.tb-refund{background:rgba(249,115,22,.13);color:#fb923c;}
 .tb-del{background:none;border:1px solid rgba(248,113,113,.3);color:var(--red);padding:4px 9px;border-radius:7px;cursor:pointer;font-size:11px;transition:background .2s;}
 .tb-del:hover{background:rgba(248,113,113,.1);}
 .tb-edit{background:none;border:1px solid rgba(59,130,246,.3);color:var(--blue-light);padding:4px 9px;border-radius:7px;cursor:pointer;font-size:11px;transition:background .2s;}
@@ -3508,6 +3509,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <div class="dash-card dc-aktif"><div class="dash-icon">✅</div><div class="dash-num" id="statAktif">-</div><div class="dash-label">Aktif</div></div>
       <div class="dash-card dc-warn"><div class="dash-icon">⏳</div><div class="dash-num" id="statWarn">-</div><div class="dash-label">Segera Habis</div></div>
       <div class="dash-card dc-exp"><div class="dash-icon">❌</div><div class="dash-num" id="statExp">-</div><div class="dash-label">Kadaluarsa</div></div>
+      <div class="dash-card dc-refund"><div class="dash-icon">🔶</div><div class="dash-num" id="statRefund">-</div><div class="dash-label">Refund</div></div>
       <div class="dash-card dc-revenue">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
           <div>
@@ -4377,7 +4379,13 @@ function fmtDate(s){
   return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
 }
 function appByName(n){return APPS.find(a=>a.name.toLowerCase()===n.toLowerCase())||{emoji:'📱',name:n,color:'#2563eb'};}
-function statusInfo(d){
+function statusInfo(d, o){
+  // Cek status refund dari object order
+  if(o && (o.status||'').toLowerCase()==='refund'){
+    const tglRefund = o.tgl_refund || o['tanggal refund'] || '';
+    const label = tglRefund ? `Refund s/d ${fmtDate(tglRefund)}` : 'Refund';
+    return{label, scls:'s-refund', tcls:'tb-refund', dot:'🔶'};
+  }
   if(d<0)  return{label:'Kadaluarsa',scls:'s-exp', tcls:'tb-exp', dot:'🔴'};
   if(d<=7) return{label:'Segera Habis',scls:'s-warn',tcls:'tb-warn',dot:'🟡'};
   return          {label:'Aktif',      scls:'s-aktif',tcls:'tb-aktif',dot:'🟢'};
@@ -4387,7 +4395,7 @@ function errBox(m){return`<div class="err-box">⚠️ ${m}</div>`;}
 /* ── Fetch Sheets ── */
 async function fetchSheets(){
   if(!CFG.sheetId||!CFG.apiKey)throw new Error('Config belum diisi. Buka tab Admin → Setup dulu ya!');
-  const range=encodeURIComponent(`${CFG.sheetName||'Orders'}!A:J`);
+  const range=encodeURIComponent(`${CFG.sheetName||'Orders'}!A:L`);
   const res=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${range}?key=${CFG.apiKey}`);
   if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
   const data=await res.json();
@@ -4414,7 +4422,7 @@ async function cekResi(){
     const mulai=o.mulai||o['tanggal mulai']||o.start||'';
     const days=daysLeft(selesai);
     const app=appByName(o.app||o.aplikasi||o['nama aplikasi']||'Aplikasi');
-    const st=statusInfo(days);
+    const st=statusInfo(days,o);
     const total=mulai&&selesai?Math.ceil((new Date(selesai)-new Date(mulai))/86400000):30;
     const pct=Math.max(0,Math.min(100,Math.round((Math.max(0,days)/total)*100)));
     // Cari gambar produk yang namanya cocok dengan app
@@ -4588,7 +4596,7 @@ function normalizeHp(raw){
 }
 async function tambahOrder(){
   if(!adminLoggedIn)return;
-  const data={action:'add',resi:document.getElementById('newResi').value.trim().toUpperCase(),nama:document.getElementById('newNama').value.trim(),hp:normalizeHp(document.getElementById('newHp').value.trim()),app:selectedAppName,email:document.getElementById('newEmail').value.trim(),password:document.getElementById('newPassword').value,mulai:document.getElementById('newMulai').value,selesai:document.getElementById('newSelesai').value,catatan:document.getElementById('newCatatan').value.trim()};
+  const data={action:'add',resi:document.getElementById('newResi').value.trim().toUpperCase(),nama:document.getElementById('newNama').value.trim(),hp:normalizeHp(document.getElementById('newHp').value.trim()),app:selectedAppName,email:document.getElementById('newEmail').value.trim(),password:document.getElementById('newPassword').value,mulai:document.getElementById('newMulai').value,selesai:document.getElementById('newSelesai').value,catatan:document.getElementById('newCatatan').value.trim(),status:'aktif',tgl_refund:''};
   if(!data.resi||!data.nama||!data.app||!data.mulai||!data.selesai){showToast('⚠️ Lengkapi semua field wajib!');return;}
   if(!CFG.scriptUrl){showToast('⚠️ Apps Script URL belum diisi!');return;}
   const btn=document.getElementById('tambahBtn');
@@ -4611,8 +4619,9 @@ async function loadOrders(){
     _lastOrders = orders; /* store for template modal */
     /* Update dashboard stats */
     const total=orders.length;
-    let aktif=0,warn=0,exp=0;
+    let aktif=0,warn=0,exp=0,refund=0;
     orders.forEach(o=>{
+      if((o.status||'').toLowerCase()==='refund'){ refund++; return; }
       const d=daysLeft(o.selesai||o['tanggal selesai']||o.end||'');
       if(d<0)exp++;
       else if(d<=7)warn++;
@@ -4622,6 +4631,7 @@ async function loadOrders(){
     document.getElementById('statAktif').textContent=aktif;
     document.getElementById('statWarn').textContent=warn;
     document.getElementById('statExp').textContent=exp;
+    document.getElementById('statRefund').textContent=refund;
 
     /* ── Hitung Estimasi Pendapatan ── */
     try{
@@ -4656,7 +4666,7 @@ async function loadOrders(){
     const prods=await fetchProduk();
     const rows=orders.map(o=>{
       const d=daysLeft(o.selesai||o['tanggal selesai']||o.end||'');
-      const st=statusInfo(d);
+      const st=statusInfo(d,o);
       const app=appByName(o.app||o.aplikasi||'Aplikasi');
       const appNm = o.app||o.aplikasi||'';
       const mp = prods.find(p=>p.name.toLowerCase()===appNm.toLowerCase());
@@ -4664,13 +4674,15 @@ async function loadOrders(){
         ? `<img src="${mp.emoji}" style="width:20px;height:20px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:5px;" />`
         : `<span style="margin-right:4px;">${app.emoji}</span>`;
       const cbHtml = _bulkMode ? `<td><input type="checkbox" class="order-cb" data-resi="${o.resi}" onchange="onBulkCbChange(this)"></td>` : '';
-      return`<tr class="order-row" data-resi="${o.resi}" style="${d<=7&&d>=0?'background:rgba(251,191,36,.04);':''}${d<0?'background:rgba(248,113,113,.04);':''}">
+      const isRefund = (o.status||'').toLowerCase()==='refund';
+      const badgeText = isRefund ? '🔶 Refund' : `${st.dot} ${d<0?0:d}h`;
+      return`<tr class="order-row" data-resi="${o.resi}" style="${isRefund?'background:rgba(249,115,22,.05);':(d<=7&&d>=0?'background:rgba(251,191,36,.04);':'')}${(!isRefund&&d<0)?'background:rgba(248,113,113,.04);':''}">
         ${cbHtml}
         <td><strong style="font-size:11.5px;">${o.resi||'-'}</strong> <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px;" title="Copy resi">📋</button></td>
         <td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${o.hp||o['no hp']||o.phone||'-'}</span></td>
         <td><div class="tb-app">${appThumb}${app.name}</div></td>
-        <td><span class="tb-badge ${st.tcls}">${st.dot} ${d<0?0:d}h</span></td>
-        <td>${fmtDate(o.selesai||o['tanggal selesai']||'')}</td>
+        <td><span class="tb-badge ${st.tcls}" title="${st.label}">${badgeText}</span></td>
+        <td>${isRefund?(o.tgl_refund||o['tanggal refund']?fmtDate(o.tgl_refund||o['tanggal refund']):'-'):fmtDate(o.selesai||o['tanggal selesai']||'')}</td>
         <td style="display:flex;gap:5px;">
           <button class="tb-msg" onclick="openTmplModal('${o.resi}')" title="Template Pesan">💬</button>
           <button class="tb-dup" onclick="dupOrder('${o.resi}')" title="Duplikat Order">📋</button>
@@ -4680,7 +4692,7 @@ async function loadOrders(){
       </tr>`;
     }).join('');
     const cbHeader = _bulkMode ? `<th><input type="checkbox" class="order-cb" id="bulkSelectAll" onchange="bulkSelectAllToggle(this)" title="Pilih Semua"></th>` : '';
-    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Sisa</th><th>Selesai</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Status</th><th>Selesai/Refund</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
     // Re-apply search filter setelah render
     if(_orderSearchQuery) _applyOrderSearch();
   }catch(e){wrap.innerHTML=errBox(e.message);}
@@ -4726,6 +4738,8 @@ async function dupOrder(resi){
     mulai:    today,
     selesai:  newSelesai,
     catatan:  o.catatan || o.note || '',
+    status:   'aktif',
+    tgl_refund: '',
   };
 
   // Flash baris sumber sebagai feedback visual
@@ -4827,6 +4841,11 @@ async function openEditOrder(resi){
   document.getElementById('eoSelesai').value  = o.selesai||o['tanggal selesai']||'';
   document.getElementById('eoCatatan').value  = o.catatan||o.note||o.notes||'';
 
+  const eoStatusVal = (o.status||'aktif').toLowerCase()==='refund' ? 'refund' : 'aktif';
+  document.getElementById('eoStatus').value = eoStatusVal;
+  document.getElementById('eoTglRefund').value = o.tgl_refund||o['tanggal refund']||'';
+  toggleEoRefundField();
+
   const appNm = o.app||o.aplikasi||'';
   document.getElementById('eoAppName').value = appNm;
 
@@ -4855,6 +4874,13 @@ function selectEoApp(el, name){
   document.getElementById('eoAppName').value = name;
 }
 
+function toggleEoRefundField(){
+  const status = document.getElementById('eoStatus').value;
+  const wrap = document.getElementById('eoRefundDateWrap');
+  if(status === 'refund') wrap.classList.remove('hidden');
+  else wrap.classList.add('hidden');
+}
+
 function closeEditOrder(){
   document.getElementById('editOrderModal').classList.add('hidden');
   _editOrderResi = null;
@@ -4873,8 +4899,11 @@ async function saveEditOrder(){
   const mulai    = document.getElementById('eoMulai').value;
   const selesai  = document.getElementById('eoSelesai').value;
   const catatan  = document.getElementById('eoCatatan').value.trim();
+  const status   = document.getElementById('eoStatus').value;
+  const tgl_refund = document.getElementById('eoTglRefund').value;
 
   if(!resi||!nama||!app||!mulai||!selesai){ showToast('⚠️ Resi, nama, aplikasi, mulai & selesai wajib diisi!'); return; }
+  if(status==='refund' && !tgl_refund){ showToast('⚠️ Tanggal refund wajib diisi jika status Refund!'); return; }
 
   const btn = document.getElementById('eoSaveBtn');
   btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
@@ -4883,7 +4912,7 @@ async function saveEditOrder(){
   try{
     // Hapus dulu order lama (by resi lama), lalu tambah dengan data baru
     await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi: _editOrderResi})});
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai, catatan})});
+    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai, catatan, status, tgl_refund})});
     showToast('✅ Pesanan berhasil diperbarui!');
     closeEditOrder();
     await loadOrders();
@@ -5011,7 +5040,7 @@ async function confirmBulkExtend(){
       const catatan  = o.catatan || o.note || '';
 
       await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi})});
-      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai: newSelesai, catatan})});
+      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai: newSelesai, catatan, status:'aktif', tgl_refund:''})});
       ok++;
     }catch(e){ fail++; }
   }
@@ -7690,6 +7719,19 @@ async function renderStatistik(){
       <div class="field"><label>Tanggal Selesai</label><input id="eoSelesai" type="date" /></div>
     </div>
 
+    <div class="field">
+      <label>Status Pesanan</label>
+      <select id="eoStatus" onchange="toggleEoRefundField()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
+        <option value="aktif">✅ Aktif</option>
+        <option value="refund">🔶 Refund</option>
+      </select>
+    </div>
+    <div class="field hidden" id="eoRefundDateWrap">
+      <label>Tanggal Refund</label>
+      <input id="eoTglRefund" type="date" />
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;">📌 Layanan akan dihentikan/dianggap berakhir pada tanggal ini.</div>
+    </div>
+
     <div class="field"><label>Catatan</label><input id="eoCatatan" placeholder="Catatan tambahan (opsional)..." /></div>
 
     <div style="display:flex;gap:9px;margin-top:12px;">
@@ -9487,10 +9529,50 @@ async function _getRtConfig(key, fallback){
 }
 
 /* Render ticker bar di bagian paling atas website */
+/* ── Ticker JS Scroll Engine ── */
+let _tickerRAF = null;
+let _tickerOffset = 0;
+let _tickerHalfW = 0;
+let _tickerSpeed = 1; // px per frame
+
+function _stopTicker(){
+  if(_tickerRAF){ cancelAnimationFrame(_tickerRAF); _tickerRAF = null; }
+}
+
+function _startTicker(inner, oneSetW, pxPerSec){
+  _stopTicker();
+  _tickerSpeed = pxPerSec / 60; // px per frame (target 60fps)
+
+  // offset = seberapa jauh sudah digeser ke kiri
+  // Mulai dari NEGATIF (teks berada di luar kanan layar)
+  const track = inner.parentElement;
+  const trackW = track ? track.offsetWidth : window.innerWidth;
+  // Mulai dari KANAN layar: teks belum masuk, offset = -trackW
+  // (translateX positif = geser ke kanan / di luar layar kanan)
+  _tickerOffset = -trackW;
+
+  function tick(){
+    _tickerOffset += _tickerSpeed;
+    // Setelah 1 set penuh terscroll (offset ≥ oneSetW), lompat balik
+    // supaya loop seamless tanpa jeda / putus
+    if(_tickerOffset >= oneSetW){
+      _tickerOffset -= oneSetW;
+    }
+    // translateX = -offset:
+    //   offset negatif  → translateX positif  → teks di KANAN layar (belum masuk)
+    //   offset = 0      → translateX 0         → teks di posisi natural (mulai dari kiri)
+    //   offset positif  → translateX negatif   → teks bergerak ke KIRI
+    inner.style.transform = 'translateX(' + (-_tickerOffset) + 'px)';
+    _tickerRAF = requestAnimationFrame(tick);
+  }
+  _tickerRAF = requestAnimationFrame(tick);
+}
+
 async function renderTicker(){
   const wrap  = document.getElementById('tickerWrap');
   const inner = document.getElementById('tickerInner');
   if(!wrap || !inner) return;
+  _stopTicker();
   try{
     const rtStatus = await _getRtConfig('rt_status', 'nonaktif');
     const rtSpeed  = await _getRtConfig('rt_speed', '14');
@@ -9506,16 +9588,37 @@ async function renderTicker(){
       return;
     }
 
-    const spans = aktif.map(t => `<span>${t.teks}</span>`).join('<span class="ticker-sep">•</span>');
-    // Konten diduplikasi supaya animasi scroll terlihat looping mulus
-    inner.innerHTML = spans + '<span class="ticker-sep">•</span>' + spans + '<span class="ticker-sep">•</span>';
-    inner.style.animationDuration = (parseFloat(rtSpeed) || 14) + 's';
+    // Buat satu set konten (separator antar teks)
+    const oneSet = aktif.map(t => `<span>${t.teks}</span>`).join('<span class="ticker-sep">•</span>');
+    // Duplikasi 3x supaya loop terasa mulus walau konten pendek
+    inner.innerHTML = oneSet + '<span class="ticker-sep">•</span>'
+                    + oneSet + '<span class="ticker-sep">•</span>'
+                    + oneSet + '<span class="ticker-sep">•</span>';
+    // Sembunyikan dulu agar tidak flicker saat render
+    inner.style.transform = 'translateX(100%)';
     _applyRtStyleToDOM();
 
     wrap.classList.remove('hidden');
     document.body.classList.remove('ticker-hidden');
     const mb = document.getElementById('memberBtnWrap');
     if(mb) mb.style.top = '46px';
+
+    // Tunggu browser render dulu baru ukur lebar
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Lebar 1/3 konten = lebar satu set (karena kita duplikasi 3x)
+        const totalW = inner.scrollWidth;
+        const oneSetW = totalW / 3;
+        // rt_speed di sheet = detik untuk scroll satu layar penuh (≈400px)
+        // Kita konversi jadi px/detik berdasarkan panjang konten
+        const speedSetting = parseFloat(rtSpeed) || 14;
+        // Makin besar angka = makin lambat (konsisten dengan setting lama)
+        // px/detik = oneSetW / speedSetting
+        const pxPerSec = oneSetW / speedSetting;
+        _startTicker(inner, oneSetW, pxPerSec);
+      });
+    });
+
   }catch(e){
     wrap.classList.add('hidden');
     document.body.classList.add('ticker-hidden');
