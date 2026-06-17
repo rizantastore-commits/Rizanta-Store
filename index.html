@@ -4192,6 +4192,8 @@ function goPage(id){
   // Update body class untuk track halaman aktif
   document.body.className = document.body.className.replace(/on-page-\S+/g,'').trim();
   document.body.classList.add('on-page-'+id.replace('page-',''));
+  // Pengaman: pastikan tema tetap konsisten sesuai localStorage tiap pindah halaman
+  if(typeof syncThemeFromStorage === 'function') syncThemeFromStorage();
   if(id === 'page-home') loadAndShowIklanPopup();
   if(id === 'page-home') renderBannerSlide();
   if(id === 'page-home') renderVideoBeranda();
@@ -4405,6 +4407,23 @@ async function fetchSheets(){
   return rows.slice(1).map(r=>{const o={};h.forEach((k,i)=>o[k.toLowerCase().trim()]=r[i]||'');return o;});
 }
 
+/* ── POST ke Apps Script (anti false-positive "Failed to fetch") ──
+   Google Apps Script Web App kadang gagal di-fetch browser saat redirect
+   walau datanya SUDAH tersimpan di Sheets. Jadi error TypeError "Failed to
+   fetch" / "Load failed" di sini KITA ANGGAP SUKSES (silent), karena request
+   sudah terkirim. Error lain (mis. CFG.scriptUrl kosong) tetap dilempar. */
+async function postSheet(payload){
+  if(!CFG.scriptUrl) throw new Error('Apps Script URL belum diisi!');
+  try{
+    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify(payload)});
+  }catch(e){
+    const msg=(e&&e.message||'').toLowerCase();
+    const isNetworkNoise = msg.includes('failed to fetch')||msg.includes('load failed')||msg.includes('networkerror');
+    if(!isNetworkNoise) throw e;
+    // diam-diam dianggap berhasil, request tetap nyampe ke Apps Script
+  }
+}
+
 /* ── CEK RESI ── */
 async function cekResi(){
   const resi=document.getElementById('resiInput').value.trim().toUpperCase();
@@ -4602,7 +4621,7 @@ async function tambahOrder(){
   const btn=document.getElementById('tambahBtn');
   btn.innerHTML='<span class="spinner"></span> Menyimpan...';btn.disabled=true;
   try{
-    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify(data)});
+    await postSheet(data);
     showToast('✅ Order berhasil ditambahkan!');
     ['newResi','newNama','newHp','newEmail','newPassword','newMulai','newSelesai','newCatatan'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('newDurasi').value='';
@@ -4700,7 +4719,7 @@ async function loadOrders(){
 async function hapusOrder(resi){
   if(!confirm(`Hapus order ${resi}?`))return;
   if(!CFG.scriptUrl){showToast('⚠️ Apps Script URL belum diisi!');return;}
-  try{await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({action:'delete',resi})});showToast('🗑️ Order dihapus!');await loadOrders();}
+  try{await postSheet({action:'delete',resi});showToast('🗑️ Order dihapus!');await loadOrders();}
   catch(e){showToast('❌ Gagal: '+e.message);}
 }
 
@@ -4747,7 +4766,7 @@ async function dupOrder(resi){
   if(srcRow) srcRow.classList.add('dup-flash');
 
   try{
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify(payload)});
+    await postSheet(payload);
     showToast(`📋 Diduplikat! Resi baru: ${newResi}`);
     // Isi form tambah order dengan data duplikat biar admin bisa langsung review
     document.getElementById('newResi').value    = newResi;
@@ -4911,8 +4930,8 @@ async function saveEditOrder(){
 
   try{
     // Hapus dulu order lama (by resi lama), lalu tambah dengan data baru
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi: _editOrderResi})});
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai, catatan, status, tgl_refund})});
+    await postSheet({action:'delete', resi: _editOrderResi});
+    await postSheet({action:'add', resi, nama, hp, app, email, password, mulai, selesai, catatan, status, tgl_refund});
     showToast('✅ Pesanan berhasil diperbarui!');
     closeEditOrder();
     await loadOrders();
@@ -4995,7 +5014,7 @@ async function bulkDelete(){
   let ok = 0, fail = 0;
   for(const o of orders){
     try{
-      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi: o.resi})});
+      await postSheet({action:'delete', resi: o.resi});
       ok++;
     }catch(e){ fail++; }
   }
@@ -5039,8 +5058,8 @@ async function confirmBulkExtend(){
       const mulai    = o.mulai || o['tanggal mulai'] || '';
       const catatan  = o.catatan || o.note || '';
 
-      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'delete', resi})});
-      await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({action:'add', resi, nama, hp, app, email, password, mulai, selesai: newSelesai, catatan, status:'aktif', tgl_refund:''})});
+      await postSheet({action:'delete', resi});
+      await postSheet({action:'add', resi, nama, hp, app, email, password, mulai, selesai: newSelesai, catatan, status:'aktif', tgl_refund:''});
       ok++;
     }catch(e){ fail++; }
   }
@@ -5714,7 +5733,7 @@ async function saveProd(){
       emoji:  emoji||'', nama: name, harga: price,
       kategori: cat, deskripsi: desc, fitur: features, stok: stok
     };
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify(payload)});
+    await postSheet(payload);
     clearProdCache();
     await renderProductPage();
     await renderBerandaProducts();
@@ -5732,7 +5751,7 @@ async function deleteProd(id){
   if(!confirm('Hapus produk ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'produk', action:'delete', id})});
+    await postSheet({sheet:'produk', action:'delete', id});
     clearProdCache();
     await renderProductPage();
     await renderBerandaProducts();
@@ -5842,12 +5861,12 @@ async function saveTesti(){
     if(_editTestiIdx !== null){
       // Edit: delete old row then add new (simpel, karena Apps Script tidak ada action edit untuk testimoni)
       // Step 1: delete
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testimoni', action:'delete', idx: _editTestiIdx})});
+      await postSheet({sheet:'testimoni', action:'delete', idx: _editTestiIdx});
       // Step 2: add updated (append ke bawah — urutan mungkin berubah, acceptable)
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testimoni', action:'add', nama, rating, produk, pesan, tanggal})});
+      await postSheet({sheet:'testimoni', action:'add', nama, rating, produk, pesan, tanggal});
       showToast('✅ Testimoni diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testimoni', action:'add', nama, rating, produk, pesan, tanggal})});
+      await postSheet({sheet:'testimoni', action:'add', nama, rating, produk, pesan, tanggal});
       showToast('✅ Testimoni ditambahkan!');
     }
     clearTestiCache();
@@ -5865,7 +5884,7 @@ async function deleteTesti(idx){
   if(!confirm('Hapus testimoni ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testimoni', action:'delete', idx})});
+    await postSheet({sheet:'testimoni', action:'delete', idx});
     clearTestiCache();
     await renderAdminTestimoni();
     await renderBerandaTestimoni();
@@ -5922,11 +5941,11 @@ async function submitCustTesti(){
 
   const tanggal = new Date().toISOString().split('T')[0];
   try{
-    await fetch(CFG.scriptUrl, {method:'POST', body: JSON.stringify({
+    await postSheet({
       sheet: 'testi_pending',
       action: 'add',
       nama, rating, produk, pesan, tanggal
-    })});
+    });
     // Show success state
     document.getElementById('custTestiForm').style.display = 'none';
     document.getElementById('custTestiSuccess').style.display = '';
@@ -5999,12 +6018,12 @@ async function approveTesti(idx){
     const t = items[idx];
     if(!t){ showToast('⚠️ Data tidak ditemukan!'); return; }
     // Hapus dari pending
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testi_pending', action:'delete', idx})});
+    await postSheet({sheet:'testi_pending', action:'delete', idx});
     // Tambah ke testimoni approved
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({
+    await postSheet({
       sheet:'testimoni', action:'add',
       nama: t.nama, rating: t.rating, produk: t.produk, pesan: t.pesan, tanggal: t.tanggal
-    })});
+    });
     showToast('✅ Testimoni disetujui & ditampilkan!');
     clearPendingCache();
     clearTestiCache();
@@ -6020,7 +6039,7 @@ async function rejectTesti(idx){
   if(!confirm('Tolak dan hapus testimoni ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'testi_pending', action:'delete', idx})});
+    await postSheet({sheet:'testi_pending', action:'delete', idx});
     showToast('🗑️ Testimoni ditolak & dihapus!');
     clearPendingCache();
     await renderAdminTestimoniPending();
@@ -6196,11 +6215,11 @@ async function saveIklan(){
 
   try{
     if(_editIklanIdx !== null){
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'iklan', action:'delete', idx: _editIklanIdx})});
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'iklan', action:'add', judul, deskripsi, link, ctateks, status, gambar})});
+      await postSheet({sheet:'iklan', action:'delete', idx: _editIklanIdx});
+      await postSheet({sheet:'iklan', action:'add', judul, deskripsi, link, ctateks, status, gambar});
       showToast('✅ Iklan diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'iklan', action:'add', judul, deskripsi, link, ctateks, status, gambar})});
+      await postSheet({sheet:'iklan', action:'add', judul, deskripsi, link, ctateks, status, gambar});
       showToast('✅ Iklan ditambahkan!');
     }
     clearIklanCache();
@@ -6217,7 +6236,7 @@ async function deleteIklan(idx){
   if(!confirm('Hapus iklan ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'iklan', action:'delete', idx})});
+    await postSheet({sheet:'iklan', action:'delete', idx});
     clearIklanCache();
     await renderAdminIklan();
     showToast('🗑️ Iklan dihapus!');
@@ -6407,9 +6426,9 @@ async function saveMusik(){
   btn.disabled  = true;
   try{
     if(_editMusikIdx !== null){
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'musik', action:'delete', idx: _editMusikIdx})});
+      await postSheet({sheet:'musik', action:'delete', idx: _editMusikIdx});
     }
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'musik', action:'add', judul, artis, url, status})});
+    await postSheet({sheet:'musik', action:'add', judul, artis, url, status});
     clearMusikCache();
     await renderAdminMusik();
     closeMusikForm();
@@ -6427,7 +6446,7 @@ async function deleteMusik(idx){
   if(!confirm('Hapus musik ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'musik', action:'delete', idx})});
+    await postSheet({sheet:'musik', action:'delete', idx});
     clearMusikCache();
     await renderAdminMusik();
     showToast('🗑️ Musik dihapus!');
@@ -7968,6 +7987,7 @@ function goPageMember(){
   window.scrollTo({top:0,behavior:'smooth'});
   document.body.className = document.body.className.replace(/on-page-\S+/g,'').trim();
   document.body.classList.add('on-page-member');
+  if(typeof syncThemeFromStorage === 'function') syncThemeFromStorage();
 }
 
 /* ── Render dashboard member ── */
@@ -8478,12 +8498,10 @@ function initRefundPage(){
 <script>
 /* ══════════════════════════════════════════════════════
    FEATURE 1: DARK / LIGHT MODE TOGGLE
+   (Satu sumber kebenaran: localStorage 'rz_theme'.
+    applyTheme() SELALU dipanggil ulang setiap init,
+    biar ga ada race/duplikat logic yang bisa beda hasil.)
 ══════════════════════════════════════════════════════ */
-(function initTheme(){
-  const saved = localStorage.getItem('rz_theme') || 'dark';
-  if(saved === 'light') applyTheme(true, false);
-})();
-
 function applyTheme(isLight, save=true){
   document.body.classList.toggle('light-mode', isLight);
   const toggle = document.getElementById('themeToggle');
@@ -8498,6 +8516,11 @@ function applyTheme(isLight, save=true){
 function toggleTheme(isLight){
   applyTheme(isLight);
   showToast(isLight ? '☀️ ' + t('themeLabel_light') : '🌙 ' + t('themeLabel_dark'));
+}
+
+function syncThemeFromStorage(){
+  const saved = localStorage.getItem('rz_theme') || 'dark';
+  applyTheme(saved === 'light', false);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -8585,7 +8608,19 @@ const i18n = {
   }
 };
 
-function t(key){ return (i18n[currentLang]||i18n.id)[key] || (i18n.id[key]) || key; }
+function t(key){
+  try{ return (i18n[currentLang]||i18n.id)[key] || (i18n.id[key]) || key; }
+  catch(e){ return key; } // fallback aman kalau i18n/currentLang belum siap
+}
+
+/* initTheme dipanggil DI SINI (bukan di atas), karena applyTheme() butuh
+   fungsi t() dan objek i18n yang baru selesai dideklarasikan barusan.
+   Kalau dipanggil sebelum ini, applyTheme akan crash dengan
+   "Cannot access 'i18n' before initialization" pas user lagi di mode
+   terang dan reload — itu yang bikin toggle 'macet' di terang. */
+(function initTheme(){
+  syncThemeFromStorage();
+})();
 
 function applyLang(){
   // 1. Update all data-i18n elements
@@ -8861,9 +8896,8 @@ function checkAndFireReminders(){
 document.addEventListener('DOMContentLoaded', function(){
   // Apply saved language
   applyLang();
-  // Apply saved theme
-  const savedTheme = localStorage.getItem('rz_theme') || 'dark';
-  applyTheme(savedTheme === 'light', false);
+  // Re-sync tema (pengaman ekstra kalau ada elemen yang baru ke-render setelah initTheme awal)
+  syncThemeFromStorage();
   // Check reminders on load
   checkAndFireReminders();
   // Load banner slide on beranda init
@@ -9043,11 +9077,11 @@ async function saveBanner(){
   btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true;
   try{
     if(_editBannerIdx !== null){
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'delete',idx:_editBannerIdx})});
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar})});
+      await postSheet({sheet:'banner',action:'delete',idx:_editBannerIdx});
+      await postSheet({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar});
       showToast('✅ Banner diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar})});
+      await postSheet({sheet:'banner',action:'add',judul,deskripsi,link,ctateks,status,gambar});
       showToast('✅ Banner ditambahkan!');
     }
     clearBannerCache();
@@ -9062,7 +9096,7 @@ async function deleteBanner(idx){
   if(!confirm('Hapus banner ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST', body: JSON.stringify({sheet:'banner',action:'delete',idx})});
+    await postSheet({sheet:'banner',action:'delete',idx});
     clearBannerCache(); await renderAdminBanner(); await renderBannerSlide();
     showToast('🗑️ Banner dihapus!');
   }catch(e){ showToast('❌ Gagal: '+e.message); }
@@ -9256,11 +9290,11 @@ async function saveVideo(){
   btn.innerHTML='<span class="spinner"></span> Menyimpan...'; btn.disabled=true;
   try{
     if(_editVideoIdx !== null){
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'delete',idx:_editVideoIdx})});
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'add',url,judul,status})});
+      await postSheet({sheet:'video',action:'delete',idx:_editVideoIdx});
+      await postSheet({sheet:'video',action:'add',url,judul,status});
       showToast('✅ Video diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'add',url,judul,status})});
+      await postSheet({sheet:'video',action:'add',url,judul,status});
       showToast('✅ Video ditambahkan!');
     }
     clearVideoCache();
@@ -9275,7 +9309,7 @@ async function deleteVideo(idx){
   if(!confirm('Hapus video ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'video',action:'delete',idx})});
+    await postSheet({sheet:'video',action:'delete',idx});
     clearVideoCache();
     await renderAdminVideo();
     await renderVideoBeranda();
@@ -9464,11 +9498,11 @@ async function savePromo(){
   btn.innerHTML='<span class="spinner"></span> Menyimpan...'; btn.disabled=true;
   try{
     if(_editPromoIdx !== null){
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'delete',idx:_editPromoIdx})});
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status,aplikasi})});
+      await postSheet({sheet:'promo',action:'delete',idx:_editPromoIdx});
+      await postSheet({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status,aplikasi});
       showToast('✅ Promo diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status,aplikasi})});
+      await postSheet({sheet:'promo',action:'add',kode,nama,jenis,nilai,minorder,batas,exp,status,aplikasi});
       showToast('✅ Kode promo ditambahkan!');
     }
     clearPromoCache(); await renderAdminPromo(); closePromoForm();
@@ -9480,7 +9514,7 @@ async function deletePromo(idx){
   if(!confirm('Hapus kode promo ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'promo',action:'delete',idx})});
+    await postSheet({sheet:'promo',action:'delete',idx});
     clearPromoCache(); await renderAdminPromo();
     showToast('🗑️ Kode promo dihapus!');
   }catch(e){ showToast('❌ Gagal: '+e.message); }
@@ -9686,11 +9720,11 @@ async function saveRtItem(){
   try{
     if(_editRtIdx !== null){
       // Hapus baris lama lalu tambah baris baru (mengikuti pola fitur lain)
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'delete',idx:_editRtIdx})});
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'add',teks,status})});
+      await postSheet({sheet:'running_text',action:'delete',idx:_editRtIdx});
+      await postSheet({sheet:'running_text',action:'add',teks,status});
       showToast('✅ Teks diperbarui!');
     } else {
-      await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'add',teks,status})});
+      await postSheet({sheet:'running_text',action:'add',teks,status});
       showToast('✅ Teks ditambahkan!');
     }
     clearRtCache();
@@ -9704,7 +9738,7 @@ async function deleteRtItem(idx){
   if(!confirm('Hapus teks ini?')) return;
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'delete',idx})});
+    await postSheet({sheet:'running_text',action:'delete',idx});
     clearRtCache();
     await renderAdminRt();
     await renderTicker();
@@ -9757,10 +9791,10 @@ async function _loadRtStyleFromSheet(){
 async function _saveRtStyleToSheet(){
   _saveRtStyleLocal();
   if(!CFG.scriptUrl) return;
-  await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({
+  await postSheet({
     sheet:'running_text', action:'set_settings',
     rt_style: JSON.stringify(_rtStyle)
-  })});
+  });
 }
 
 /* Alias lama tetap bisa dipanggil */
@@ -9950,7 +9984,7 @@ async function saveRunningTextSettings(silent){
   const btn = document.querySelector('#tab-runningtext .btn-primary[onclick="saveRunningTextSettings()"]');
   if(btn && !silent){ btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true; }
   try{
-    await fetch(CFG.scriptUrl,{method:'POST',body:JSON.stringify({sheet:'running_text',action:'set_settings',rt_status,rt_speed,rt_style:JSON.stringify(_rtStyle)})});
+    await postSheet({sheet:'running_text',action:'set_settings',rt_status,rt_speed,rt_style:JSON.stringify(_rtStyle)});
     await renderTicker();
     if(!silent) showToast('✅ Pengaturan Running Text disimpan!');
   }catch(e){ showToast('❌ Gagal: '+e.message); }
