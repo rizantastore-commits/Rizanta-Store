@@ -350,6 +350,42 @@ body.ticker-hidden { padding-top: 0; }
   color:var(--muted);cursor:pointer;
 }
 
+/* ── Order Status Filter Bar ── */
+.order-filter-bar{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;
+}
+@media (max-width:480px){
+  .order-filter-bar{
+    flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;
+  }
+  .order-filter-bar::-webkit-scrollbar{display:none;}
+}
+.order-filter-chip{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:5px;
+  padding:7px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--muted);font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+  transition:all .2s;
+}
+.order-filter-chip:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.order-filter-chip.active{
+  background:rgba(37,99,235,.15);
+  border-color:rgba(37,99,235,.4);
+  color:var(--blue-light);
+}
+.order-filter-chip[data-filter="aktif"].active{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#4ade80;}
+.order-filter-chip[data-filter="warn"].active{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.4);color:#fbbf24;}
+.order-filter-chip[data-filter="exp"].active{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#f87171;}
+.order-filter-chip[data-filter="refund"].active{background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4);color:#fb923c;}
+.ofc-count{
+  background:rgba(255,255,255,.08);
+  border-radius:6px;padding:1px 6px;font-size:10px;
+}
+.order-filter-chip.active .ofc-count{background:rgba(255,255,255,.15);}
+
 /* ── Order Search Bar ── */
 .order-search-wrap{
   position:relative;margin-bottom:12px;
@@ -2930,6 +2966,287 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
   font-size:11px;color:var(--yellow);line-height:1.5;
 }
 
+
+/* ══════════════════════════════════════
+   DESKTOP / LANDSCAPE LAYOUT
+   Aktif saat lebar layar ≥ 768px
+══════════════════════════════════════ */
+
+/* Sembunyikan di mobile, tampil di desktop */
+.desktop-wrap { display: block; }
+.desktop-sidebar { display: none; }
+
+@media (min-width: 768px) {
+
+  /* ── Layout wrapper desktop ── */
+  .desktop-wrap {
+    display: flex;
+    flex-direction: row;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 32px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Sembunyikan bottom nav ── */
+  .bottom-nav { display: none !important; }
+
+  /* ── Sidebar kiri ── */
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 32px;
+    height: calc(100vh - 32px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 20px 12px;
+    background: linear-gradient(160deg, rgba(8,15,28,0.97) 0%, rgba(4,10,22,0.98) 100%);
+    border-right: 1px solid rgba(96,165,250,0.10);
+    box-shadow: 3px 0 24px rgba(0,0,0,0.35);
+    gap: 3px;
+  }
+  .desktop-sidebar::-webkit-scrollbar { display: none; }
+
+  /* Logo mini di sidebar */
+  .sidebar-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 18px;
+    border-bottom: 1px solid rgba(96,165,250,0.1);
+    margin-bottom: 12px;
+  }
+  .sidebar-logo-wrap img {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(59,130,246,0.4);
+    flex-shrink: 0;
+  }
+  .sidebar-logo-text { min-width: 0; }
+  .sidebar-logo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 12.5px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--blue-light), var(--cyan-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sidebar-logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* Nav buttons di sidebar */
+  .sidebar-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 13px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: rgba(130,165,215,0.6);
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-align: left;
+    width: 100%;
+    transition: all 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sidebar-nav-btn svg {
+    width: 19px; height: 19px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  .sidebar-nav-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border-color: rgba(96,165,250,0.08);
+  }
+  .sidebar-nav-btn.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(34,211,238,0.1));
+    border-color: rgba(96,165,250,0.28);
+    box-shadow: 0 0 18px rgba(37,99,235,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .sidebar-nav-btn.active svg {
+    filter: drop-shadow(0 0 6px rgba(110,200,255,0.65));
+    transform: scale(1.08);
+  }
+  .sidebar-nav-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 100px;
+    min-width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Divider di sidebar */
+  .sidebar-divider {
+    height: 1px;
+    background: rgba(96,165,250,0.08);
+    margin: 8px 4px;
+  }
+
+  /* ── Main content area ── */
+  .desktop-main {
+    flex: 1;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* ── Page content: max-width lebih lebar ── */
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 28px 28px 48px;
+    /* hapus offset nav bawah */
+    padding-bottom: 48px;
+  }
+
+  /* ── Product grid 3 kolom ── */
+  .products-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ── Banner lebih tinggi ── */
+  .banner-slide img { height: 210px; }
+  .banner-skeleton { height: 210px; }
+
+  /* ── Stats cards lebih lapang ── */
+  .stats-row { gap: 14px; }
+  .stat-card { padding: 20px 12px; }
+
+  /* ── Testi grid 2 kolom ── */
+  .testi-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── WA float posisi bebas ── */
+  .wa-float {
+    bottom: 28px;
+    right: 28px;
+  }
+  .music-bar {
+    bottom: 28px;
+    right: 92px;
+  }
+
+  /* ── Modal backdrop lebih gelap ── */
+  .iklan-overlay { background: rgba(0,0,0,0.72); }
+  .iklan-box { max-width: 360px; }
+
+}
+
+@media (min-width: 768px) {
+  /* Sembunyikan tombol titik tiga di desktop — sudah ada sidebar */
+  #memberBtnWrap { display: none !important; }
+}
+
+
+/* ══ SETTINGS PAGE ══ */
+.sett-hero {
+  position:relative;padding:28px 20px 22px;
+  background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(37,99,235,.08));
+  border:1px solid rgba(139,92,246,.25);border-radius:20px;margin-bottom:20px;
+  overflow:hidden;
+}
+.sett-hero-glow {
+  position:absolute;width:180px;height:180px;
+  background:radial-gradient(circle,rgba(139,92,246,.35) 0%,transparent 70%);
+  top:-60px;right:-40px;pointer-events:none;
+}
+.sett-hero-icon { font-size:36px;margin-bottom:8px; }
+.sett-hero-title {
+  font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;
+}
+.sett-hero-sub { font-size:12px;color:var(--muted);line-height:1.6; }
+
+.sett-section {
+  background:rgba(4,10,22,.55);border:1px solid var(--border);
+  border-radius:18px;padding:16px 16px;margin-bottom:12px;
+  transition:border-color .25s;
+}
+.sett-section:focus-within { border-color:rgba(96,165,250,.35); }
+.sett-section-title {
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--blue-bright);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+}
+.sett-section-title::before {
+  content:'';display:inline-block;width:3px;height:12px;
+  background:var(--blue-bright);border-radius:2px;
+}
+.sett-row {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid rgba(96,165,250,.07);
+  gap:12px;
+}
+.sett-row:last-child { border-bottom:none;padding-bottom:0; }
+.sett-row:first-of-type { padding-top:0; }
+.sett-row-left { display:flex;align-items:center;gap:10px;flex:1;min-width:0; }
+.sett-row-icon {
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.sett-row-label {
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);
+}
+.sett-row-sub { font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4; }
+
+.sett-field {
+  display:flex;flex-direction:column;gap:6px;margin-bottom:11px;
+}
+.sett-field:last-child { margin-bottom:0; }
+.sett-label {
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.4px;color:var(--muted);text-transform:uppercase;
+}
+.sett-input {
+  width:100%;padding:10px 13px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:12px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;
+  outline:none;box-sizing:border-box;transition:border-color .2s,background .2s;
+}
+.sett-input:focus {
+  border-color:var(--blue-bright);background:rgba(37,99,235,.07);
+}
+.sett-input-row { display:flex;gap:8px;align-items:center; }
+.sett-input-row .sett-input { flex:1; }
+.sett-save-btn {
+  display:block;width:100%;padding:12px;margin-top:4px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  border:none;border-radius:13px;
+  color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;text-align:center;letter-spacing:.3px;
+  transition:opacity .2s,transform .2s;
+}
+.sett-save-btn:hover { opacity:.88;transform:translateY(-1px); }
+
 </style>
 </head>
 <body>
@@ -2937,6 +3254,66 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 <!-- Background -->
 <div class="bg-fx"><span></span><span></span><span></span></div>
 <div class="bg-grid"></div>
+
+<!-- ═══ DESKTOP WRAP ═══ -->
+<div class="desktop-wrap">
+
+<!-- ═══ SIDEBAR DESKTOP ═══ -->
+<aside class="desktop-sidebar" id="desktopSidebar">
+  <div class="sidebar-logo-wrap">
+    <img id="sidebarLogoImg" src="" alt="Logo" onerror="this.style.display='none'">
+    <div class="sidebar-logo-text">
+      <div class="sidebar-logo-name" id="sidebarStoreName">Rizanta Store</div>
+      <div class="sidebar-logo-sub">Dashboard</div>
+    </div>
+  </div>
+
+  <button class="sidebar-nav-btn active" id="snav-home" onclick="goPage('page-home')">
+    <svg viewBox="0 0 24 24"><path d="M3.5 11.5 12 4l8.5 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H10a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3.5a1 1 0 0 0 1-1v-9"/></svg>
+    Beranda
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-produk" onclick="goPage('page-produk')">
+    <svg viewBox="0 0 24 24"><path d="M7 8V6.5a3 3 0 0 1 6 0V8"/><rect x="4.5" y="8" width="11" height="11.5" rx="2"/><path d="M19.5 11.5h-1m1 0 .8 6.6a1.8 1.8 0 0 1-1.8 2H17"/></svg>
+    Produk
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-cek" onclick="goPage('page-cek')">
+    <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19.5 19.5 15 15"/></svg>
+    Cek Resi
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-faq" onclick="goPage('page-faq')">
+    <svg viewBox="0 0 24 24"><rect x="4.5" y="7.5" width="15" height="11" rx="3"/><path d="M12 7.5V5m-2.5 0h5"/><circle cx="9" cy="13" r="1.05" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1.05" fill="currentColor" stroke="none"/><path d="M2.5 12h2m17 0h2"/></svg>
+    Tanya Bot
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-cek-langganan" onclick="goLanggananPage();">
+    <svg viewBox="0 0 24 24"><path d="M4 8.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1a1.7 1.7 0 0 0 0 3.4v1.1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1.1a1.7 1.7 0 0 0 0-3.4Z"/><path d="M9.5 6.5v11"/></svg>
+    Member
+  </button>
+
+  <div class="sidebar-divider"></div>
+
+  <button class="sidebar-nav-btn" id="snav-admin" onclick="goPage('page-admin')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Admin
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-refund" onclick="goPage('page-refund')">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V18c0-.55-.45-1-1-1s-1 .45-1 1v1.93C7.06 19.48 4.52 16.94 4.07 13H6c.55 0 1-.45 1-1s-.45-1-1-1H4.07C4.52 7.06 7.06 4.52 11 4.07V6c0 .55.45 1 1 1s1-.45 1-1V4.07c3.94.45 6.48 2.99 6.93 6.93H18c-.55 0-1 .45-1 1s.45 1 1 1h1.93c-.45 3.94-2.99 6.48-6.93 6.93z"/><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+    Kalkulator Refund
+  </button>
+
+  <button class="sidebar-nav-btn" id="snav-settings" onclick="goPage('page-settings')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Pengaturan
+  </button>
+
+</aside>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="desktop-main">
 
 <!-- Running Text / Ticker -->
 <div class="ticker-wrap hidden" id="tickerWrap">
@@ -3086,7 +3463,9 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       cursor:pointer;transition:background .18s;text-align:left;
     " onmouseover="this.style.background='rgba(37,99,235,.18)'"
        onmouseout="this.style.background='transparent'">
-      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">🔐</span>
+      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </span>
       <span>Admin Panel</span>
     </button>
     <!-- Refund Kalkulator — selalu tampil -->
@@ -3099,12 +3478,14 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       cursor:pointer;transition:background .18s;text-align:left;
     " onmouseover="this.style.background='rgba(6,182,212,.14)'"
        onmouseout="this.style.background='transparent'">
-      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">💸</span>
+      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#06b6d4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+      </span>
       <span>Kalkulator Refund</span>
     </button>
     <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
     <!-- Settings -->
-    <button onclick="closeMemberMenu();openSettingsPanel();" id="settingsMenuBtn" style="
+    <button onclick="closeMemberMenu();goPage('page-settings');" id="settingsMenuBtn" style="
       display:flex;align-items:center;gap:9px;width:100%;
       background:transparent;border:none;
       border-radius:10px;padding:10px 12px;
@@ -3112,7 +3493,9 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       cursor:pointer;transition:background .18s;text-align:left;
     " onmouseover="this.style.background='rgba(139,92,246,.14)'"
        onmouseout="this.style.background='transparent'">
-      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">⚙️</span>
+      <span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+      </span>
       <span id="settingsMenuLabel">Pengaturan</span>
     </button>
     <div style="height:1px;background:rgba(96,165,250,.1);margin:2px 8px;"></div>
@@ -3138,7 +3521,9 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
         cursor:pointer;transition:background .18s;text-align:left;
       " onmouseover="this.style.background='rgba(248,113,113,.12)'"
          onmouseout="this.style.background='transparent'">
-        <span style="font-size:15px;">🚪</span>
+        <span style="display:flex;align-items:center;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        </span>
         <span>Keluar</span>
       </button>
     </div>
@@ -3532,10 +3917,6 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     </div>
   </div>
 
-  <div id="setupBanner" class="setup-banner" onclick="openSetup()">
-    ⚠️ <strong>Google Sheets belum dikonfigurasi.</strong> Klik untuk setup →
-  </div>
-
   <div class="card d1 resi-card-glow">
     <div class="card-heading">🎫 Kode Resi Pembelian</div>
     <div class="field">
@@ -3622,11 +4003,11 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 
   <!-- Dashboard Stats -->
     <div id="dashStats" class="dash-grid">
-      <div class="dash-card dc-total"><div class="dash-icon">📦</div><div class="dash-num" id="statTotal">-</div><div class="dash-label">Total Order</div></div>
-      <div class="dash-card dc-aktif"><div class="dash-icon">✅</div><div class="dash-num" id="statAktif">-</div><div class="dash-label">Aktif</div></div>
-      <div class="dash-card dc-warn"><div class="dash-icon">⏳</div><div class="dash-num" id="statWarn">-</div><div class="dash-label">Segera Habis</div></div>
-      <div class="dash-card dc-exp"><div class="dash-icon">❌</div><div class="dash-num" id="statExp">-</div><div class="dash-label">Kadaluarsa</div></div>
-      <div class="dash-card dc-refund"><div class="dash-icon">🔶</div><div class="dash-num" id="statRefund">-</div><div class="dash-label">Refund</div></div>
+      <div class="dash-card dc-total" onclick="setOrderStatusFilter('all')" style="cursor:pointer;"><div class="dash-icon">📦</div><div class="dash-num" id="statTotal">-</div><div class="dash-label">Total Order</div></div>
+      <div class="dash-card dc-aktif" onclick="setOrderStatusFilter('aktif')" style="cursor:pointer;"><div class="dash-icon">✅</div><div class="dash-num" id="statAktif">-</div><div class="dash-label">Aktif</div></div>
+      <div class="dash-card dc-warn" onclick="setOrderStatusFilter('warn')" style="cursor:pointer;"><div class="dash-icon">⏳</div><div class="dash-num" id="statWarn">-</div><div class="dash-label">Segera Habis</div></div>
+      <div class="dash-card dc-exp" onclick="setOrderStatusFilter('exp')" style="cursor:pointer;"><div class="dash-icon">❌</div><div class="dash-num" id="statExp">-</div><div class="dash-label">Kadaluarsa</div></div>
+      <div class="dash-card dc-refund" onclick="setOrderStatusFilter('refund')" style="cursor:pointer;"><div class="dash-icon">🔶</div><div class="dash-num" id="statRefund">-</div><div class="dash-label">Refund</div></div>
       <div class="dash-card dc-revenue">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
           <div>
@@ -3706,13 +4087,22 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
         <button class="bulk-btn bulk-btn-cancel" onclick="cancelBulkMode()">✕</button>
       </div>
 
+      <!-- Filter status orderan -->
+      <div class="order-filter-bar" id="orderFilterBar">
+        <button class="order-filter-chip active" data-filter="all" onclick="setOrderStatusFilter('all',false)">📋 Semua <span class="ofc-count" id="ofcAll">0</span></button>
+        <button class="order-filter-chip" data-filter="aktif" onclick="setOrderStatusFilter('aktif',false)">🟢 Aktif <span class="ofc-count" id="ofcAktif">0</span></button>
+        <button class="order-filter-chip" data-filter="warn" onclick="setOrderStatusFilter('warn',false)">🟡 Segera Habis <span class="ofc-count" id="ofcWarn">0</span></button>
+        <button class="order-filter-chip" data-filter="exp" onclick="setOrderStatusFilter('exp',false)">🔴 Kadaluarsa <span class="ofc-count" id="ofcExp">0</span></button>
+        <button class="order-filter-chip" data-filter="refund" onclick="setOrderStatusFilter('refund',false)">🔶 Refund <span class="ofc-count" id="ofcRefund">0</span></button>
+      </div>
+
       <!-- Search bar orderan -->
       <div class="order-search-wrap">
         <span class="order-search-icon">🔍</span>
         <input class="order-search-input" id="orderSearchInput" placeholder="Cari nama, resi, HP, atau produk..." oninput="orderSearchOnInput(this)" />
         <button class="order-search-clear" id="orderSearchClear" onclick="orderSearchClear()">✕</button>
       </div>
-      <div class="order-search-info hidden" id="orderSearchInfo">Menampilkan <span id="orderSearchCount">0</span> hasil pencarian</div>
+      <div class="order-search-info hidden" id="orderSearchInfo">Menampilkan <span id="orderSearchCount">0</span> data</div>
 
       <div id="ordersTable"><div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Klik Refresh untuk memuat data</div></div>
     </div>
@@ -4240,6 +4630,76 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
   </div>
 </div>
 
+<!-- ══════════════════════════════════
+     PAGE — PENGATURAN
+══════════════════════════════════ -->
+<div class="page" id="page-settings">
+
+  <!-- Hero -->
+  <div class="sett-hero">
+    <div class="sett-hero-glow"></div>
+    <div class="sett-hero-icon">⚙️</div>
+    <div class="sett-hero-title">Pengaturan</div>
+    <div class="sett-hero-sub">Konfigurasi tampilan dan preferensi aplikasi kamu.</div>
+  </div>
+
+  <!-- ── Tampilan ── -->
+  <div class="sett-section">
+    <div class="sett-section-title">Tampilan</div>
+
+    <div class="sett-row">
+      <div class="sett-row-left">
+        <div class="sett-row-icon" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <div>
+          <div class="sett-row-label" id="pg-themeLabel">Mode Gelap</div>
+          <div class="sett-row-sub">Ganti antara tema gelap dan terang</div>
+        </div>
+      </div>
+      <label class="toggle-sw">
+        <input type="checkbox" id="pg-themeToggle" onchange="pgToggleTheme(this.checked)">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="sett-row">
+      <div class="sett-row-left">
+        <div class="sett-row-icon" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div>
+          <div class="sett-row-label">Musik Latar</div>
+          <div class="sett-row-sub">Putar / hentikan musik background</div>
+        </div>
+      </div>
+      <label class="toggle-sw">
+        <input type="checkbox" id="pg-musicToggle" onchange="toggleMusicFromSettings(this.checked)">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+  </div>
+
+  <!-- ── Tentang ── -->
+  <div class="sett-section">
+    <div class="sett-section-title">Tentang</div>
+    <div class="sett-row" style="border:none;padding:6px 0;">
+      <div class="sett-row-left">
+        <div class="sett-row-icon" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V21h16V9"/><path d="M2 9l2-6h16l2 6"/><path d="M2 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/><path d="M9 21v-6h6v6"/></svg>
+        </div>
+        <div>
+          <div class="sett-row-label">Rizanta Store</div>
+          <div class="sett-row-sub">Versi 5.4 · Built with ❤️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="nav-inner">
@@ -4299,7 +4759,7 @@ const APPS=[
 ];
 
 /* ── Page navigation ── */
-const pageMap={'page-home':'nav-home','page-produk':'nav-produk','page-cek':'nav-cek','page-faq':'nav-faq','page-admin':'nav-home','page-member':'nav-home','page-refund':'nav-home','page-langganan':'nav-cek-langganan'};
+const pageMap={'page-home':'nav-home','page-produk':'nav-produk','page-cek':'nav-cek','page-faq':'nav-faq','page-admin':'nav-home','page-member':'nav-home','page-refund':'nav-home','page-langganan':'nav-cek-langganan','page-settings':'nav-home'};
 function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn, .nav-btn-fab').forEach(b=>b.classList.remove('active'));
@@ -4327,8 +4787,6 @@ let CFG={
   groqKey: '', // diisi otomatis dari sheet Config (key: groqKey)
 };
 function loadConfig(){
-  /* Config sudah hardcoded, sembunyikan setup banner */
-  document.getElementById('setupBanner').classList.add('hidden');
   /* Muat Groq Key dari sheet Config */
   _loadGroqKey();
 }
@@ -4498,6 +4956,14 @@ function fmtDate(s){
   return new Date(s).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
 }
 function appByName(n){return APPS.find(a=>a.name.toLowerCase()===n.toLowerCase())||{emoji:'📱',name:n,color:'#2563eb'};}
+function orderStatusKey(o){
+  // Menentukan kategori filter: 'refund' | 'exp' | 'warn' | 'aktif'
+  if(o && (o.status||'').toLowerCase()==='refund') return 'refund';
+  const d=daysLeft(o.selesai||o['tanggal selesai']||o.end||'');
+  if(d<0) return 'exp';
+  if(d<=7) return 'warn';
+  return 'aktif';
+}
 function statusInfo(d, o){
   // Cek status refund dari object order
   if(o && (o.status||'').toLowerCase()==='refund'){
@@ -4757,10 +5223,10 @@ async function loadOrders(){
     const total=orders.length;
     let aktif=0,warn=0,exp=0,refund=0;
     orders.forEach(o=>{
-      if((o.status||'').toLowerCase()==='refund'){ refund++; return; }
-      const d=daysLeft(o.selesai||o['tanggal selesai']||o.end||'');
-      if(d<0)exp++;
-      else if(d<=7)warn++;
+      const key=orderStatusKey(o);
+      if(key==='refund')refund++;
+      else if(key==='exp')exp++;
+      else if(key==='warn')warn++;
       else aktif++;
     });
     document.getElementById('statTotal').textContent=total;
@@ -4768,6 +5234,12 @@ async function loadOrders(){
     document.getElementById('statWarn').textContent=warn;
     document.getElementById('statExp').textContent=exp;
     document.getElementById('statRefund').textContent=refund;
+    /* Update counter di filter chip */
+    document.getElementById('ofcAll').textContent=total;
+    document.getElementById('ofcAktif').textContent=aktif;
+    document.getElementById('ofcWarn').textContent=warn;
+    document.getElementById('ofcExp').textContent=exp;
+    document.getElementById('ofcRefund').textContent=refund;
 
     /* ── Hitung Estimasi Pendapatan ── */
     try{
@@ -4812,7 +5284,8 @@ async function loadOrders(){
       const cbHtml = _bulkMode ? `<td><input type="checkbox" class="order-cb" data-resi="${o.resi}" onchange="onBulkCbChange(this)"></td>` : '';
       const isRefund = (o.status||'').toLowerCase()==='refund';
       const badgeText = isRefund ? '🔶 Refund' : `${st.dot} ${d<0?0:d}h`;
-      return`<tr class="order-row" data-resi="${o.resi}" style="${isRefund?'background:rgba(249,115,22,.05);':(d<=7&&d>=0?'background:rgba(251,191,36,.04);':'')}${(!isRefund&&d<0)?'background:rgba(248,113,113,.04);':''}">
+      const statusKey = orderStatusKey(o);
+      return`<tr class="order-row" data-resi="${o.resi}" data-status="${statusKey}" style="${isRefund?'background:rgba(249,115,22,.05);':(d<=7&&d>=0?'background:rgba(251,191,36,.04);':'')}${(!isRefund&&d<0)?'background:rgba(248,113,113,.04);':''}">
         ${cbHtml}
         <td><strong style="font-size:11.5px;">${o.resi||'-'}</strong> <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px;" title="Copy resi">📋</button></td>
         <td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${o.hp||o['no hp']||o.phone||'-'}</span></td>
@@ -4829,7 +5302,8 @@ async function loadOrders(){
     }).join('');
     const cbHeader = _bulkMode ? `<th><input type="checkbox" class="order-cb" id="bulkSelectAll" onchange="bulkSelectAllToggle(this)" title="Pilih Semua"></th>` : '';
     wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Status</th><th>Selesai/Refund</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    // Re-apply search filter setelah render
+    // Re-apply filter status & search setelah render
+    _applyOrderStatusFilter();
     if(_orderSearchQuery) _applyOrderSearch();
   }catch(e){wrap.innerHTML=errBox(e.message);}
 }
@@ -4911,6 +5385,28 @@ async function dupOrder(resi){
    SEARCH / FILTER TABEL ORDER — Admin
 ══════════════════════════════════════ */
 let _orderSearchQuery = '';
+let _orderStatusFilter = 'all';
+
+function setOrderStatusFilter(key, scrollTo){
+  _orderStatusFilter = key;
+  document.querySelectorAll('.order-filter-chip').forEach(chip=>{
+    chip.classList.toggle('active', chip.dataset.filter === key);
+  });
+  _applyOrderStatusFilter();
+  if(_orderSearchQuery) _applyOrderSearch();
+  if(scrollTo!==false){
+    document.getElementById('orderFilterBar')?.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function _applyOrderStatusFilter(){
+  const rows = document.querySelectorAll('#ordersTable .order-row');
+  rows.forEach(r=>{
+    const match = _orderStatusFilter==='all' || r.dataset.status===_orderStatusFilter;
+    r.dataset.statusMatch = match ? '1' : '0';
+  });
+  _refreshRowVisibility();
+}
 
 function orderSearchOnInput(el){
   _orderSearchQuery = el.value.trim().toLowerCase();
@@ -4931,28 +5427,31 @@ function orderSearchClear(){
 
 function _applyOrderSearch(){
   const q = _orderSearchQuery;
+  const rows = document.querySelectorAll('#ordersTable .order-row');
+  rows.forEach(r=>{
+    const text = r.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    r.dataset.searchMatch = match ? '1' : '0';
+  });
+  _refreshRowVisibility();
+}
+
+/* Gabungkan hasil status filter + search jadi satu, lalu render visibility & info count */
+function _refreshRowVisibility(){
+  const rows = document.querySelectorAll('#ordersTable .order-row');
   const infoEl  = document.getElementById('orderSearchInfo');
   const countEl = document.getElementById('orderSearchCount');
-  const rows    = document.querySelectorAll('#ordersTable .order-row');
-
-  if(!rows.length) return;
-
-  if(!q){
-    rows.forEach(r => r.style.display = '');
-    if(infoEl) infoEl.classList.add('hidden');
-    return;
-  }
-
   let visible = 0;
-  rows.forEach(r => {
-    const text = r.textContent.toLowerCase();
-    const show = text.includes(q);
+  rows.forEach(r=>{
+    const statusOk = r.dataset.statusMatch !== '0'; /* default '1' kalau belum di-set */
+    const searchOk = r.dataset.searchMatch !== '0';
+    const show = statusOk && searchOk;
     r.style.display = show ? '' : 'none';
     if(show) visible++;
   });
-
   if(infoEl){
-    infoEl.classList.remove('hidden');
+    const showInfo = !!_orderSearchQuery || _orderStatusFilter!=='all';
+    infoEl.classList.toggle('hidden', !showInfo);
     if(countEl) countEl.textContent = visible;
   }
 }
@@ -8960,6 +9459,8 @@ function setLang(lang){
    SETTINGS PANEL — open/close from dots menu
 ══════════════════════════════════════════════════════ */
 function openSettingsPanel(){
+  // Highlight sidebar settings button on desktop
+  if(window.innerWidth >= 768){ const ab=document.querySelectorAll('.sidebar-nav-btn'); ab.forEach(b=>b.classList.remove('active')); const sb=document.getElementById('snav-settings'); if(sb) sb.classList.add('active'); }
   const panel = document.getElementById('settingsPanel');
   panel.classList.add('open');
   syncMusicToggle();
@@ -10300,6 +10801,143 @@ async function saveRunningTextSettings(silent){
   <div class="sf-sort-opt" data-sort="low"     onclick="sfSetSort('low',this)"><span class="sf-sort-opt-icon">💸</span>Harga Terendah</div>
   <div class="sf-sort-opt" data-sort="high"    onclick="sfSetSort('high',this)"><span class="sf-sort-opt-icon">💰</span>Harga Tertinggi</div>
 </div>
+
+</div><!-- /.desktop-main -->
+</div><!-- /.desktop-wrap -->
+<script>
+/* ══ PAGE SETTINGS LOGIC ══ */
+
+// Sinkronisasi state toggle dari settings panel yang sudah ada
+function pgSyncSettingsPage(){
+  // Theme
+  const isLight = document.body.classList.contains('light-mode');
+  const pgTheme = document.getElementById('pg-themeToggle');
+  const pgLabel = document.getElementById('pg-themeLabel');
+  if(pgTheme) pgTheme.checked = isLight;
+  if(pgLabel) pgLabel.textContent = isLight ? 'Mode Terang' : 'Mode Gelap';
+
+  // Music — hitung langsung dari state audio asli (jangan andalkan checkbox popup lama,
+  // karena sekarang dots menu langsung ke halaman ini tanpa lewat openSettingsPanel())
+  const audio = document.getElementById('bgMusic');
+  const bar   = document.getElementById('musicBar');
+  const isLoaded = bar && !bar.classList.contains('hidden');
+  const isOn = !!(isLoaded && audio && !audio.muted);
+  const pgMusic = document.getElementById('pg-musicToggle');
+  if(pgMusic) pgMusic.checked = isOn;
+  // Sinkronkan juga checkbox popup lama biar konsisten kalau ada yang masih merujuk ke situ
+  const musicEl = document.getElementById('musicToggleSetting');
+  if(musicEl) musicEl.checked = isOn;
+}
+
+function pgToggleTheme(isLight){
+  // Sinkron ke toggle asli
+  const orig = document.getElementById('themeToggle');
+  if(orig){ orig.checked = isLight; }
+  toggleTheme(isLight);
+  // Update label
+  const lbl = document.getElementById('pg-themeLabel');
+  if(lbl) lbl.textContent = isLight ? 'Mode Terang' : 'Mode Gelap';
+}
+
+// Patch goPage agar sync settings page saat dibuka
+(function(){
+  const _orig = window.goPage;
+  if(typeof _orig === 'function'){
+    window.goPage = function(id){
+      _orig(id);
+      if(id === 'page-settings') pgSyncSettingsPage();
+    };
+  }
+})();
+</script>
+
+
+<script>
+/* ══ DESKTOP SIDEBAR SYNC ══ */
+(function(){
+  const pageToSnavMap = {
+    'page-home': 'snav-home',
+    'page-produk': 'snav-produk',
+    'page-cek': 'snav-cek',
+    'page-faq': 'snav-faq',
+    'page-langganan': 'snav-cek-langganan',
+    'page-admin': 'snav-admin',
+    'page-login': 'snav-admin',
+    'page-orders': 'snav-admin',
+    'page-promo': 'snav-admin',
+    'page-banner': 'snav-admin',
+    'page-settings': 'snav-settings',
+    'page-running-text': 'snav-admin',
+    'page-musik': 'snav-admin',
+    'page-video': 'snav-admin',
+    'page-iklan': 'snav-admin',
+    'page-testi': 'snav-admin',
+    'page-refund': 'snav-refund',
+    'page-member': 'snav-cek-langganan',
+  };
+
+  function syncSidebarActiveSettings(){
+    const allBtns = document.querySelectorAll('.sidebar-nav-btn');
+    allBtns.forEach(b => b.classList.remove('active'));
+    const target = document.getElementById('snav-settings');
+    if(target) target.classList.add('active');
+  }
+
+  function syncSidebarActive(pageId){
+    const allBtns = document.querySelectorAll('.sidebar-nav-btn');
+    allBtns.forEach(b => b.classList.remove('active'));
+    const key = pageToSnavMap[pageId] || 'snav-home';
+    const target = document.getElementById(key);
+    if(target) target.classList.add('active');
+  }
+
+  // Patch goPage
+  const _origGoPage = window.goPage;
+  if(typeof _origGoPage === 'function'){
+    window.goPage = function(pageId){
+      _origGoPage(pageId);
+      syncSidebarActive(pageId);
+    };
+  }
+
+  // Patch goLanggananPage
+  const _origGoLangganan = window.goLanggananPage;
+  if(typeof _origGoLangganan === 'function'){
+    window.goLanggananPage = function(){
+      _origGoLangganan();
+      syncSidebarActive('page-langganan');
+    };
+  }
+
+  // On DOMContentLoaded: set sidebar logo from page logo
+  document.addEventListener('DOMContentLoaded', function(){
+    // Sync logo ke sidebar
+    function syncSidebarLogo(){
+      const mainLogo = document.querySelector('.store-logo');
+      const sidebarImg = document.getElementById('sidebarLogoImg');
+      if(mainLogo && sidebarImg && mainLogo.src){
+        sidebarImg.src = mainLogo.src;
+        sidebarImg.style.display = '';
+      }
+      const storeName = document.querySelector('.store-name');
+      const sidebarName = document.getElementById('sidebarStoreName');
+      if(storeName && sidebarName){
+        sidebarName.textContent = storeName.textContent || 'Rizanta Store';
+      }
+    }
+    // Try immediately, then retry after data loads
+    setTimeout(syncSidebarLogo, 500);
+    setTimeout(syncSidebarLogo, 2000);
+    setTimeout(syncSidebarLogo, 4000);
+
+    // Observe logo changes
+    const mainLogo = document.querySelector('.store-logo');
+    if(mainLogo){
+      new MutationObserver(syncSidebarLogo).observe(mainLogo, {attributes: true, attributeFilter: ['src']});
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
