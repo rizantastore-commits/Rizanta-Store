@@ -418,6 +418,32 @@ body.ticker-hidden { padding-top: 0; }
   font-size:11px;color:var(--muted);margin-bottom:8px;
   font-family:'Syne',sans-serif;
 }
+/* ── Order Date Range Filter ── */
+.order-date-filter{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.order-date-filter input[type="date"]{
+  padding:8px 10px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;
+  outline:none;box-sizing:border-box;
+  transition:border-color .2s,background .2s;
+  flex:1;min-width:118px;
+}
+.order-date-filter input[type="date"]:focus{border-color:var(--blue-bright);background:rgba(37,99,235,.06);}
+.order-date-filter .odf-sep{font-size:11px;color:var(--muted);flex-shrink:0;}
+.order-date-filter .odf-btn{
+  flex-shrink:0;padding:8px 12px;border-radius:10px;
+  background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.35);
+  color:var(--blue-light);font-size:11.5px;font-weight:700;
+  font-family:'Syne',sans-serif;cursor:pointer;transition:all .2s;
+}
+.order-date-filter .odf-btn:hover{background:rgba(37,99,235,.28);}
+.order-date-filter .odf-btn.odf-reset{
+  background:rgba(255,255,255,.05);border-color:var(--border);color:var(--muted);
+}
+.order-date-filter .odf-btn.odf-reset:hover{color:var(--text);border-color:var(--border-hi);}
 .order-search-info span{color:var(--blue-light);font-weight:700;}
 
 /* ── Duplicate button ── */
@@ -3542,14 +3568,14 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
   <div class="modal" style="max-width:360px;">
     <button onclick="closeMemberLogin()" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.07);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;">✕</button>
     <div style="text-align:center;margin-bottom:20px;">
-      <div style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;box-shadow:0 0 24px rgba(37,99,235,.4);">📱</div>
+      <div style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;color:#fff;margin:0 auto 10px;box-shadow:0 0 24px rgba(37,99,235,.4);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg></div>
       <h3 style="margin:0 0 6px;">Cek Langgananku</h3>
       <p style="margin:0;font-size:12px;color:var(--muted);line-height:1.6;">Masukkan <strong style="color:var(--blue-light);">nomor HP</strong> yang kamu daftarkan<br>saat order ke admin</p>
     </div>
     <div class="field">
       <label>Nomor HP / WhatsApp</label>
       <div style="position:relative;">
-        <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);pointer-events:none;">📱</span>
+        <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;display:flex;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg></span>
         <input id="memberHpInput" placeholder="Contoh: 08123456789"
           type="tel"
           inputmode="numeric"
@@ -3591,7 +3617,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <button class="rt-btn" onclick="memberManualRefresh()">↻ Refresh</button>
   </div>
   <div style="margin-bottom:18px;">
-    <span id="memberResiInfo" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.25);border-radius:100px;padding:5px 13px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--blue-pale);letter-spacing:.5px;">📱 -</span>
+    <span id="memberResiInfo" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.25);border-radius:100px;padding:5px 13px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--blue-pale);letter-spacing:.5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg> -</span>
   </div>
 
   <!-- Summary Cards -->
@@ -3817,14 +3843,14 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <!-- Card form -->
     <div style="background:linear-gradient(135deg,rgba(37,99,235,.13),rgba(6,182,212,.08));border:1px solid rgba(96,165,250,.25);border-radius:20px;padding:22px 18px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;gap:13px;margin-bottom:18px;">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 0 22px rgba(37,99,235,.4);">📱</div>
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 0 22px rgba(37,99,235,.4);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg></div>
         <div>
           <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;">Nomor HP / WhatsApp</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px;">Nomor yang didaftarkan saat order ke admin</div>
         </div>
       </div>
       <div style="position:relative;margin-bottom:12px;">
-        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--muted);pointer-events:none;">📱</span>
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;display:flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg></span>
         <input id="langHpInput"
           type="tel" inputmode="numeric"
           placeholder="Contoh: 08123456789"
@@ -3878,7 +3904,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 
     <!-- Badge HP -->
     <div style="margin-bottom:14px;">
-      <span id="langHpBadge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.25);border-radius:100px;padding:5px 13px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--blue-pale);letter-spacing:.5px;">📱 -</span>
+      <span id="langHpBadge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,.12);border:1px solid rgba(96,165,250,.25);border-radius:100px;padding:5px 13px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--blue-pale);letter-spacing:.5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg> -</span>
     </div>
 
     <!-- Summary cards -->
@@ -3983,6 +4009,12 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
   <!-- Panel -->
   <div id="adminPanel" class="hidden">
 
+  <!-- Header panel admin + tombol logout (selalu kelihatan di semua tab) -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
+    <div class="card-heading" style="margin:0;">🛠️ Panel Admin</div>
+    <button class="btn btn-outline" onclick="adminLogout()" style="width:auto;padding:8px 16px;font-size:12px;color:var(--red);border-color:rgba(248,113,113,.4);flex-shrink:0;">🚪 Keluar</button>
+  </div>
+
   <!-- Admin Tabs -->
   <div class="admin-tabs-wrap">
     <button class="admin-tabs-arrow" id="adminTabPrev" onclick="scrollAdminTabs(-1)" aria-label="Geser kiri">&#8249;</button>
@@ -3997,6 +4029,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab" id="tabVideo" onclick="switchTab('video')">▶️ Video</button>
       <button class="admin-tab" id="tabPromo" onclick="switchTab('promo')">🎟️ Promo</button>
       <button class="admin-tab" id="tabRunningtext" onclick="switchTab('runningtext')">📢 Running Text</button>
+      <button class="admin-tab" id="tabLog" onclick="switchTab('log')">📜 Log</button>
     </div>
     <button class="admin-tabs-arrow" id="adminTabNext" onclick="scrollAdminTabs(1)" aria-label="Geser kanan">&#8250;</button>
   </div>
@@ -4083,8 +4116,9 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="card d2">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <div class="card-heading" style="margin:0;">📋 Data Pelanggan</div>
-        <div style="display:flex;gap:7px;">
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
           <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="toggleBulkMode()" id="bulkModeBtn">☑️ Pilih</button>
+          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="exportOrdersCSV()">📤 Export CSV</button>
           <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="loadOrders()">🔄 Refresh</button>
         </div>
       </div>
@@ -4115,12 +4149,19 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       </div>
       <div class="order-search-info hidden" id="orderSearchInfo">Menampilkan <span id="orderSearchCount">0</span> data</div>
 
+      <!-- Filter tanggal range (berdasarkan tanggal mulai order) -->
+      <div class="order-date-filter" id="orderDateFilterBar">
+        <input type="date" id="orderDateFrom" title="Dari tanggal mulai" />
+        <span class="odf-sep">s/d</span>
+        <input type="date" id="orderDateTo" title="Sampai tanggal mulai" />
+        <button class="odf-btn" onclick="applyOrderDateFilter()">📅 Terapkan</button>
+        <button class="odf-btn odf-reset" onclick="resetOrderDateFilter()">✕ Reset</button>
+      </div>
+
       <div id="ordersTable"><div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Klik Refresh untuk memuat data</div></div>
     </div>
 
-    <button class="btn btn-outline" onclick="adminLogout()" style="margin-top:4px;">Keluar dari Admin</button>
-
-  </div><!-- /tab-order -->
+  </div>
 
   <!-- Tab: Produk -->
   <div id="tab-produk" class="tab-content">
@@ -4757,6 +4798,32 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 </nav>
 
 <script>
+/* ── Icon SVG produk (pengganti emoji biar rapi & konsisten, gaya sama dgn nav bar) ── */
+const PRODUCT_ICON_SVG = {
+  default : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg>',
+  netflix : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2.2"/><path d="M8 17l-1.6 4M16 17l1.6 4M12 17v4"/><path d="M7.5 6.5v7M16.5 6.5v7M7.5 6.5l9 7M16.5 6.5l-9 7"/></svg>',
+  spotify : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.3"/><path d="M7.3 9.7c3.4-1 7.6-.7 10.2 1M7.8 13c2.8-.8 6.1-.5 8.4.8M8.5 16.1c2.1-.6 4.6-.4 6.2.6"/></svg>',
+  disney  : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V10l3.1-2.9 1.3 2 1.5-2.7L12 3.7l2.1 2.7 1.5 2.7 1.3-2L20 10v11Z"/><path d="M4 21h16M9 21v-5h6v5"/></svg>',
+  youtube : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10.3 9.2v5.6l4.8-2.8Z" fill="currentColor" stroke="none"/></svg>',
+  chatgpt : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="11" rx="3"/><path d="M9 17v2.3L12.3 17M8.3 10.5h.1M12 10.5h.1M15.7 10.5h.1"/></svg>',
+  canva   : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.3 0 1.9-.7 1.9-1.5 0-.7-.5-1-.5-1.7s.6-1.3 1.5-1.3H17a4 4 0 0 0 4-4C21 7.6 17 3 12 3Z"/><circle cx="9" cy="11.3" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  prime   : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.3 12 4l8 4.3v7.4L12 20l-8-4.3Z"/><path d="M4 8.3 12 12.7l8-4.4M12 12.7V20"/></svg>',
+  viu     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="13" rx="2.5"/><path d="M9 22h6M12 18v4"/><path d="M6.8 9l2.4 5L11.6 9m1.6 0 2.4 5 2.4-5"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.1A8 8 0 1 1 9 19.4Z"/><path d="M9 9.2c0 3.1 2.4 5.5 5.5 5.5"/></svg>',
+  zoom    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="M16 10.3 21 7v10l-5-3.3"/></svg>',
+};
+const EMOJI_TO_PRODUCT_ICON = {
+  '🎬':'netflix','🎵':'spotify','🏰':'disney','▶️':'youtube','🤖':'chatgpt',
+  '🎨':'canva','📦':'prime','📺':'viu','💬':'whatsapp','📹':'zoom','📱':'default',
+};
+/* Hasilkan markup SVG ikon produk dari emoji lama. px = ukuran kotak ikon. */
+function prodIconSvg(emoji, px){
+  px = px || 22;
+  const key = EMOJI_TO_PRODUCT_ICON[emoji] || 'default';
+  return PRODUCT_ICON_SVG[key].replace('<svg ', `<svg width="${px}" height="${px}" style="display:block;flex-shrink:0;" `);
+}
+const HP_BADGE_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg>';
+
 /* ── App catalog ── */
 const APPS=[
   {id:'netflix', name:'Netflix',  emoji:'🎬', color:'#e50914'},
@@ -5038,13 +5105,15 @@ async function cekResi(){
     const st=statusInfo(days,o);
     const total=mulai&&selesai?Math.ceil((new Date(selesai)-new Date(mulai))/86400000):30;
     const pct=Math.max(0,Math.min(100,Math.round((Math.max(0,days)/total)*100)));
-    // Cari gambar produk yang namanya cocok dengan app
+    // Cari gambar produk yang namanya cocok dengan app (exact dulu, lalu partial match)
     const allProds = await fetchProduk();
     const appName  = o.app||o.aplikasi||o['nama aplikasi']||'';
-    const matchProd= allProds.find(p=> p.name.toLowerCase()===appName.toLowerCase());
+    const appNameLower = appName.toLowerCase().trim();
+    const matchProd= allProds.find(p=> p.name.toLowerCase().trim()===appNameLower)
+      || allProds.find(p=> appNameLower.includes(p.name.toLowerCase().trim()) || p.name.toLowerCase().trim().includes(appNameLower));
     const appImgHtml = (matchProd && matchProd.emoji && matchProd.emoji.startsWith('data:image'))
       ? `<img src="${matchProd.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;display:block;" />`
-      : app.emoji;
+      : prodIconSvg(app.emoji, 26);
     const iconBg = (matchProd && matchProd.emoji && matchProd.emoji.startsWith('data:image'))
       ? 'background:transparent;border:1px solid rgba(255,255,255,.1);'
       : `background:${app.color}22;border:1px solid ${app.color}44;`;
@@ -5120,6 +5189,7 @@ let selectedAppName='';
 let _lastOrders=[];
 let _loginAttempts=0;
 let _loginLockUntil=0;
+const ADMIN_KEY = 'rzt_admin_session_v1';
 
 async function adminLogin(){
   // Rate limiting — max 5 percobaan, kunci 5 menit
@@ -5143,16 +5213,8 @@ async function adminLogin(){
     const data = await res.json();
     if(data.valid === true){
       _loginAttempts = 0;
-      adminLoggedIn=true;
-      document.getElementById('adminLogin').classList.add('hidden');
-      document.getElementById('adminPanel').classList.remove('hidden');
-      setTimeout(updateAdminTabArrows, 100);
-      await renderAppsGrid();
-      const today=new Date().toISOString().split('T')[0];
-      document.getElementById('newMulai').value=today;
-      await loadOrders();
-      startAdminRt();
-      _rtSetBar('adminRtBar','adminRtDot','adminRtLabel','adminRtTime','live');
+      try{ localStorage.setItem(ADMIN_KEY, '1'); }catch(e){}
+      await _enterAdminPanel();
     } else {
       _loginAttempts++;
       if(_loginAttempts >= 5){
@@ -5169,9 +5231,34 @@ async function adminLogin(){
   btn.innerHTML='Masuk';
   btn.disabled=false;
 }
+
+/* ── Buka panel admin (dipakai saat login manual maupun auto-restore dari localStorage) ── */
+async function _enterAdminPanel(){
+  adminLoggedIn=true;
+  document.getElementById('adminLogin').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  setTimeout(updateAdminTabArrows, 100);
+  await renderAppsGrid();
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('newMulai').value=today;
+  await loadOrders();
+  startAdminRt();
+  _rtSetBar('adminRtBar','adminRtDot','adminRtLabel','adminRtTime','live');
+}
+
+/* ── Restore sesi admin saat reload, supaya tidak perlu login ulang sampai logout manual ── */
+(function restoreAdminSession(){
+  try{
+    if(localStorage.getItem(ADMIN_KEY) === '1'){
+      _enterAdminPanel();
+    }
+  }catch(e){}
+})();
+
 function adminLogout(){
   stopAdminRt();
   adminLoggedIn=false;
+  try{ localStorage.removeItem(ADMIN_KEY); }catch(e){}
   document.getElementById('adminLogin').classList.remove('hidden');
   document.getElementById('adminPanel').classList.add('hidden');
   document.getElementById('adminPassInput').value='';
@@ -5187,7 +5274,7 @@ async function renderAppsGrid(){
   grid.innerHTML = prods.map(p => {
     const imgHtml = p.emoji && p.emoji.startsWith('data:image')
       ? '<img src="' + p.emoji + '" style="width:28px;height:28px;object-fit:contain;border-radius:6px;display:block;margin:0 auto 3px;" />'
-      : '<span class="em">' + (p.emoji||'📱') + '</span>';
+      : '<span class="em" style="display:inline-flex;">' + prodIconSvg(p.emoji, 17) + '</span>';
     const safeId = p.id.replace(/[^a-zA-Z0-9_]/g,'_');
     const safeName = p.name.replace(/'/g, '&#39;');
     return '<div class="app-chip" id="chip_' + safeId + '" onclick="selectApp(\'' + safeId + '\',\'' + safeName + '\')">'
@@ -5200,16 +5287,28 @@ function selectApp(id,name){
   if(el) el.classList.add('sel');
   selectedAppName=name;
 }
-/* ── Normalisasi nomor HP (tersedia di scope admin juga) ── */
+/* ── Normalisasi nomor HP (tersedia di scope admin juga) ──
+   \u200B (zero-width space) ikut dibersihkan karena dipakai oleh
+   hpForSheet() di bawah supaya angka 0 di depan tidak hilang saat
+   tersimpan di Google Sheets (Sheets otomatis menganggap string
+   angka murni sebagai number lalu membuang leading zero-nya). */
 function normalizeHp(raw){
   if(!raw) return '';
-  let n = raw.toString().replace(/[\s\-().+]/g,'');
+  let n = raw.toString().replace(/[\s\-().+\u200B]/g,'');
   if(n.startsWith('62')) n = '0' + n.slice(2);
   return n;
 }
+/* ── Bungkus nomor HP sebelum dikirim ke Google Sheets agar kolomnya
+   tidak dibaca sebagai number (yang otomatis menghapus 0 di depan).
+   Karakter \u200B tidak terlihat, dan akan dibersihkan lagi oleh
+   normalizeHp() saat data dibaca/dibandingkan kembali. ── */
+function hpForSheet(hp){
+  const n = normalizeHp(hp);
+  return n ? ('\u200B' + n) : '';
+}
 async function tambahOrder(){
   if(!adminLoggedIn)return;
-  const data={action:'add',resi:document.getElementById('newResi').value.trim().toUpperCase(),nama:document.getElementById('newNama').value.trim(),hp:normalizeHp(document.getElementById('newHp').value.trim()),app:selectedAppName,email:document.getElementById('newEmail').value.trim(),password:document.getElementById('newPassword').value,mulai:document.getElementById('newMulai').value,selesai:document.getElementById('newSelesai').value,catatan:document.getElementById('newCatatan').value.trim(),status:'aktif',tgl_refund:''};
+  const data={action:'add',resi:document.getElementById('newResi').value.trim().toUpperCase(),nama:document.getElementById('newNama').value.trim(),hp:hpForSheet(document.getElementById('newHp').value.trim()),app:selectedAppName,email:document.getElementById('newEmail').value.trim(),password:document.getElementById('newPassword').value,mulai:document.getElementById('newMulai').value,selesai:document.getElementById('newSelesai').value,catatan:document.getElementById('newCatatan').value.trim(),status:'aktif',tgl_refund:''};
   if(!data.resi||!data.nama||!data.app||!data.mulai||!data.selesai){showToast('⚠️ Lengkapi semua field wajib!');return;}
   if(!CFG.scriptUrl){showToast('⚠️ Apps Script URL belum diisi!');return;}
   const btn=document.getElementById('tambahBtn');
@@ -5217,6 +5316,7 @@ async function tambahOrder(){
   try{
     await postSheet(data);
     showToast('✅ Order berhasil ditambahkan!');
+    logActivity('Tambah Order', `${data.resi} • ${data.nama} • ${data.app}`);
     ['newResi','newNama','newHp','newEmail','newPassword','newMulai','newSelesai','newCatatan'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('newDurasi').value='';
     selectedAppName='';document.querySelectorAll('.app-chip').forEach(e=>e.classList.remove('sel'));
@@ -5291,15 +5391,16 @@ async function loadOrders(){
       const mp = prods.find(p=>p.name.toLowerCase()===appNm.toLowerCase());
       const appThumb = (mp&&mp.emoji&&mp.emoji.startsWith('data:image'))
         ? `<img src="${mp.emoji}" style="width:20px;height:20px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:5px;" />`
-        : `<span style="margin-right:4px;">${app.emoji}</span>`;
+        : `<span style="margin-right:4px;display:inline-flex;vertical-align:middle;">${prodIconSvg(app.emoji,16)}</span>`;
       const cbHtml = _bulkMode ? `<td><input type="checkbox" class="order-cb" data-resi="${o.resi}" onchange="onBulkCbChange(this)"></td>` : '';
       const isRefund = (o.status||'').toLowerCase()==='refund';
       const badgeText = isRefund ? '🔶 Refund' : `${st.dot} ${d<0?0:d}h`;
       const statusKey = orderStatusKey(o);
-      return`<tr class="order-row" data-resi="${o.resi}" data-status="${statusKey}" style="${isRefund?'background:rgba(249,115,22,.05);':(d<=7&&d>=0?'background:rgba(251,191,36,.04);':'')}${(!isRefund&&d<0)?'background:rgba(248,113,113,.04);':''}">
+      const mulaiRaw = o.mulai || o['tanggal mulai'] || '';
+      return`<tr class="order-row" data-resi="${o.resi}" data-status="${statusKey}" data-mulai="${mulaiRaw}" style="${isRefund?'background:rgba(249,115,22,.05);':(d<=7&&d>=0?'background:rgba(251,191,36,.04);':'')}${(!isRefund&&d<0)?'background:rgba(248,113,113,.04);':''}">
         ${cbHtml}
         <td><strong style="font-size:11.5px;">${o.resi||'-'}</strong> <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:1px 4px;border-radius:4px;" title="Copy resi">📋</button></td>
-        <td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${o.hp||o['no hp']||o.phone||'-'}</span></td>
+        <td>${o.nama||o.name||'-'}<br><span style="font-size:10px;color:var(--muted);">${normalizeHp(o.hp||o['no hp']||o.phone||'')||'-'}</span></td>
         <td><div class="tb-app">${appThumb}${app.name}</div></td>
         <td><span class="tb-badge ${st.tcls}" title="${st.label}">${badgeText}</span></td>
         <td>${isRefund?(o.tgl_refund||o['tanggal refund']?fmtDate(o.tgl_refund||o['tanggal refund']):'-'):fmtDate(o.selesai||o['tanggal selesai']||'')}</td>
@@ -5316,12 +5417,13 @@ async function loadOrders(){
     // Re-apply filter status & search setelah render
     _applyOrderStatusFilter();
     if(_orderSearchQuery) _applyOrderSearch();
+    if(_orderDateFrom || _orderDateTo) _applyOrderDateFilter();
   }catch(e){wrap.innerHTML=errBox(e.message);}
 }
 async function hapusOrder(resi){
   if(!confirm(`Hapus order ${resi}?`))return;
   if(!CFG.scriptUrl){showToast('⚠️ Apps Script URL belum diisi!');return;}
-  try{await postSheet({action:'delete',resi});showToast('🗑️ Order dihapus!');await loadOrders();}
+  try{await postSheet({action:'delete',resi});showToast('🗑️ Order dihapus!');logActivity('Hapus Order', resi);await loadOrders();}
   catch(e){showToast('❌ Gagal: '+e.message);}
 }
 
@@ -5352,7 +5454,7 @@ async function dupOrder(resi){
     action: 'add',
     resi:     newResi,
     nama:     o.nama || o.name || '',
-    hp:       o.hp || o['no hp'] || o.phone || '',
+    hp:       hpForSheet(o.hp || o['no hp'] || o.phone || ''),
     app:      o.app || o.aplikasi || '',
     email:    o.email || '',
     password: o.password || '',
@@ -5370,10 +5472,11 @@ async function dupOrder(resi){
   try{
     await postSheet(payload);
     showToast(`📋 Diduplikat! Resi baru: ${newResi}`);
+    logActivity('Duplikat Order', `${resi} → ${newResi}`);
     // Isi form tambah order dengan data duplikat biar admin bisa langsung review
     document.getElementById('newResi').value    = newResi;
     document.getElementById('newNama').value    = payload.nama;
-    document.getElementById('newHp').value      = payload.hp;
+    document.getElementById('newHp').value      = normalizeHp(payload.hp);
     document.getElementById('newEmail').value   = payload.email;
     document.getElementById('newPassword').value= payload.password;
     document.getElementById('newMulai').value   = today;
@@ -5447,7 +5550,7 @@ function _applyOrderSearch(){
   _refreshRowVisibility();
 }
 
-/* Gabungkan hasil status filter + search jadi satu, lalu render visibility & info count */
+/* Gabungkan hasil status filter + search + tanggal jadi satu, lalu render visibility & info count */
 function _refreshRowVisibility(){
   const rows = document.querySelectorAll('#ordersTable .order-row');
   const infoEl  = document.getElementById('orderSearchInfo');
@@ -5456,15 +5559,187 @@ function _refreshRowVisibility(){
   rows.forEach(r=>{
     const statusOk = r.dataset.statusMatch !== '0'; /* default '1' kalau belum di-set */
     const searchOk = r.dataset.searchMatch !== '0';
-    const show = statusOk && searchOk;
+    const dateOk   = r.dataset.dateMatch !== '0';
+    const show = statusOk && searchOk && dateOk;
     r.style.display = show ? '' : 'none';
     if(show) visible++;
   });
   if(infoEl){
-    const showInfo = !!_orderSearchQuery || _orderStatusFilter!=='all';
+    const showInfo = !!_orderSearchQuery || _orderStatusFilter!=='all' || !!_orderDateFrom || !!_orderDateTo;
     infoEl.classList.toggle('hidden', !showInfo);
     if(countEl) countEl.textContent = visible;
   }
+}
+
+/* ══════════════════════════════════════
+   FILTER TANGGAL RANGE — Admin
+   Filter berdasarkan tanggal mulai order (data-mulai)
+══════════════════════════════════════ */
+let _orderDateFrom = '';
+let _orderDateTo   = '';
+
+function applyOrderDateFilter(){
+  _orderDateFrom = document.getElementById('orderDateFrom')?.value || '';
+  _orderDateTo   = document.getElementById('orderDateTo')?.value || '';
+  if(_orderDateFrom && _orderDateTo && _orderDateFrom > _orderDateTo){
+    showToast('⚠️ Tanggal "Dari" tidak boleh lebih besar dari "Sampai"!');
+    return;
+  }
+  _applyOrderDateFilter();
+}
+
+function resetOrderDateFilter(){
+  _orderDateFrom = '';
+  _orderDateTo   = '';
+  const f = document.getElementById('orderDateFrom');
+  const t = document.getElementById('orderDateTo');
+  if(f) f.value = '';
+  if(t) t.value = '';
+  _applyOrderDateFilter();
+}
+
+function _applyOrderDateFilter(){
+  const rows = document.querySelectorAll('#ordersTable .order-row');
+  rows.forEach(r=>{
+    const mulai = r.dataset.mulai || '';
+    let match = true;
+    if((_orderDateFrom || _orderDateTo) && !mulai){
+      match = false; // data tanpa tanggal mulai disembunyikan kalau filter aktif
+    } else {
+      if(_orderDateFrom && mulai < _orderDateFrom) match = false;
+      if(_orderDateTo && mulai > _orderDateTo) match = false;
+    }
+    r.dataset.dateMatch = match ? '1' : '0';
+  });
+  _refreshRowVisibility();
+  if(_orderDateFrom || _orderDateTo){
+    showToast(`📅 Filter tanggal diterapkan`);
+  }
+}
+
+/* ══════════════════════════════════════
+   EXPORT DATA ORDER — CSV (bisa dibuka di Excel)
+   Mengekspor data order yang sedang TAMPIL (sesuai filter/search aktif)
+══════════════════════════════════════ */
+function exportOrdersCSV(){
+  if(!_lastOrders || !_lastOrders.length){ showToast('⚠️ Belum ada data untuk diexport. Klik Refresh dulu.'); return; }
+
+  // Ambil resi-resi yang sedang tampil di tabel (menghormati filter status/search/tanggal aktif)
+  const visibleRows = Array.from(document.querySelectorAll('#ordersTable .order-row'))
+    .filter(r => r.style.display !== 'none');
+  const visibleResi = new Set(visibleRows.map(r => r.dataset.resi));
+  const dataToExport = visibleRows.length
+    ? _lastOrders.filter(o => visibleResi.has(o.resi))
+    : _lastOrders;
+
+  if(!dataToExport.length){ showToast('⚠️ Tidak ada data sesuai filter saat ini.'); return; }
+
+  const headers = ['Resi','Nama','No HP','Aplikasi','Email','Mulai','Selesai','Status','Tanggal Refund','Catatan'];
+  const esc = (v) => {
+    const s = String(v==null ? '' : v).replace(/"/g,'""');
+    return `"${s}"`;
+  };
+  const lines = [headers.map(esc).join(',')];
+  dataToExport.forEach(o=>{
+    const row = [
+      o.resi || '',
+      o.nama || o.name || '',
+      normalizeHp(o.hp || o['no hp'] || o.phone || ''),
+      o.app || o.aplikasi || '',
+      o.email || '',
+      o.mulai || o['tanggal mulai'] || '',
+      o.selesai || o['tanggal selesai'] || '',
+      (o.status || 'aktif'),
+      o.tgl_refund || o['tanggal refund'] || '',
+      o.catatan || o.note || '',
+    ];
+    lines.push(row.map(esc).join(','));
+  });
+  // Tambahkan BOM biar karakter khusus (misal nama dengan tanda baca) terbaca rapi di Excel
+  const csvContent = '\uFEFF' + lines.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `rizanta-orders-${ts}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`📤 ${dataToExport.length} data berhasil diexport!`);
+  logActivity('Export CSV', `${dataToExport.length} order`);
+}
+
+/* ══════════════════════════════════════
+   LOG AKTIVITAS ADMIN
+   Disimpan di localStorage browser ini saja (per device/admin).
+   Tujuannya jadi jejak audit ringan: siapa ngelakuin apa & kapan.
+══════════════════════════════════════ */
+const ADMIN_LOG_KEY = 'rz_admin_activity_log';
+const ADMIN_LOG_MAX = 300;
+
+function getAdminLog(){
+  try{ return JSON.parse(localStorage.getItem(ADMIN_LOG_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+function saveAdminLog(arr){
+  try{ localStorage.setItem(ADMIN_LOG_KEY, JSON.stringify(arr)); }catch(e){}
+}
+/* Panggil ini setiap kali ada aksi penting admin: tambah/edit/hapus order, bulk action, export, dll */
+function logActivity(action, detail){
+  const log = getAdminLog();
+  log.unshift({ t: Date.now(), action: action || '-', detail: detail || '' });
+  if(log.length > ADMIN_LOG_MAX) log.length = ADMIN_LOG_MAX;
+  saveAdminLog(log);
+  // Update tampilan log kalau tab Log sedang aktif
+  const tabLogContent = document.getElementById('tab-log');
+  if(tabLogContent && tabLogContent.classList.contains('active')) renderAdminLog();
+}
+
+function _fmtLogTime(ts){
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* Warna badge per jenis aksi biar gampang di-scan matanya */
+function _logActionStyle(action){
+  const a = (action||'').toLowerCase();
+  if(a.includes('hapus'))     return { bg:'rgba(248,113,113,.12)', bdr:'rgba(248,113,113,.3)', col:'#f87171' };
+  if(a.includes('tambah'))    return { bg:'rgba(34,197,94,.12)',   bdr:'rgba(34,197,94,.3)',   col:'#4ade80' };
+  if(a.includes('edit'))      return { bg:'rgba(251,191,36,.12)',  bdr:'rgba(251,191,36,.3)',  col:'#fbbf24' };
+  if(a.includes('duplikat'))  return { bg:'rgba(139,92,246,.12)',  bdr:'rgba(139,92,246,.3)',  col:'#a78bfa' };
+  if(a.includes('export'))    return { bg:'rgba(6,182,212,.12)',   bdr:'rgba(6,182,212,.3)',   col:'#22d3ee' };
+  if(a.includes('perpanjang'))return { bg:'rgba(37,99,235,.12)',   bdr:'rgba(37,99,235,.3)',   col:'#60a5fa' };
+  return { bg:'rgba(255,255,255,.06)', bdr:'var(--border)', col:'var(--text)' };
+}
+
+function renderAdminLog(){
+  const wrap = document.getElementById('adminLogList');
+  if(!wrap) return;
+  const log = getAdminLog();
+  if(!log.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Belum ada aktivitas tercatat.<br>Log akan muncul otomatis setiap kamu nambah, edit, hapus, atau export order.</div>';
+    return;
+  }
+  wrap.innerHTML = log.map(item=>{
+    const c = _logActionStyle(item.action);
+    return `<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:10px 12px;">
+      <span style="flex-shrink:0;margin-top:1px;background:${c.bg};border:1px solid ${c.bdr};color:${c.col};font-family:'Syne',sans-serif;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:100px;white-space:nowrap;">${item.action}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12.5px;color:var(--text);word-break:break-word;">${item.detail || '-'}</div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">🕐 ${_fmtLogTime(item.t)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clearAdminLog(){
+  if(!confirm('Hapus semua log aktivitas? Aksi ini tidak bisa dibatalkan.')) return;
+  saveAdminLog([]);
+  renderAdminLog();
+  showToast('🗑️ Log aktivitas dibersihkan!');
 }
 
 /* ══════════════════════════════════════
@@ -5480,7 +5755,7 @@ async function openEditOrder(resi){
 
   document.getElementById('eoResi').value     = o.resi||'';
   document.getElementById('eoNama').value     = o.nama||o.name||'';
-  document.getElementById('eoHp').value       = o.hp||o['no hp']||o.phone||'';
+  document.getElementById('eoHp').value       = normalizeHp(o.hp||o['no hp']||o.phone||'');
   document.getElementById('eoEmail').value    = o.email||'';
   document.getElementById('eoPassword').value = o.password||'';
   document.getElementById('eoMulai').value    = o.mulai||o['tanggal mulai']||'';
@@ -5502,7 +5777,7 @@ async function openEditOrder(resi){
       const safeId = p.id.replace(/[^a-zA-Z0-9_]/g,'_');
       const imgHtml = p.emoji && p.emoji.startsWith('data:image')
         ? '<img src="' + p.emoji + '" style="width:22px;height:22px;object-fit:contain;border-radius:5px;display:block;margin:0 auto 3px;" />'
-        : '<span class="em">' + (p.emoji||'📱') + '</span>';
+        : '<span class="em" style="display:inline-flex;">' + prodIconSvg(p.emoji, 17) + '</span>';
       const isSel = p.name.toLowerCase() === appNm.toLowerCase();
       const nm = p.name.replace(/'/g,"&apos;");
       return '<div class="app-chip eo-chip' + (isSel ? ' sel' : '') + '" id="eochip_' + safeId + '" onclick="selectEoApp(this,\'' + nm + '\')">' + imgHtml + p.name + '</div>';
@@ -5538,7 +5813,7 @@ async function saveEditOrder(){
 
   const resi     = document.getElementById('eoResi').value.trim().toUpperCase();
   const nama     = document.getElementById('eoNama').value.trim();
-  const hp       = normalizeHp(document.getElementById('eoHp').value.trim());
+  const hp       = hpForSheet(document.getElementById('eoHp').value.trim());
   const app      = document.getElementById('eoAppName').value.trim();
   const email    = document.getElementById('eoEmail').value.trim();
   const password = document.getElementById('eoPassword').value;
@@ -5560,6 +5835,7 @@ async function saveEditOrder(){
     await postSheet({action:'delete', resi: _editOrderResi});
     await postSheet({action:'add', resi, nama, hp, app, email, password, mulai, selesai, catatan, status, tgl_refund});
     showToast('✅ Pesanan berhasil diperbarui!');
+    logActivity('Edit Order', `${resi} • ${nama}`);
     closeEditOrder();
     await loadOrders();
   }catch(e){
@@ -5646,6 +5922,7 @@ async function bulkDelete(){
     }catch(e){ fail++; }
   }
   showToast(fail ? `✅ ${ok} terhapus, ❌ ${fail} gagal` : `🗑️ ${ok} order berhasil dihapus!`);
+  if(ok) logActivity('Bulk Hapus', `${ok} order${fail?` (${fail} gagal)`:''}`);
   cancelBulkMode();
   await loadOrders();
 }
@@ -5678,7 +5955,7 @@ async function confirmBulkExtend(){
 
       const resi     = o.resi;
       const nama     = o.nama || o.name || '';
-      const hp       = o.hp || o['no hp'] || o.phone || '';
+      const hp       = hpForSheet(o.hp || o['no hp'] || o.phone || '');
       const app      = o.app || o.aplikasi || '';
       const email    = o.email || '';
       const password = o.password || '';
@@ -5694,6 +5971,7 @@ async function confirmBulkExtend(){
   btn.innerHTML = '✅ Perpanjang'; btn.disabled = false;
   document.getElementById('bulkExtModal').classList.add('hidden');
   showToast(fail ? `✅ ${ok} berhasil, ❌ ${fail} gagal` : `🗓️ ${ok} order berhasil diperpanjang!`);
+  if(ok) logActivity('Bulk Perpanjang', `${ok} order +${durasi} hari${fail?` (${fail} gagal)`:''}`);
   cancelBulkMode();
   await loadOrders();
 }
@@ -5704,6 +5982,7 @@ function bulkSendWa(){
   if(!orders.length){ showToast('⚠️ Pilih order dulu!'); return; }
   if(!confirm(`Kirim pesan WA ke ${orders.length} pelanggan?\nSetiap pesan akan dibuka di tab baru.`)) return;
 
+  logActivity('Bulk WA', `${orders.length} pelanggan`);
   let count = 0;
   orders.forEach((o, i) => {
     const hp = (o.hp || o['no hp'] || o.phone || '').replace(/[^0-9]/g,'');
@@ -5761,7 +6040,7 @@ function openTmplModal(resi){
   if(mp && mp.emoji && mp.emoji.startsWith('data:image')){
     emojiEl.innerHTML = `<img src="${mp.emoji}" style="width:40px;height:40px;object-fit:cover;border-radius:10px;display:block;" />`;
   } else {
-    emojiEl.textContent = app.emoji;
+    emojiEl.innerHTML = prodIconSvg(app.emoji, 26);
   }
   document.getElementById('tmplBuyerName').textContent  = o.nama||o.name||'-';
   document.getElementById('tmplBuyerResi').textContent  = '🎫 Resi: '+(o.resi||'-');
@@ -5929,7 +6208,7 @@ function sfApplyAndRender(){
 function _sfProdCardHtml(p, displayName, i){
   const imgHtml = p.emoji && p.emoji.startsWith('data:image')
     ? `<img src="${p.emoji}" class="product-img" />`
-    : (p.emoji||'📱');
+    : prodIconSvg(p.emoji, 26);
   return `<div class="product-card d${(i%4)+1}" onclick="openProdModal('${p.id}')">
     <div class="product-emoji">${imgHtml}</div>
     <div class="product-name">${displayName}</div>
@@ -6067,7 +6346,7 @@ async function renderBerandaProducts(){
   wrap.innerHTML = preview.map((p,i)=>{
     const imgHtml = p.emoji && p.emoji.startsWith('data:image')
       ? `<img src="${p.emoji}" class="product-img" />`
-      : `<span style="font-size:28px;">${p.emoji||'📱'}</span>`;
+      : `<span style="display:inline-flex;">${prodIconSvg(p.emoji, 28)}</span>`;
     return `<div class="product-card d${i+1}" onclick="goPage('page-produk');setTimeout(()=>openProdModal('${p.id}'),300)">
       <div class="product-emoji">${imgHtml}</div>
       <div class="product-name">${p.name}</div>
@@ -6091,7 +6370,7 @@ async function openProdModal(id){
   if(p.emoji && p.emoji.startsWith('data:image')){
     pmEl.innerHTML = `<img src="${p.emoji}" class="prod-modal-img" />`;
   } else {
-    pmEl.textContent = p.emoji||'📱';
+    pmEl.innerHTML = `<span style="display:inline-flex;justify-content:center;width:100%;">${prodIconSvg(p.emoji, 52)}</span>`;
   }
   document.getElementById('pmName').textContent   = p.name;
   document.getElementById('pmPrice').textContent  = p.price;
@@ -6281,7 +6560,7 @@ async function renderAdminProducts(){
   }
   wrap.innerHTML = '<div class="prod-admin-grid">'+prods.map(p=>`
     <div class="prod-admin-item">
-      <div class="prod-admin-emoji">${p.emoji&&p.emoji.startsWith('data:image') ? `<img src="${p.emoji}" class="prod-admin-img" />` : (p.emoji||'📱')}</div>
+      <div class="prod-admin-emoji">${p.emoji&&p.emoji.startsWith('data:image') ? `<img src="${p.emoji}" class="prod-admin-img" />` : prodIconSvg(p.emoji, 28)}</div>
       <div class="prod-admin-info">
         <div class="prod-admin-name">${p.name}</div>
         <div class="prod-admin-cat">${p.cat}</div>
@@ -7341,7 +7620,7 @@ async function renderBerandaTestimoni(){
 
     <!-- Buyer info card -->
     <div class="tmpl-buyer-row">
-      <div style="font-size:26px;" id="tmplBuyerEmoji">📱</div>
+      <div style="display:flex;align-items:center;justify-content:center;" id="tmplBuyerEmoji"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg></div>
       <div class="tmpl-buyer-info">
         <div class="tmpl-buyer-name" id="tmplBuyerName">—</div>
         <div class="tmpl-buyer-resi" id="tmplBuyerResi">—</div>
@@ -8480,7 +8759,7 @@ function closeMemberLogin(){
 
 /* ── Normalisasi nomor HP: strip spasi/tanda, konversi 62xxx → 08xxx ── */
 function normalizeHp(raw){
-  let n = raw.replace(/[\s\-().+]/g,'');
+  let n = raw.toString().replace(/[\s\-().+\u200B]/g,'');
   if(n.startsWith('62')) n = '0' + n.slice(2);
   return n;
 }
@@ -8704,12 +8983,12 @@ function langLogout(){
   _langShowForm();
 }
 
-function _langRenderDashboard(){
+async function _langRenderDashboard(){
   const { nama, hp, orders } = LANG_SESSION;
   const greet = document.getElementById('langGreetName');
   if(greet) greet.textContent = 'Halo, '+nama.split(' ')[0]+'! 👋';
   const badge = document.getElementById('langHpBadge');
-  if(badge) badge.textContent = '📱 '+hp;
+  if(badge) badge.innerHTML = HP_BADGE_SVG+' '+hp;
   // Stats
   const total   = orders.length;
   const aktif   = orders.filter(o=>o.status==='aktif').length;
@@ -8722,6 +9001,16 @@ function _langRenderDashboard(){
   const list = document.getElementById('langOrderList');
   if(!list) return;
   if(orders.length===0){ list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Belum ada order ditemukan.</div>'; return; }
+
+  // Fallback emoji jika produk tidak ada gambar
+  const appEmojiMap = {
+    netflix:'🎬', spotify:'🎵', disney:'🏰', youtube:'▶️', chatgpt:'🤖',
+    canva:'🎨', prime:'📦', viu:'📺', whatsapp:'💬', zoom:'📹',
+  };
+  // Ambil data produk untuk mencocokkan gambar asli
+  let prods = [];
+  try{ prods = await fetchProduk(); }catch(e){}
+
   list.innerHTML = orders.map((o,i) => {
     const sColor = o.status==='aktif' ? 'var(--green)' : o.status==='warn' ? 'var(--yellow)' : 'var(--red)';
     const sBg    = o.status==='aktif' ? 'rgba(34,197,94,.1)' : o.status==='warn' ? 'rgba(251,191,36,.1)' : 'rgba(248,113,113,.1)';
@@ -8729,10 +9018,25 @@ function _langRenderDashboard(){
     const sLabel = o.status==='aktif' ? '✅ Aktif' : o.status==='warn' ? '⚠️ Segera Habis' : '❌ Expired';
     const sisaText = o.sisaHari!==null ? (o.sisaHari<0 ? 'Sudah expired' : o.sisaHari===0 ? 'Habis hari ini' : o.sisaHari+' hari lagi') : '-';
     const pct = (o.sisaHari!==null && o.totalHari && o.totalHari>0) ? Math.max(0,Math.min(100,Math.round(o.sisaHari/o.totalHari*100))) : null;
+
+    // Cari produk yang namanya cocok (exact dulu, lalu partial match)
+    const appLower = (o.app || '').toLowerCase().trim();
+    const matchProd = prods.find(p => p.name.toLowerCase().trim() === appLower)
+      || prods.find(p => appLower.includes(p.name.toLowerCase().trim()) || p.name.toLowerCase().trim().includes(appLower));
+    let iconHtml, iconBoxStyle;
+    if(matchProd && matchProd.emoji && matchProd.emoji.startsWith('data:image')){
+      iconHtml = `<img src="${matchProd.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block;" />`;
+      iconBoxStyle = 'width:38px;height:38px;border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);';
+    } else {
+      const appKey = appLower.replace(/[^a-z]/g,'');
+      iconHtml = prodIconSvg((matchProd && matchProd.emoji) ? matchProd.emoji : (appEmojiMap[appKey] || '📱'), 20);
+      iconBoxStyle = 'width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;';
+    }
+
     return `<div style="background:rgba(4,12,28,.6);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;backdrop-filter:blur(12px);">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎬</div>
+          <div style="${iconBoxStyle}">${iconHtml}</div>
           <div>
             <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;">${o.app}</div>
             <div style="font-size:11px;color:var(--muted);">Resi: ${o.resi}</div>
@@ -8774,7 +9078,7 @@ async function renderMemberDashboard(){
 
   // HP info
   const resiInfoEl = document.getElementById('memberResiInfo');
-  if(resiInfoEl) resiInfoEl.textContent = '📱 ' + (hp || '-');
+  if(resiInfoEl) resiInfoEl.innerHTML = HP_BADGE_SVG+' ' + (hp || '-');
 
   // Fallback emoji jika produk tidak ada gambar
   const appEmoji = {
@@ -8795,18 +9099,20 @@ async function renderMemberDashboard(){
   }
 
   list.innerHTML = orders.map((o, i) => {
-    // Cari produk yang namanya cocok (case-insensitive)
-    const matchProd = prods.find(p => p.name.toLowerCase() === o.app.toLowerCase());
+    // Cari produk yang namanya cocok (case-insensitive, fleksibel: exact match dulu, lalu partial match)
+    const appLower = (o.app || '').toLowerCase().trim();
+    const matchProd = prods.find(p => p.name.toLowerCase().trim() === appLower)
+      || prods.find(p => appLower.includes(p.name.toLowerCase().trim()) || p.name.toLowerCase().trim().includes(appLower));
 
     // Tentukan isi icon: gambar dari produk, atau emoji produk, atau fallback emoji map
     let iconHtml;
     if(matchProd && matchProd.emoji && matchProd.emoji.startsWith('data:image')){
       iconHtml = `<img src="${matchProd.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:11px;display:block;" />`;
     } else if(matchProd && matchProd.emoji){
-      iconHtml = matchProd.emoji;
+      iconHtml = prodIconSvg(matchProd.emoji, 18);
     } else {
       const appKey = o.app.toLowerCase().replace(/[^a-z]/g,'');
-      iconHtml = appEmoji[appKey] || '📱';
+      iconHtml = prodIconSvg(appEmoji[appKey] || '📱', 18);
     }
 
     const badgeCls  = o.status === 'expired' ? 'moc-exp' : o.status === 'warn' ? 'moc-warn' : 'moc-aktif';
