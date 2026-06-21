@@ -4510,6 +4510,18 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     </div>
   </div><!-- /tab-runningtext -->
 
+  <!-- Tab: Log Aktivitas -->
+  <div id="tab-log" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div class="card-heading" style="margin:0;">📜 Log Aktivitas Admin</div>
+        <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;color:var(--red);border-color:rgba(248,113,113,.4);" onclick="clearAdminLog()">🗑️ Bersihkan</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">💡 Jejak aktivitas admin (tambah, edit, hapus, export, dll) tersimpan di browser ini saja, maksimal 300 entri terbaru.</div>
+      <div id="adminLogList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
+    </div>
+  </div><!-- /tab-log -->
+
   </div><!-- /adminPanel -->
 </div><!-- /page-admin -->
 
@@ -5238,21 +5250,36 @@ async function _enterAdminPanel(){
   document.getElementById('adminLogin').classList.add('hidden');
   document.getElementById('adminPanel').classList.remove('hidden');
   setTimeout(updateAdminTabArrows, 100);
-  await renderAppsGrid();
+  // Dibungkus try/catch masing-masing: kalau salah satu gagal (mis. fetch produk gagal
+  // karena network masih sibuk saat halaman baru dibuka), bagian lain tetap jalan dan
+  // panel tidak nyangkut setengah-jalan.
+  try{ await renderAppsGrid(); }catch(e){ console.error('renderAppsGrid gagal:', e); }
   const today=new Date().toISOString().split('T')[0];
   document.getElementById('newMulai').value=today;
-  await loadOrders();
+  try{ await loadOrders(); }catch(e){ console.error('loadOrders gagal:', e); }
   startAdminRt();
   _rtSetBar('adminRtBar','adminRtDot','adminRtLabel','adminRtTime','live');
 }
 
-/* ── Restore sesi admin saat reload, supaya tidak perlu login ulang sampai logout manual ── */
+/* ── Restore sesi admin saat reload, supaya tidak perlu login ulang sampai logout manual ──
+   PENTING: ditunda sampai event 'load' (semua resource halaman ini selesai dimuat),
+   bukan dijalankan langsung saat script di-parse. Kalau dipanggil langsung saat parsing,
+   fetch produk untuk grid "Pilih Aplikasi" bisa berebut/ketabrak dengan request lain yang
+   masih berjalan di awal load halaman dan gagal diam-diam (unhandled promise) — itulah yang
+   bikin grid-nya nyangkut loading terus sampai harus logout+login manual ulang. ── */
 (function restoreAdminSession(){
-  try{
-    if(localStorage.getItem(ADMIN_KEY) === '1'){
-      _enterAdminPanel();
-    }
-  }catch(e){}
+  function tryRestore(){
+    try{
+      if(localStorage.getItem(ADMIN_KEY) === '1'){
+        _enterAdminPanel().catch(e=>console.error('Gagal restore sesi admin:', e));
+      }
+    }catch(e){}
+  }
+  if(document.readyState === 'complete'){
+    tryRestore();
+  } else {
+    window.addEventListener('load', tryRestore);
+  }
 })();
 
 function adminLogout(){
@@ -5265,8 +5292,16 @@ function adminLogout(){
 }
 async function renderAppsGrid(){
   const grid = document.getElementById('appsGrid');
+  if(!grid) return;
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:10px;"><span class="spinner"></span></div>';
-  const prods = await fetchProduk();
+  let prods;
+  try{
+    prods = await fetchProduk();
+  }catch(e){
+    console.error('renderAppsGrid: fetchProduk gagal:', e);
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--red);padding:8px;text-align:center;">⚠️ Gagal memuat daftar aplikasi. <button onclick="renderAppsGrid()" style="background:none;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:3px 10px;cursor:pointer;font-size:12px;margin-left:4px;">Coba lagi</button></div>';
+    return;
+  }
   if(!prods.length){
     grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--muted);padding:8px;">Belum ada produk. Tambah dulu di Tab Produk.</div>';
     return;
@@ -5672,26 +5707,27 @@ function exportOrdersCSV(){
 }
 
 /* ══════════════════════════════════════
-   LOG AKTIVITAS ADMIN
-   Disimpan di localStorage browser ini saja (per device/admin).
-   Tujuannya jadi jejak audit ringan: siapa ngelakuin apa & kapan.
+   LOG AKTIVITAS ADMIN — Google Sheets backed (sheet: adminlog)
+   Mengikuti pola yang sama persis dengan logChat()/chatlog: POST untuk
+   nulis baris baru, GET ?sheet=adminlog untuk baca semua baris.
+   Sheet di Google Sheets WAJIB dibuat dulu dengan nama tab "adminlog"
+   dan header baris pertama: waktu | aksi | detail
 ══════════════════════════════════════ */
-const ADMIN_LOG_KEY = 'rz_admin_activity_log';
-const ADMIN_LOG_MAX = 300;
 
-function getAdminLog(){
-  try{ return JSON.parse(localStorage.getItem(ADMIN_LOG_KEY) || '[]'); }
-  catch(e){ return []; }
-}
-function saveAdminLog(arr){
-  try{ localStorage.setItem(ADMIN_LOG_KEY, JSON.stringify(arr)); }catch(e){}
-}
-/* Panggil ini setiap kali ada aksi penting admin: tambah/edit/hapus order, bulk action, export, dll */
+/* Panggil ini setiap kali ada aksi penting admin: tambah/edit/hapus order, bulk action, export, dll.
+   Fire-and-forget seperti logChat() — tidak menghambat aksi utama walau gagal terkirim. */
 function logActivity(action, detail){
-  const log = getAdminLog();
-  log.unshift({ t: Date.now(), action: action || '-', detail: detail || '' });
-  if(log.length > ADMIN_LOG_MAX) log.length = ADMIN_LOG_MAX;
-  saveAdminLog(log);
+  if(!CFG.scriptUrl) return;
+  fetch(CFG.scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      sheet: 'adminlog',
+      action: 'add',
+      waktu: new Date().toISOString(),
+      aksi: action || '-',
+      detail: detail || ''
+    })
+  }).catch(()=>{}); // silent fail, request tetap nyampe meski browser lapor error jaringan
   // Update tampilan log kalau tab Log sedang aktif
   const tabLogContent = document.getElementById('tab-log');
   if(tabLogContent && tabLogContent.classList.contains('active')) renderAdminLog();
@@ -5699,6 +5735,7 @@ function logActivity(action, detail){
 
 function _fmtLogTime(ts){
   const d = new Date(ts);
+  if(isNaN(d.getTime())) return ts || '-';
   const pad = n => String(n).padStart(2,'0');
   return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
@@ -5715,31 +5752,53 @@ function _logActionStyle(action){
   return { bg:'rgba(255,255,255,.06)', bdr:'var(--border)', col:'var(--text)' };
 }
 
-function renderAdminLog(){
+async function renderAdminLog(){
   const wrap = document.getElementById('adminLogList');
   if(!wrap) return;
-  const log = getAdminLog();
+  wrap.innerHTML = '<div style="text-align:center;padding:20px 0;"><span class="spinner"></span></div>';
+  if(!CFG.scriptUrl){
+    wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">⚠️ Apps Script URL belum diisi.</div>';
+    return;
+  }
+  let log;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=adminlog');
+    log = await res.json();
+    if(!Array.isArray(log)) log = [];
+  }catch(e){
+    console.error('renderAdminLog gagal:', e);
+    wrap.innerHTML = '<div style="text-align:center;padding:20px 0;font-size:12px;color:var(--red);">⚠️ Gagal memuat log dari Google Sheets. <button onclick="renderAdminLog()" style="background:none;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:3px 10px;cursor:pointer;font-size:12px;margin-left:4px;">Coba lagi</button></div>';
+    return;
+  }
+  // Terbaru di atas
+  log.sort((a,b)=> new Date(b.waktu||0) - new Date(a.waktu||0));
   if(!log.length){
     wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Belum ada aktivitas tercatat.<br>Log akan muncul otomatis setiap kamu nambah, edit, hapus, atau export order.</div>';
     return;
   }
   wrap.innerHTML = log.map(item=>{
-    const c = _logActionStyle(item.action);
+    const actionText = item.aksi || item.action || '-';
+    const c = _logActionStyle(actionText);
     return `<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:10px 12px;">
-      <span style="flex-shrink:0;margin-top:1px;background:${c.bg};border:1px solid ${c.bdr};color:${c.col};font-family:'Syne',sans-serif;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:100px;white-space:nowrap;">${item.action}</span>
+      <span style="flex-shrink:0;margin-top:1px;background:${c.bg};border:1px solid ${c.bdr};color:${c.col};font-family:'Syne',sans-serif;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:100px;white-space:nowrap;">${actionText}</span>
       <div style="flex:1;min-width:0;">
         <div style="font-size:12.5px;color:var(--text);word-break:break-word;">${item.detail || '-'}</div>
-        <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">🕐 ${_fmtLogTime(item.t)}</div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">🕐 ${_fmtLogTime(item.waktu)}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-function clearAdminLog(){
-  if(!confirm('Hapus semua log aktivitas? Aksi ini tidak bisa dibatalkan.')) return;
-  saveAdminLog([]);
-  renderAdminLog();
-  showToast('🗑️ Log aktivitas dibersihkan!');
+async function clearAdminLog(){
+  if(!confirm('Hapus semua log aktivitas di Google Sheets? Aksi ini tidak bisa dibatalkan.')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Apps Script URL belum diisi!'); return; }
+  try{
+    await postSheet({ sheet:'adminlog', action:'clear' });
+    showToast('🗑️ Log aktivitas dibersihkan!');
+    await renderAdminLog();
+  }catch(e){
+    showToast('❌ Gagal hapus log: '+e.message);
+  }
 }
 
 /* ══════════════════════════════════════
@@ -6544,6 +6603,7 @@ function switchTab(tab){
   if(tab==='video') renderAdminVideo();
   if(tab==='promo') renderAdminPromo();
   if(tab==='runningtext') renderAdminRt();
+  if(tab==='log') renderAdminLog();
 }
 
 /* ══════════════════════════════════════
