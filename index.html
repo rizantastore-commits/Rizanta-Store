@@ -1698,6 +1698,233 @@ tr:hover td{background:rgba(59,130,246,.03);}
 .tb-edit:hover{background:rgba(59,130,246,.1);}
 
 /* ══════════════════════════════════════
+   MOBILE CARD VIEW — Data Pelanggan
+   Di layar ≤600px, tabel diubah jadi kartu
+   supaya tidak crowded / keramaian
+══════════════════════════════════════ */
+@media (max-width: 600px) {
+  /* Sembunyikan tabel biasa di mobile */
+  #ordersTable .tbl-wrap { overflow-x: unset; margin-top: 0; }
+  #ordersTable table { display: none !important; }
+
+  /* Container kartu */
+  #ordersTable .mob-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  /* Tiap kartu pelanggan */
+  .mob-order-card {
+    background: rgba(8,15,28,.7);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 14px 10px;
+    transition: border-color .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .mob-order-card:hover { border-color: var(--border-hi); }
+
+  /* Strip warna kiri berdasarkan status */
+  .mob-order-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 16px 0 0 16px;
+  }
+  .mob-order-card.status-aktif::before { background: var(--green); }
+  .mob-order-card.status-warn::before  { background: var(--yellow); }
+  .mob-order-card.status-exp::before   { background: var(--red); }
+  .mob-order-card.status-refund::before{ background: #fb923c; }
+
+  /* Header kartu: nama + badge status */
+  .mob-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    margin-left: 6px;
+  }
+  .mob-card-nama {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .mob-card-hp {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Info row: resi, aplikasi, tanggal */
+  .mob-card-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 10px;
+    margin-left: 6px;
+    margin-bottom: 10px;
+  }
+  .mob-card-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .mob-card-meta-label {
+    font-size: 9.5px;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .mob-card-meta-val {
+    font-size: 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .mob-card-resi-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--blue-light);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  /* Tombol aksi bawah kartu */
+  .mob-card-actions {
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 9px;
+    margin-top: 2px;
+  }
+  .mob-card-actions button {
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .mob-card-cb-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 6px 3px;
+    margin-left: 2px;
+  }
+  .mob-card-cb-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* Bulk bar tetap aman di mobile */
+  .bulk-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .bulk-btn { font-size: 10.5px; padding: 6px 9px; }
+
+  /* Filter chip: horizontal scroll (sudah ada, pastikan tetap jalan) */
+  .order-filter-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .order-filter-bar::-webkit-scrollbar { display: none; }
+
+  /* Date filter: stack vertical di mobile kecil */
+  .order-date-filter {
+    flex-wrap: wrap;
+  }
+  .order-date-filter input[type="date"] {
+    min-width: 0;
+    flex: 1 1 120px;
+  }
+
+  /* Header "Data Pelanggan" + tombol: stack kalau perlu */
+  .mob-pel-header-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mob-pel-header-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .mob-pel-header-btns .btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+
+/* ══════════════════════════════════════
+   HEADER DATA PELANGGAN — Responsive
+══════════════════════════════════════ */
+.pel-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.pel-header-btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pel-hbtn {
+  width: auto !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  /* Judul & tombol: judul full row, tombol sebaris scroll */
+  .pel-header-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .pel-header-btns {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .pel-header-btns::-webkit-scrollbar { display: none; }
+  .pel-hbtn {
+    flex-shrink: 0;
+    padding: 7px 13px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* ══════════════════════════════════════
    SETUP BANNER
 ══════════════════════════════════════ */
 .setup-banner{
@@ -2082,6 +2309,90 @@ body.on-page-faq .wa-float{display:none!important;}
 .prod-feat-row{display:flex;gap:7px;align-items:center;margin-bottom:7px;}
 .prod-feat-row input{flex:1;}
 .btn-feat-del{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;}
+
+
+/* ══════════════════════════════════════
+   KELOLA PRODUK — Mobile Responsive
+══════════════════════════════════════ */
+@media (max-width: 600px) {
+
+  /* ── Kartu produk: susun vertikal ── */
+  .prod-admin-item {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 12px 10px;
+    align-items: flex-start;
+    position: relative;
+  }
+  .prod-admin-emoji {
+    font-size: 26px;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.04);
+    border-radius: 11px;
+    border: 1px solid var(--border);
+  }
+  .prod-admin-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .prod-admin-name {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 13px;
+    line-height: 1.3;
+    padding-right: 4px;
+  }
+  .prod-admin-cat   { font-size: 11px; margin-top: 2px; }
+  .prod-admin-price { font-size: 12px; margin-top: 2px; }
+
+  /* Tombol edit/hapus: pindah ke baris bawah, full-width */
+  .prod-admin-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 9px;
+    margin-top: 2px;
+  }
+  .btn-edit,
+  .btn-del-prod {
+    flex: 1;
+    text-align: center;
+    padding: 9px 6px;
+    font-size: 12.5px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  /* ── Header Kelola Produk: judul + tombol Tambah ── */
+  #tab-produk .card > div:first-child {
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* ── Grid 2 kolom (row2) di form tambah order: stack 1 kolom di mobile ── */
+  .row2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* ── Form produk modal: padding lebih kecil ── */
+  .prod-form-inner {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+}
 
 /* ══════════════════════════════════════
    TEMPLATE PESAN MODAL
@@ -4114,12 +4425,12 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     </div>
 
     <div class="card d2">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="pel-header-wrap">
         <div class="card-heading" style="margin:0;">📋 Data Pelanggan</div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;">
-          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="toggleBulkMode()" id="bulkModeBtn">☑️ Pilih</button>
-          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="exportOrdersCSV()">📤 Export CSV</button>
-          <button class="btn btn-outline" style="width:auto;padding:6px 12px;font-size:12px;" onclick="loadOrders()">🔄 Refresh</button>
+        <div class="pel-header-btns">
+          <button class="btn btn-outline pel-hbtn" onclick="toggleBulkMode()" id="bulkModeBtn">☑️ Pilih</button>
+          <button class="btn btn-outline pel-hbtn" onclick="exportOrdersCSV()">📤 Export CSV</button>
+          <button class="btn btn-outline pel-hbtn" onclick="loadOrders()">🔄 Refresh</button>
         </div>
       </div>
 
@@ -5448,7 +5759,28 @@ async function loadOrders(){
       </tr>`;
     }).join('');
     const cbHeader = _bulkMode ? `<th><input type="checkbox" class="order-cb" id="bulkSelectAll" onchange="bulkSelectAllToggle(this)" title="Pilih Semua"></th>` : '';
-    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Status</th><th>Selesai/Refund</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+
+    /* ── Mobile Cards (hanya tampil di ≤600px via CSS) ── */
+    const mobileCards = orders.map(o=>{
+      const d=daysLeft(o.selesai||o['tanggal selesai']||o.end||'');
+      const st=statusInfo(d,o);
+      const app=appByName(o.app||o.aplikasi||'Aplikasi');
+      const appNm = o.app||o.aplikasi||'';
+      const mp2 = prods.find(p=>p.name.toLowerCase()===appNm.toLowerCase());
+      const appThumb2 = (mp2&&mp2.emoji&&mp2.emoji.startsWith('data:image'))
+        ? `<img src="${mp2.emoji}" style="width:16px;height:16px;object-fit:cover;border-radius:4px;vertical-align:middle;" />`
+        : (app.emoji||'📦');
+      const isRefund = (o.status||'').toLowerCase()==='refund';
+      const statusKey2 = orderStatusKey(o);
+      const badgeText2 = isRefund ? '🔶 Refund' : `${st.dot} ${d<0?0:d} hari`;
+      const tglSelesai = isRefund
+        ? (o.tgl_refund||o['tanggal refund']?fmtDate(o.tgl_refund||o['tanggal refund']):'-')
+        : fmtDate(o.selesai||o['tanggal selesai']||'');
+      const cbHtml2 = _bulkMode ? `<div class="mob-card-cb-wrap"><input type="checkbox" class="order-cb" data-resi="${o.resi}" onchange="onBulkCbChange(this)" /><span class="mob-card-cb-label">Pilih</span></div>` : '';
+      return `<div class="mob-order-card status-${statusKey2}" data-resi="${o.resi}" data-status="${statusKey2}" data-mulai="${o.mulai||o['tanggal mulai']||''}">${cbHtml2}<div class="mob-card-header"><div><div class="mob-card-nama">${o.nama||o.name||'-'}</div><div class="mob-card-hp">${normalizeHp(o.hp||o['no hp']||o.phone||'')||'-'}</div></div><span class="tb-badge ${st.tcls}" style="flex-shrink:0;white-space:nowrap;">${badgeText2}</span></div><div class="mob-card-meta"><div class="mob-card-meta-item"><span class="mob-card-meta-label">Kode Resi</span><span class="mob-card-resi-val">${o.resi||'-'} <button onclick="copyTxt('${o.resi}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;padding:0;" title="Copy">📋</button></span></div><div class="mob-card-meta-item"><span class="mob-card-meta-label">Aplikasi</span><span class="mob-card-meta-val">${appThumb2} ${app.name}</span></div><div class="mob-card-meta-item"><span class="mob-card-meta-label">${isRefund?'Tgl Refund':'Selesai'}</span><span class="mob-card-meta-val">${tglSelesai}</span></div></div><div class="mob-card-actions"><button onclick="openTmplModal('${o.resi}')" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);">💬 WA</button><button onclick="dupOrder('${o.resi}')" style="background:rgba(139,92,246,.13);border:1px solid rgba(139,92,246,.3);color:#a78bfa;">📋 Dup</button><button onclick="openEditOrder('${o.resi}')" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--blue-light);">✏️ Edit</button><button onclick="hapusOrder('${o.resi}')" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);color:var(--red);">🗑️</button></div></div>`;
+    }).join('');
+
+    wrap.innerHTML=`<div class="tbl-wrap"><table><thead><tr>${cbHeader}<th>Resi</th><th>Nama</th><th>Aplikasi</th><th>Status</th><th>Selesai/Refund</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="mob-cards">${mobileCards}</div>`;
     // Re-apply filter status & search setelah render
     _applyOrderStatusFilter();
     if(_orderSearchQuery) _applyOrderSearch();
@@ -5554,6 +5886,11 @@ function _applyOrderStatusFilter(){
     const match = _orderStatusFilter==='all' || r.dataset.status===_orderStatusFilter;
     r.dataset.statusMatch = match ? '1' : '0';
   });
+  /* Sinkron ke mobile cards */
+  document.querySelectorAll('#ordersTable .mob-order-card').forEach(c=>{
+    const match = _orderStatusFilter==='all' || c.dataset.status===_orderStatusFilter;
+    c.dataset.statusMatch = match ? '1' : '0';
+  });
   _refreshRowVisibility();
 }
 
@@ -5582,6 +5919,12 @@ function _applyOrderSearch(){
     const match = !q || text.includes(q);
     r.dataset.searchMatch = match ? '1' : '0';
   });
+  /* Sinkron ke mobile cards */
+  document.querySelectorAll('#ordersTable .mob-order-card').forEach(c=>{
+    const text = c.textContent.toLowerCase();
+    const match = !q || text.includes(q);
+    c.dataset.searchMatch = match ? '1' : '0';
+  });
   _refreshRowVisibility();
 }
 
@@ -5598,6 +5941,14 @@ function _refreshRowVisibility(){
     const show = statusOk && searchOk && dateOk;
     r.style.display = show ? '' : 'none';
     if(show) visible++;
+  });
+  /* Sinkron ke mobile cards */
+  document.querySelectorAll('#ordersTable .mob-order-card').forEach(c=>{
+    const statusOk = c.dataset.statusMatch !== '0';
+    const searchOk = c.dataset.searchMatch !== '0';
+    const dateOk   = c.dataset.dateMatch !== '0';
+    const show = statusOk && searchOk && dateOk;
+    c.style.display = show ? '' : 'none';
   });
   if(infoEl){
     const showInfo = !!_orderSearchQuery || _orderStatusFilter!=='all' || !!_orderDateFrom || !!_orderDateTo;
@@ -5639,12 +5990,24 @@ function _applyOrderDateFilter(){
     const mulai = r.dataset.mulai || '';
     let match = true;
     if((_orderDateFrom || _orderDateTo) && !mulai){
-      match = false; // data tanpa tanggal mulai disembunyikan kalau filter aktif
+      match = false;
     } else {
       if(_orderDateFrom && mulai < _orderDateFrom) match = false;
       if(_orderDateTo && mulai > _orderDateTo) match = false;
     }
     r.dataset.dateMatch = match ? '1' : '0';
+  });
+  /* Sinkron ke mobile cards */
+  document.querySelectorAll('#ordersTable .mob-order-card').forEach(c=>{
+    const mulai = c.dataset.mulai || '';
+    let match = true;
+    if((_orderDateFrom || _orderDateTo) && !mulai){
+      match = false;
+    } else {
+      if(_orderDateFrom && mulai < _orderDateFrom) match = false;
+      if(_orderDateTo && mulai > _orderDateTo) match = false;
+    }
+    c.dataset.dateMatch = match ? '1' : '0';
   });
   _refreshRowVisibility();
   if(_orderDateFrom || _orderDateTo){
@@ -5662,8 +6025,15 @@ function exportOrdersCSV(){
   // Ambil resi-resi yang sedang tampil di tabel (menghormati filter status/search/tanggal aktif)
   const visibleRows = Array.from(document.querySelectorAll('#ordersTable .order-row'))
     .filter(r => r.style.display !== 'none');
-  const visibleResi = new Set(visibleRows.map(r => r.dataset.resi));
-  const dataToExport = visibleRows.length
+  /* Fallback ke mobile cards jika tabel tidak visible (mobile view) */
+  const visibleCards = Array.from(document.querySelectorAll('#ordersTable .mob-order-card'))
+    .filter(c => c.style.display !== 'none');
+  const allVisibleResi = new Set([
+    ...visibleRows.map(r => r.dataset.resi),
+    ...visibleCards.map(c => c.dataset.resi)
+  ]);
+  const visibleResi = allVisibleResi.size > 0 ? allVisibleResi : null;
+  const dataToExport = visibleResi
     ? _lastOrders.filter(o => visibleResi.has(o.resi))
     : _lastOrders;
 
@@ -6628,8 +6998,8 @@ async function renderAdminProducts(){
         <div style="margin-top:2px;">${_stokBadgeHtml(p.stok)}</div>
       </div>
       <div class="prod-admin-actions">
-        <button class="btn-edit" onclick="openProdForm('${p.id}')">✏️</button>
-        <button class="btn-del-prod" onclick="deleteProd('${p.id}')">🗑️</button>
+        <button class="btn-edit" onclick="openProdForm('${p.id}')">✏️ Edit</button>
+        <button class="btn-del-prod" onclick="deleteProd('${p.id}')">🗑️ Hapus</button>
       </div>
     </div>`).join('')+'</div>';
 }
