@@ -302,6 +302,20 @@ body.ticker-hidden { padding-top: 0; }
 .stok-low{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--yellow);}
 .stok-out{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);}
 
+/* ── Bundling badge & komponen produk gabungan ── */
+.bundle-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.4px;margin-top:5px;margin-right:5px;
+  background:rgba(167,139,250,.13);border:1px solid rgba(167,139,250,.35);color:#a78bfa;
+}
+.pm-bundle-row{margin:-4px 0 14px;}
+.pm-bundle-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#a78bfa;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.pm-bundle-list{display:flex;flex-wrap:wrap;gap:7px;}
+.pm-bundle-chip{display:flex;align-items:center;gap:6px;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.25);border-radius:11px;padding:7px 11px;font-size:12.5px;color:var(--text);font-weight:600;}
+.prod-admin-bundle{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#a78bfa;margin-top:2px;}
+
 /* ══════════════════════════════════════
    BULK EDIT STYLES
 ══════════════════════════════════════ */
@@ -1419,6 +1433,79 @@ body{
 }
 .product-card:hover{border-color:var(--border-hi);transform:translateY(-4px);box-shadow:0 12px 28px rgba(37,99,235,.18);}
 .product-card:hover::after{transform:scaleX(1);}
+
+/* Highlight produk combo/bundling di preview beranda (grid kecil) */
+.product-card-combo{
+  background:linear-gradient(160deg,rgba(167,139,250,.16),rgba(8,15,28,.6) 55%,rgba(236,72,153,.08));
+  border:1.5px solid transparent;
+  background-clip:padding-box;
+  box-shadow:0 8px 22px rgba(167,139,250,.18);
+}
+.product-card-combo::before{
+  content:'';position:absolute;inset:0;border-radius:16px;padding:1.5px;
+  background:linear-gradient(135deg,#a78bfa,#ec4899,#a78bfa);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.8;pointer-events:none;
+}
+.product-card-combo:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(167,139,250,.32);}
+.product-card-combo .product-emoji{position:relative;}
+.combo-mini-ribbon{
+  position:absolute;top:9px;right:-26px;z-index:2;
+  background:linear-gradient(135deg,#a78bfa,#ec4899);
+  color:#fff;font-family:'Syne',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.8px;padding:3px 28px;transform:rotate(38deg);
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.combo-mini-apps{
+  font-size:10px;color:#d8c9fc;font-weight:600;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;gap:3px;flex-wrap:wrap;
+}
+.combo-mini-price-row{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:2px;flex-wrap:wrap;}
+.combo-mini-tag{
+  font-size:9px;font-weight:800;letter-spacing:.3px;color:#fff;
+  background:linear-gradient(135deg,#a78bfa,#ec4899);
+  padding:2px 7px;border-radius:100px;
+}
+
+/* ══════════════════════════════════════
+   PAKET COMBO — tampilan mencolok di paling atas
+══════════════════════════════════════ */
+.combo-grid{display:flex;flex-direction:column;gap:11px;margin-bottom:6px;}
+.combo-card{
+  position:relative;display:flex;align-items:center;gap:14px;
+  padding:15px 18px 15px 16px;border-radius:18px;cursor:pointer;
+  background:rgba(4,12,28,.52);
+  border:1.5px solid transparent;
+  overflow:hidden;animation:fadeU .5s ease both;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 20px rgba(167,139,250,.1);
+}
+.combo-card::before{
+  content:'';position:absolute;inset:0;border-radius:18px;padding:1.5px;
+  background:linear-gradient(135deg,#a78bfa,#ec4899,#a78bfa);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.85;pointer-events:none;
+}
+.combo-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(167,139,250,.2);}
+.combo-card:hover::before{opacity:1;}
+.combo-card:active{transform:scale(.98);}
+.combo-ribbon{
+  position:absolute;top:11px;right:-30px;
+  background:linear-gradient(135deg,#a78bfa,#ec4899);
+  color:#fff;font-family:'Syne',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:1px;padding:4px 34px;transform:rotate(38deg);
+  box-shadow:0 2px 10px rgba(0,0,0,.3);
+}
+.combo-emoji{
+  width:52px;height:52px;border-radius:14px;flex-shrink:0;
+  background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;
+}
+.combo-info{flex:1;min-width:0;}
+.combo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:14.5px;color:#fff;margin-bottom:3px;padding-right:36px;}
+.combo-apps{font-size:11px;color:#d8c9fc;margin-bottom:7px;line-height:1.4;}
+.combo-price{font-size:13px;font-weight:700;color:#fff;background:rgba(255,255,255,.1);display:inline-block;padding:4px 11px;border-radius:100px;margin-right:6px;}
 .product-emoji{font-size:28px;margin-bottom:8px;}
 .product-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
 .product-price{font-size:12px;color:var(--cyan-light);font-weight:500;}
@@ -6522,7 +6609,7 @@ let _prodCache = null;
 async function fetchProduk(){
   if(_prodCache) return _prodCache;
   try{
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/Produk!A:H?key=${CFG.apiKey}`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/Produk!A:J?key=${CFG.apiKey}`;
     const res = await fetch(url);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
@@ -6539,6 +6626,9 @@ async function fetchProduk(){
       o.price = o.harga || o.price || '';
       o.cat   = o.kategori || o.cat || '';
       o.desc  = o.deskripsi || o.desc || '';
+      // bundling — tipe produk & daftar aplikasi yang digabung (kolom I & J)
+      o.tipe       = (o.tipe||'').toLowerCase().trim();
+      o.bundleApps = o.bundle ? o.bundle.split('|').map(f=>f.trim()).filter(Boolean) : [];
       return o;
     }).filter(p => p.id && p.name);
     return _prodCache;
@@ -6615,20 +6705,29 @@ function sfApplyAndRender(){
     return;
   }
 
-  // Grouping — kalau ada filter/search, tampilkan flat (tidak per kategori)
+  // Pisahkan produk bundling (combo) supaya ditampilkan mencolok di paling atas
+  const comboProds  = prods.filter(p => p.tipe === 'bundling');
+  const normalProds = prods.filter(p => p.tipe !== 'bundling');
+
   let html = '';
+  if(comboProds.length){
+    html += `<div class="sec-label" style="color:#c4b5fd;">🔥 Paket Combo Hemat</div><div class="combo-grid">`
+      + comboProds.map(p => _comboCardHtml(p)).join('')
+      + `</div>`;
+  }
+
   if(isFiltered){
     html += `<div class="products-grid">`;
-    prods.forEach((p,i)=>{
+    normalProds.forEach((p,i)=>{
       const hlName = sfHighlight(p.name, _sfQuery);
       html += _sfProdCardHtml(p, hlName, i);
     });
     html += '</div>';
   } else {
-    const cats = [...new Set(prods.map(p=>p.cat))];
+    const cats = [...new Set(normalProds.map(p=>p.cat))];
     cats.forEach(cat=>{
       html += `<div class="sec-label">${cat}</div><div class="products-grid">`;
-      prods.filter(p=>p.cat===cat).forEach((p,i)=>{
+      normalProds.filter(p=>p.cat===cat).forEach((p,i)=>{
         html += _sfProdCardHtml(p, p.name, i);
       });
       html += '</div>';
@@ -6637,14 +6736,34 @@ function sfApplyAndRender(){
   wrap.innerHTML = html;
 }
 
+function _comboCardHtml(p){
+  const imgHtml = p.emoji && p.emoji.startsWith('data:image')
+    ? `<img src="${p.emoji}" style="width:30px;height:30px;object-fit:contain;border-radius:8px;" />`
+    : prodIconSvg(p.emoji, 28);
+  const appsTxt = (p.bundleApps||[]).join(' + ');
+  return `<div class="combo-card" onclick="openProdModal('${p.id}')">
+    <div class="combo-ribbon">COMBO</div>
+    <div class="combo-emoji">${imgHtml}</div>
+    <div class="combo-info">
+      <div class="combo-name">${p.name}</div>
+      <div class="combo-apps">🎁 ${appsTxt}</div>
+      <span class="combo-price">${p.price}</span>
+      ${_stokBadgeHtml(p.stok)}
+    </div>
+  </div>`;
+}
+
 function _sfProdCardHtml(p, displayName, i){
   const imgHtml = p.emoji && p.emoji.startsWith('data:image')
     ? `<img src="${p.emoji}" class="product-img" />`
     : prodIconSvg(p.emoji, 26);
+  const bundleBadge = p.tipe === 'bundling'
+    ? `<div class="bundle-badge">🎁 Bundling ${p.bundleApps.length} App</div>` : '';
   return `<div class="product-card d${(i%4)+1}" onclick="openProdModal('${p.id}')">
     <div class="product-emoji">${imgHtml}</div>
     <div class="product-name">${displayName}</div>
     <div class="product-price">${p.price}</div>
+    ${bundleBadge}
     ${_stokBadgeHtml(p.stok)}
     <div style="font-size:10px;color:var(--muted);margin-top:4px;">Tap untuk detail →</div>
   </div>`;
@@ -6773,12 +6892,29 @@ async function renderBerandaProducts(){
   const wrap = document.getElementById('berandaProdukGrid');
   if(!wrap) return;
   const prods = await fetchProduk();
-  const preview = prods.slice(0,4);
+  // Produk combo/bundling diprioritaskan tampil duluan di preview beranda
+  const sorted  = [...prods].sort((a,b)=> (b.tipe==='bundling'?1:0) - (a.tipe==='bundling'?1:0));
+  const preview = sorted.slice(0,4);
   if(!preview.length){ wrap.innerHTML=''; return; }
   wrap.innerHTML = preview.map((p,i)=>{
     const imgHtml = p.emoji && p.emoji.startsWith('data:image')
       ? `<img src="${p.emoji}" class="product-img" />`
       : `<span style="display:inline-flex;">${prodIconSvg(p.emoji, 28)}</span>`;
+    const isCombo = p.tipe === 'bundling';
+    if(isCombo){
+      const appsTxt = (p.bundleApps||[]).join(' + ');
+      return `<div class="product-card product-card-combo d${i+1}" onclick="goPage('page-produk');setTimeout(()=>openProdModal('${p.id}'),300)">
+        <div class="combo-mini-ribbon">COMBO</div>
+        <div class="product-emoji">${imgHtml}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="combo-mini-apps">🎁 ${appsTxt}</div>
+        <div class="combo-mini-price-row">
+          <span class="product-price">${p.price}</span>
+          <span class="combo-mini-tag">HEMAT</span>
+        </div>
+        ${_stokBadgeHtml(p.stok)}
+      </div>`;
+    }
     return `<div class="product-card d${i+1}" onclick="goPage('page-produk');setTimeout(()=>openProdModal('${p.id}'),300)">
       <div class="product-emoji">${imgHtml}</div>
       <div class="product-name">${p.name}</div>
@@ -6808,6 +6944,22 @@ async function openProdModal(id){
   document.getElementById('pmPrice').textContent  = p.price;
   document.getElementById('pmDesc').textContent   = p.desc||'';
   document.getElementById('pmFeatures').innerHTML = (p.features||[]).map(f=>`<li>${f}</li>`).join('');
+
+  // bundling — tampilkan daftar aplikasi yang digabung
+  const pmBundleRow  = document.getElementById('pmBundleRow');
+  const pmBundleList = document.getElementById('pmBundleList');
+  if(p.tipe === 'bundling' && (p.bundleApps||[]).length){
+    pmBundleList.innerHTML = p.bundleApps.map(name=>{
+      const matched = prods.find(x=>x.name.toLowerCase()===name.toLowerCase());
+      const ic = matched && matched.emoji && matched.emoji.startsWith('data:image')
+        ? `<img src="${matched.emoji}" style="width:18px;height:18px;object-fit:contain;border-radius:4px;" />`
+        : prodIconSvg(matched ? matched.emoji : '📱', 16);
+      return `<div class="pm-bundle-chip">${ic} ${name}</div>`;
+    }).join('');
+    pmBundleRow.classList.remove('hidden');
+  } else {
+    pmBundleRow.classList.add('hidden');
+  }
   document.getElementById('pmOrderBtn').onclick = ()=> {
     let hargaAkhir = '';
     let promoTxt = '';
@@ -6998,6 +7150,7 @@ async function renderAdminProducts(){
         <div class="prod-admin-name">${p.name}</div>
         <div class="prod-admin-cat">${p.cat}</div>
         <div class="prod-admin-price">${p.price}</div>
+        ${p.tipe==='bundling' ? `<div class="prod-admin-bundle">🎁 Bundling ${(p.bundleApps||[]).join(' + ')}</div>` : ''}
         <div style="margin-top:2px;">${_stokBadgeHtml(p.stok)}</div>
       </div>
       <div class="prod-admin-actions">
@@ -7033,7 +7186,45 @@ async function openProdForm(id){
   const featsList = document.getElementById('pfFeatsList');
   featsList.innerHTML = '';
   (p ? (p.features||[]) : []).forEach(f => addFeatField(f));
+  // bundling — set checkbox & render grid pilih aplikasi
+  const isBundle = !!(p && p.tipe === 'bundling');
+  document.getElementById('pfIsBundle').checked = isBundle;
+  toggleBundleSection();
+  await renderBundleGrid(p ? (p.bundleApps||[]) : []);
   document.getElementById('prodFormModal').classList.remove('hidden');
+}
+
+function toggleBundleSection(){
+  const show = document.getElementById('pfIsBundle').checked;
+  document.getElementById('pfBundleSection').classList.toggle('hidden', !show);
+}
+
+async function renderBundleGrid(selectedNames){
+  selectedNames = selectedNames || [];
+  const prods = await fetchProduk();
+  const grid = document.getElementById('pfBundleGrid');
+  const list = prods.filter(x => x.id !== _editProdId);
+  if(!list.length){
+    grid.innerHTML = '<div style="font-size:11px;color:var(--muted);">Belum ada produk satuan lain. Tambah dulu produk satuannya, baru bisa dibundling.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const safeId = p.id.replace(/[^a-zA-Z0-9_]/g,'_');
+    const imgHtml = p.emoji && p.emoji.startsWith('data:image')
+      ? '<img src="' + p.emoji + '" style="width:22px;height:22px;object-fit:contain;border-radius:5px;display:block;margin:0 auto 3px;" />'
+      : '<span class="em" style="display:inline-flex;">' + prodIconSvg(p.emoji, 17) + '</span>';
+    const isSel = selectedNames.some(n => n.toLowerCase() === p.name.toLowerCase());
+    const nm = p.name.replace(/'/g,"&apos;");
+    return '<div class="app-chip pf-bundle-chip' + (isSel ? ' sel' : '') + '" id="pfbchip_' + safeId + '" data-name="' + nm + '" onclick="toggleBundleChip(this)">' + imgHtml + p.name + '</div>';
+  }).join('');
+}
+
+function toggleBundleChip(el){
+  el.classList.toggle('sel');
+}
+
+function getSelectedBundleApps(){
+  return [...document.querySelectorAll('.pf-bundle-chip.sel')].map(e => e.getAttribute('data-name'));
 }
 
 function addFeatField(val){
@@ -7058,6 +7249,12 @@ async function saveProd(){
   const stok  = document.getElementById('pfStok').value.trim();
   if(!name||!price||!cat){ showToast('⚠️ Nama, harga, dan kategori wajib diisi!'); return; }
   const features = [...document.querySelectorAll('.prod-feat-input')].map(i=>i.value.trim()).filter(Boolean);
+
+  // bundling — ambil aplikasi yang dipilih
+  const isBundle   = document.getElementById('pfIsBundle').checked;
+  const bundleApps = isBundle ? getSelectedBundleApps() : [];
+  if(isBundle && bundleApps.length < 2){ showToast('⚠️ Pilih minimal 2 aplikasi untuk produk bundling!'); return; }
+
   if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
 
   const btn = document.querySelector('#prodFormModal .btn-primary');
@@ -7070,7 +7267,8 @@ async function saveProd(){
       action: _editProdId ? 'edit' : 'add',
       id:     _editProdId || ('p'+Date.now()),
       emoji:  emoji||'', nama: name, harga: price,
-      kategori: cat, deskripsi: desc, fitur: features, stok: stok
+      kategori: cat, deskripsi: desc, fitur: features, stok: stok,
+      tipe: isBundle ? 'bundling' : '', bundle: bundleApps
     };
     await postSheet(payload);
     clearProdCache();
@@ -8003,6 +8201,10 @@ async function renderBerandaTestimoni(){
     <div class="prod-modal-name" id="pmName"></div>
     <div class="prod-modal-price" id="pmPrice"></div>
     <div class="prod-modal-desc" id="pmDesc"></div>
+    <div class="pm-bundle-row hidden" id="pmBundleRow">
+      <div class="pm-bundle-label">🎁 Termasuk dalam paket ini</div>
+      <div class="pm-bundle-list" id="pmBundleList"></div>
+    </div>
     <ul class="prod-modal-features" id="pmFeatures"></ul>
 
     <!-- Share row -->
@@ -8108,6 +8310,15 @@ async function renderBerandaTestimoni(){
     <div class="field"><label>Harga (contoh: Mulai 15K/bln)</label><input id="pfPrice" placeholder="Mulai 15K/bln" /></div>
     <div class="field"><label>Kategori</label>
       <input id="pfCat" placeholder="🔥 Streaming / 🎵 Musik & Kreasi / dll" />
+    </div>
+    <div class="field" style="display:flex;align-items:center;gap:10px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:12px;padding:12px 14px;">
+      <input type="checkbox" id="pfIsBundle" onchange="toggleBundleSection()" style="width:18px;height:18px;accent-color:#a78bfa;cursor:pointer;flex-shrink:0;" />
+      <label for="pfIsBundle" style="margin:0;cursor:pointer;color:#a78bfa;font-weight:600;font-size:13px;">🎁 Ini Produk Bundling (gabungan beberapa aplikasi, 1 harga)</label>
+    </div>
+    <div class="field hidden" id="pfBundleSection">
+      <label>Pilih Aplikasi yang Digabung</label>
+      <div class="apps-grid" id="pfBundleGrid" style="margin-bottom:2px;"></div>
+      <div class="img-upload-hint" style="margin-top:4px;">Tap aplikasi yang mau digabung jadi 1 paket (minimal 2)</div>
     </div>
     <div class="field"><label>Stok Tersedia (0 = habis, kosong = tidak ditampilkan)</label><input id="pfStok" type="number" min="0" placeholder="Contoh: 10" /></div>
     <div class="field"><label>Deskripsi Singkat</label>
