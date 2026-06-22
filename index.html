@@ -1702,6 +1702,9 @@ tr:hover td{background:rgba(59,130,246,.03);}
    Di layar ≤600px, tabel diubah jadi kartu
    supaya tidak crowded / keramaian
 ══════════════════════════════════════ */
+/* Default (desktop): sembunyikan container kartu mobile supaya tidak dobel dengan tabel */
+#ordersTable .mob-cards { display: none; }
+
 @media (max-width: 600px) {
   /* Sembunyikan tabel biasa di mobile */
   #ordersTable .tbl-wrap { overflow-x: unset; margin-top: 0; }
