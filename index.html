@@ -1582,17 +1582,21 @@ body{
   width:100%;max-width:480px;
   background:var(--surface);
   border-radius:22px 22px 0 0;
-  padding:22px 20px 32px;
+  padding:22px 20px 28px;
   border-top:1px solid var(--border-hi);
   animation:slideUp .3s cubic-bezier(.4,0,.2,1);
   max-height:90vh;overflow-y:auto;
 }
 @keyframes slideUp{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.cust-testi-modal::before{
+  content:'';display:block;width:36px;height:4px;border-radius:100px;
+  background:var(--border-hi);margin:0 auto 16px;
+}
 .cust-testi-header{
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;
 }
 .cust-testi-title{
-  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
   background:linear-gradient(90deg,var(--blue-light),var(--cyan-light));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
@@ -1602,10 +1606,25 @@ body{
   display:flex;align-items:center;justify-content:center;transition:all .2s;
 }
 .cust-testi-close:hover{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:var(--red);}
-.cust-star-row{display:flex;gap:6px;justify-content:center;margin:10px 0 16px;}
+.cust-star-row{display:flex;gap:6px;justify-content:center;margin:4px 0 6px;}
 .cust-star{font-size:32px;cursor:pointer;color:rgba(255,255,255,.13);transition:color .13s,transform .13s;user-select:none;}
 .cust-star.active{color:#fbbf24;}
 .cust-star:hover{transform:scale(1.18);}
+.cust-rating-box{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:14px;padding:14px 10px 10px;margin-bottom:13px;
+}
+.cust-rating-label{
+  text-align:center;font-size:11.5px;font-weight:700;color:#fbbf24;
+  font-family:'Syne',sans-serif;letter-spacing:.3px;margin-top:2px;
+}
+.cust-testi-notice{
+  display:flex;align-items:flex-start;gap:8px;
+  background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);
+  border-radius:12px;padding:10px 12px;margin-top:14px;
+  font-size:11.5px;color:var(--muted);line-height:1.5;
+}
+.cust-testi-notice span.ico{font-size:14px;line-height:1.3;}
 .cust-testi-submit{
   width:100%;padding:13px;margin-top:14px;
   background:linear-gradient(135deg,var(--blue),var(--cyan));
@@ -1659,6 +1678,265 @@ body{
 .link-card.testi-submit-card{cursor:pointer;}
 .link-card.testi-submit-card:hover .card-icon{transform:scale(1.1);}
 
+/* ══════════════════════════════════════
+   GALERI TESTIMONI IMAGE
+══════════════════════════════════════ */
+.galeri-testi-section{margin-bottom:18px;}
+.galeri-testi-label{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-bright);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.galeri-testi-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+@media(min-width:420px){
+  .galeri-testi-grid{grid-template-columns:repeat(4,1fr);}
+}
+.galeri-testi-item{
+  position:relative;border-radius:12px;overflow:hidden;
+  aspect-ratio:1/1;cursor:pointer;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  animation:fadeU .4s ease both;
+}
+.galeri-testi-item:hover{
+  transform:scale(1.04);
+  border-color:var(--border-hi);
+  box-shadow:0 6px 24px rgba(37,99,235,.22);
+}
+.galeri-testi-item img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;transition:transform .3s;
+}
+.galeri-testi-item:hover img{transform:scale(1.06);}
+.galeri-testi-item .gti-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(4,8,22,.85));
+  opacity:0;transition:opacity .2s;
+  display:flex;align-items:flex-end;padding:8px;
+}
+.galeri-testi-item:hover .gti-overlay{opacity:1;}
+.gti-caption{
+  font-family:'Syne',sans-serif;font-size:9px;font-weight:700;
+  color:#fff;letter-spacing:.3px;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;
+}
+/* Expand icon badge */
+.galeri-testi-item .gti-zoom{
+  position:absolute;top:6px;right:6px;
+  width:22px;height:22px;border-radius:7px;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;opacity:0;transition:opacity .2s;
+}
+.galeri-testi-item:hover .gti-zoom{opacity:1;}
+
+/* Show more button */
+.galeri-testi-more{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:10px;margin-top:8px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:12px;font-family:'Syne',sans-serif;
+  font-size:11px;font-weight:700;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.galeri-testi-more:hover{background:rgba(255,255,255,.07);color:var(--text);}
+
+/* ── Lightbox ── */
+.gti-lightbox{
+  position:fixed;inset:0;z-index:5000;
+  background:rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+  backdrop-filter:blur(8px);
+  animation:fadeIn .2s ease;
+}
+.gti-lightbox.hidden{display:none;}
+.gti-lb-inner{
+  position:relative;max-width:min(480px,100%);max-height:90vh;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.gti-lb-img{
+  max-width:100%;max-height:78vh;border-radius:16px;
+  object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.6);
+  animation:lbImgIn .25s cubic-bezier(.22,1.3,.4,1);
+}
+@keyframes lbImgIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.gti-lb-caption{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  color:rgba(255,255,255,.7);text-align:center;
+}
+.gti-lb-close{
+  position:absolute;top:-44px;right:0;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.gti-lb-close:hover{background:rgba(248,113,113,.3);}
+.gti-lb-nav{
+  display:flex;gap:10px;
+}
+.gti-lb-nav button{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.gti-lb-nav button:hover{background:rgba(96,165,250,.3);}
+.gti-lb-counter{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.45);
+}
+
+/* ══════════════════════════════════════
+   UNIFIED TESTIMONI SECTION (TAB)
+══════════════════════════════════════ */
+.testi-unified-section{margin-bottom:18px;}
+.testi-unified-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+}
+.testi-unified-title{
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-bright);display:flex;align-items:center;gap:7px;
+}
+.testi-tab-pills{
+  display:flex;gap:5px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:100px;padding:3px;
+}
+.testi-tab-pill{
+  padding:4px 12px;border-radius:100px;
+  font-family:'Syne',sans-serif;font-size:10px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+  color:var(--muted);background:transparent;border:none;
+  letter-spacing:.3px;
+}
+.testi-tab-pill.active{
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#fff;
+}
+.testi-tab-panel{display:none;}
+.testi-tab-panel.active{display:block;animation:fadeU .3s ease both;}
+
+/* ── Admin Galeri Testi List ── */
+.galeri-testi-admin-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px;border-radius:14px;
+  background:rgba(4,12,28,.52);border:1px solid var(--border);
+  margin-bottom:9px;backdrop-filter:blur(12px);
+  transition:border-color .25s;
+}
+.galeri-testi-admin-item:hover{border-color:var(--border-hi);}
+.galeri-testi-admin-thumb{
+  width:64px;height:64px;border-radius:11px;
+  object-fit:cover;flex-shrink:0;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;overflow:hidden;border:1px solid var(--border);
+}
+.galeri-testi-admin-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.galeri-testi-admin-info{flex:1;min-width:0;}
+.galeri-testi-admin-name{
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.galeri-testi-admin-meta{font-size:11px;color:var(--muted);margin-top:3px;}
+.galeri-testi-admin-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-del-galeri-testi{
+  width:32px;height:32px;border-radius:9px;border:none;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+  background:rgba(248,113,113,.12);color:var(--red);
+}
+.btn-del-galeri-testi:hover{background:rgba(248,113,113,.25);}
+.galeri-testi-admin-order{
+  display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-right:2px;
+}
+.btn-galeri-order{
+  width:26px;height:26px;border-radius:7px;border:none;cursor:pointer;
+  font-size:12px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+  background:rgba(255,255,255,.06);color:var(--muted);
+}
+.btn-galeri-order:hover{background:rgba(96,165,250,.18);color:var(--blue-light);}
+
+/* ── Modal overlay umum (galeri testi dll) ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.75);
+  display:flex;align-items:center;justify-content:center;
+  padding:18px;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.modal-overlay.hidden{display:none!important;}
+.modal-box{
+  background:var(--surface);
+  border:1px solid var(--border-hi);
+  border-radius:20px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  animation:fadeU .25s ease;
+  position:relative;
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 12px;
+  border-bottom:1px solid var(--border);
+  font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:800;
+}
+.modal-close{
+  background:rgba(255,255,255,.07);
+  border:none;color:var(--muted);
+  width:30px;height:30px;border-radius:50%;
+  cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+.modal-close:hover{background:rgba(248,113,113,.25);color:var(--red);}
+
+/* ── Form upload galeri testi ── */
+.galeri-testi-upload-area{
+  border:2px dashed var(--border);border-radius:14px;
+  padding:24px 16px;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  background:rgba(255,255,255,.02);
+}
+.galeri-testi-upload-area:hover{
+  border-color:var(--blue-bright);
+  background:rgba(37,99,235,.06);
+}
+.galeri-testi-upload-area .up-icon{font-size:32px;display:block;margin-bottom:8px;}
+.galeri-testi-upload-area .up-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+.galeri-testi-preview-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;
+}
+.gtp-item{
+  position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;
+  background:var(--surface2);border:1px solid var(--border);
+}
+.gtp-item img{width:100%;height:100%;object-fit:cover;}
+.gtp-remove{
+  position:absolute;top:4px;right:4px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(0,0,0,.7);border:none;
+  color:#fff;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.gtp-remove:hover{background:rgba(248,113,113,.8);}
+
 
 /* ══════════════════════════════════════
    CEK RESI PAGE
@@ -1681,6 +1959,16 @@ body{
 .field input:focus,.field select:focus{border-color:var(--blue-bright);box-shadow:0 0 0 3px rgba(59,130,246,.12);background:rgba(255,255,255,.06);}
 .field input::placeholder{color:rgba(107,147,188,.35);}
 .field select option{background:#080f1c;}
+.field textarea{
+  width:100%;padding:12px 14px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:12px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;line-height:1.55;
+  transition:border-color .25s,box-shadow .25s,background .25s;
+}
+.field textarea:focus{border-color:var(--blue-bright);box-shadow:0 0 0 3px rgba(59,130,246,.12);background:rgba(255,255,255,.06);}
+.field textarea::placeholder{color:rgba(107,147,188,.35);}
+.field-charcount{display:flex;justify-content:flex-end;font-size:10.5px;color:var(--muted);margin-top:5px;font-family:'DM Sans',sans-serif;}
+.field-charcount.warn{color:#fbbf24;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
 
 /* Buttons */
@@ -4105,6 +4393,8 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="card-arrow">→</div>
   </div>
 
+
+
   <!-- TOP UP SECTION -->
   <div class="sec-label">⚡ Top Up & Beli Langsung</div>
   <a href="https://rizantastore.my.id" target="_blank" class="topup-banner">
@@ -4200,19 +4490,41 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="card-arrow">→</div>
   </a>
 
-  <div class="sec-label">⭐ Testimoni Pembeli</div>
-
-  <div id="berandaTestiContainer">
-    <!-- skeleton -->
-    <div class="testi-card" style="opacity:.4;">
-      <div class="testi-head"><div class="testi-av">…</div><div><div class="stars">★★★★★</div><div class="testi-name" style="background:rgba(255,255,255,.08);border-radius:6px;width:90px;height:12px;"></div></div></div>
+  <!-- ── Unified Testimoni Section ── -->
+  <div class="testi-unified-section" id="berandaTestiUnifiedSection">
+    <div class="testi-unified-header">
+      <div class="testi-unified-title">⭐ Testimoni Pembeli</div>
+      <div class="testi-tab-pills" id="testiTabPills" style="display:none;">
+        <button class="testi-tab-pill active" onclick="switchTestiTab('ulasan',this)">💬 Ulasan</button>
+        <button class="testi-tab-pill" onclick="switchTestiTab('foto',this)">📸 Foto</button>
+      </div>
     </div>
-  </div>
 
-  <div class="link-card d7 testi-submit-card" onclick="openCustTestiModal()">
-    <div class="card-icon ic-rev">⭐</div>
-    <div class="card-info"><div class="card-title">Bagikan Testimoni</div><div class="card-sub">Ceritakan pengalaman belanjamu!</div></div>
-    <div class="card-arrow">→</div>
+    <!-- Panel: Ulasan Teks -->
+    <div class="testi-tab-panel active" id="testiPanelUlasan">
+      <div id="berandaTestiContainer">
+        <!-- skeleton -->
+        <div class="testi-card" style="opacity:.4;">
+          <div class="testi-head"><div class="testi-av">…</div><div><div class="stars">★★★★★</div><div class="testi-name" style="background:rgba(255,255,255,.08);border-radius:6px;width:90px;height:12px;"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Galeri Foto -->
+    <div class="testi-tab-panel" id="testiPanelFoto">
+      <div class="galeri-testi-grid" id="berandaGaleriTestiGrid">
+        <!-- dynamic -->
+      </div>
+      <button class="galeri-testi-more hidden" id="galeriTestiMoreBtn" onclick="loadMoreGaleriTesti()">
+        📷 Lihat Semua Foto
+      </button>
+    </div>
+
+    <div class="link-card d7 testi-submit-card" onclick="openCustTestiModal()" style="margin-top:10px;">
+      <div class="card-icon ic-rev">⭐</div>
+      <div class="card-info"><div class="card-title">Bagikan Testimoni</div><div class="card-sub">Ceritakan pengalaman belanjamu!</div></div>
+      <div class="card-arrow">→</div>
+    </div>
   </div>
 </div>
 
@@ -4469,6 +4781,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab active" id="tabOrder" onclick="switchTab('order')">📦 Pesanan</button>
       <button class="admin-tab" id="tabProduk" onclick="switchTab('produk')">🛍️ Produk</button>
       <button class="admin-tab" id="tabTestimoni" onclick="switchTab('testimoni')">⭐ Testimoni</button>
+      <button class="admin-tab" id="tabGaleriTesti" onclick="switchTab('galeriTesti')">📸 Galeri Testi</button>
       <button class="admin-tab" id="tabIklan" onclick="switchTab('iklan')">📢 Iklan</button>
       <button class="admin-tab" id="tabMusik" onclick="switchTab('musik')">🎵 Musik</button>
       <button class="admin-tab" id="tabStatistik" onclick="switchTab('statistik')">📊 Statistik</button>
@@ -4646,6 +4959,22 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       </div>
     </div>
   </div><!-- /tab-testimoni -->
+
+  <!-- Tab: Galeri Testi -->
+  <div id="tab-galeriTesti" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-heading" style="margin:0;">📸 Galeri Foto Testimoni</div>
+        <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openGaleriTestiForm()">➕ Upload Foto</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.18);border-radius:11px;padding:10px 12px;">
+        📌 Upload screenshot testimoni dari WhatsApp, Instagram, dll. Foto akan tampil sebagai galeri grid di beranda. Drag urutan untuk susun tampilan.
+      </div>
+      <div id="galeriTestiAdminList">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div>
+      </div>
+    </div>
+  </div><!-- /tab-galeriTesti -->
 
   <!-- Tab: Iklan -->
   <div id="tab-iklan" class="tab-content">
@@ -7176,6 +7505,7 @@ function switchTab(tab){
   if(tab==='produk') renderAdminProducts();
   if(tab==='order'){ renderAppsGrid(); if(adminLoggedIn){ startAdminRt(); _rtSetBar('adminRtBar','adminRtDot','adminRtLabel','adminRtTime','live'); } }
   if(tab==='testimoni'){ renderAdminTestimoni(); renderAdminTestimoniPending(); }
+  if(tab==='galeriTesti') renderAdminGaleriTesti();
   if(tab==='iklan') renderAdminIklan();
   if(tab==='musik') renderAdminMusik();
   if(tab==='statistik') renderStatistik();
@@ -7499,6 +7829,7 @@ function openCustTestiModal(){
   document.getElementById('ctPesan').value = '';
   _ctRating = 5;
   pickCustStar(5);
+  updateCtCharCount();
   document.getElementById('custTestiForm').style.display = '';
   document.getElementById('custTestiSuccess').style.display = 'none';
   document.getElementById('ctSubmitBtn').innerHTML = '✉️ Kirim Testimoni';
@@ -7510,12 +7841,27 @@ function closeCustTestiModal(){
   document.getElementById('custTestiModal').classList.add('hidden');
 }
 
+const CT_RATING_LABELS = {
+  1:'Kurang puas 😕', 2:'Lumayan 🙂', 3:'Bagus 👌', 4:'Sangat bagus 😄', 5:'Mantap banget! 🔥'
+};
+
 function pickCustStar(val){
   _ctRating = val;
   document.getElementById('ctRating').value = val;
   document.querySelectorAll('.cust-star').forEach(s => {
     s.classList.toggle('active', parseInt(s.dataset.val) <= val);
   });
+  const lbl = document.getElementById('custRatingLabel');
+  if(lbl) lbl.textContent = CT_RATING_LABELS[val] || '';
+}
+
+function updateCtCharCount(){
+  const el = document.getElementById('ctPesan');
+  const counter = document.getElementById('ctCharCount');
+  if(!el || !counter) return;
+  const len = el.value.length;
+  counter.textContent = `${len} / 500`;
+  counter.classList.toggle('warn', len >= 450);
 }
 
 async function submitCustTesti(){
@@ -8201,11 +8547,272 @@ document.addEventListener('DOMContentLoaded', function(){
   renderProductPage();
   renderBerandaProducts();
   renderBerandaTestimoni();
+  renderBerandaGaleriTesti();
   // Tampilkan popup iklan aktif saat pertama buka
   setTimeout(loadAndShowIklanPopup, 1200);
   // Init musik player (autoplay muted)
   setTimeout(initMusicPlayer, 800);
 });
+
+/* ══════════════════════════════════════
+   GALERI TESTIMONI IMAGE — Google Sheets backed
+══════════════════════════════════════ */
+let _galeriTestiCache = null;
+let _galeriTestiShown  = 6; // berapa foto ditampilkan di beranda awalnya
+
+function clearGaleriTestiCache(){ _galeriTestiCache = null; }
+
+async function fetchGaleriTesti(){
+  if(_galeriTestiCache) return _galeriTestiCache;
+  try{
+    const url = `${CFG.scriptUrl}?sheet=galeri_testi`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _galeriTestiCache = Array.isArray(data) ? data : [];
+    return _galeriTestiCache;
+  }catch(e){
+    _galeriTestiCache = [];
+    return [];
+  }
+}
+
+/* ── Render beranda galeri ── */
+async function renderBerandaGaleriTesti(){
+  const grid    = document.getElementById('berandaGaleriTestiGrid');
+  const moreBtn = document.getElementById('galeriTestiMoreBtn');
+  const tabPills = document.getElementById('testiTabPills');
+  if(!grid) return;
+  try{
+    const items = await fetchGaleriTesti();
+    if(!items.length){ return; }
+    // Show tab pills only if there are galeri items
+    if(tabPills) tabPills.style.display = '';
+    _galeriTestiShown = 6;
+    _renderGaleriGrid(items, grid, _galeriTestiShown);
+    if(items.length > _galeriTestiShown){
+      moreBtn.classList.remove('hidden');
+      moreBtn.textContent = `📷 Lihat Semua (${items.length}) Foto`;
+    } else {
+      moreBtn.classList.add('hidden');
+    }
+  }catch(e){ /* silent fail */ }
+}
+
+/* ── Switch tab di unified testimoni section ── */
+function switchTestiTab(tab, btn){
+  // Update pill buttons
+  document.querySelectorAll('.testi-tab-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  // Show/hide panels
+  document.querySelectorAll('.testi-tab-panel').forEach(p => p.classList.remove('active'));
+  const panelId = tab === 'foto' ? 'testiPanelFoto' : 'testiPanelUlasan';
+  const panel = document.getElementById(panelId);
+  if(panel) panel.classList.add('active');
+}
+
+function _renderGaleriGrid(items, grid, limit){
+  const shown = limit ? items.slice(0, limit) : items;
+  grid.innerHTML = shown.map((item, i)=>`
+    <div class="galeri-testi-item" onclick="openGaleriLightbox(${i},${JSON.stringify(items).replace(/"/g,'&quot;')})" style="animation-delay:${i*0.05}s;">
+      <img src="${item.imgurl||''}" alt="${item.caption||'Testimoni'}" loading="lazy" />
+      <div class="gti-zoom">🔍</div>
+      <div class="gti-overlay">
+        <div class="gti-caption">${item.caption||''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadMoreGaleriTesti(){
+  const grid    = document.getElementById('berandaGaleriTestiGrid');
+  const moreBtn = document.getElementById('galeriTestiMoreBtn');
+  const items   = await fetchGaleriTesti();
+  _renderGaleriGrid(items, grid, null);
+  moreBtn.classList.add('hidden');
+}
+
+/* ── Lightbox ── */
+let _lbItems = [], _lbIdx = 0;
+
+function openGaleriLightbox(idx, items){
+  _lbItems = items;
+  _lbIdx   = idx;
+  _updateLightbox();
+  document.getElementById('gtiLightbox').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeGaleriLightbox(){
+  document.getElementById('gtiLightbox').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function _updateLightbox(){
+  const item = _lbItems[_lbIdx];
+  if(!item) return;
+  const imgEl = document.getElementById('gtiLbImg');
+  imgEl.style.opacity = '0';
+  imgEl.style.transform = 'scale(.95)';
+  setTimeout(()=>{
+    imgEl.src = item.imgurl||'';
+    imgEl.style.opacity = '1';
+    imgEl.style.transform = 'scale(1)';
+  }, 120);
+  document.getElementById('gtiLbCaption').textContent = item.caption||'';
+  document.getElementById('gtiLbCounter').textContent = `${_lbIdx+1} / ${_lbItems.length}`;
+}
+function lbPrev(){
+  _lbIdx = (_lbIdx - 1 + _lbItems.length) % _lbItems.length;
+  _updateLightbox();
+}
+function lbNext(){
+  _lbIdx = (_lbIdx + 1) % _lbItems.length;
+  _updateLightbox();
+}
+// Keyboard support
+document.addEventListener('keydown', e=>{
+  const lb = document.getElementById('gtiLightbox');
+  if(!lb || lb.classList.contains('hidden')) return;
+  if(e.key === 'ArrowLeft') lbPrev();
+  if(e.key === 'ArrowRight') lbNext();
+  if(e.key === 'Escape') closeGaleriLightbox();
+});
+
+/* ── Admin: render list ── */
+async function renderAdminGaleriTesti(){
+  const wrap = document.getElementById('galeriTestiAdminList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearGaleriTestiCache();
+  const items = await fetchGaleriTesti();
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:24px 16px;color:var(--muted);font-size:13px;">Belum ada foto testimoni. Klik Upload Foto!</div>';
+    return;
+  }
+  wrap.innerHTML = items.map((item, i)=>`
+    <div class="galeri-testi-admin-item">
+      <div class="galeri-testi-admin-thumb">
+        ${item.imgurl ? `<img src="${item.imgurl}" alt="foto" loading="lazy"/>` : '🖼️'}
+      </div>
+      <div class="galeri-testi-admin-info">
+        <div class="galeri-testi-admin-name">${item.caption||'(Tanpa caption)'}</div>
+        <div class="galeri-testi-admin-meta">Urutan ke-${i+1} · ${item.tanggal||'-'}</div>
+      </div>
+      <div class="galeri-testi-admin-order">
+        ${i > 0 ? `<button class="btn-galeri-order" onclick="moveGaleriTesti(${i},'up')" title="Naikan urutan">▲</button>` : '<div style="width:26px;height:26px;"></div>'}
+        ${i < items.length-1 ? `<button class="btn-galeri-order" onclick="moveGaleriTesti(${i},'down')" title="Turunkan urutan">▼</button>` : '<div style="width:26px;height:26px;"></div>'}
+      </div>
+      <div class="galeri-testi-admin-actions">
+        <button class="btn-del-galeri-testi" onclick="deleteGaleriTesti(${i})" title="Hapus">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── Admin: open form ── */
+function openGaleriTestiForm(){
+  document.getElementById('gtfCaption').value = '';
+  document.getElementById('gtfTanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gtfImgData').value = '';
+  // Reset file input agar onchange terpicu walau pilih file yang sama
+  const fileInput = document.getElementById('gtfImgFile');
+  if(fileInput) fileInput.value = '';
+  const preview = document.getElementById('gtfImgPreview');
+  preview.innerHTML = `
+    <div class="up-icon">📷</div>
+    <div style="font-size:13px;color:var(--muted);font-weight:600;">Tap untuk upload foto testimoni</div>
+    <div class="up-hint">Foto dari WA, IG, dll • Otomatis dikompres • JPG/PNG/WebP</div>
+  `;
+  // Pastikan onclick selalu aktif setelah innerHTML diganti
+  preview.onclick = function(e){ e.stopPropagation(); document.getElementById('gtfImgFile').click(); };
+  document.getElementById('galeriTestiFormModal').classList.remove('hidden');
+}
+function closeGaleriTestiForm(){
+  document.getElementById('galeriTestiFormModal').classList.add('hidden');
+}
+
+/* ── Upload & compress (sama logika iklan/banner) ── */
+function handleGaleriTestiImgUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const maxSize = 200 * 1024;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxDim = 600;
+      if(w > maxDim || h > maxDim){
+        if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else      { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      let quality = 0.78;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+      if(dataUrl.length > maxSize * 1.37){
+        quality = 0.55;
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+      }
+      document.getElementById('gtfImgData').value = dataUrl;
+      const prev = document.getElementById('gtfImgPreview');
+      prev.innerHTML =
+        `<img src="${dataUrl}" style="width:100%;max-height:240px;object-fit:contain;border-radius:10px;" />
+         <div class="up-hint" style="margin-top:6px;">Tap untuk ganti foto</div>`;
+      prev.onclick = function(e){ e.stopPropagation(); document.getElementById('gtfImgFile').click(); };
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── Save ── */
+async function saveGaleriTesti(){
+  const imgData = document.getElementById('gtfImgData').value;
+  const caption = document.getElementById('gtfCaption').value.trim();
+  const tanggal = document.getElementById('gtfTanggal').value;
+  if(!imgData){ showToast('⚠️ Foto belum dipilih!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  const btn = document.getElementById('gtfSaveBtn');
+  btn.innerHTML = '<span class="spinner"></span> Mengupload...';
+  btn.disabled = true;
+  try{
+    await postSheet({sheet:'galeri_testi', action:'add', imgUrl: imgData, caption, tanggal});
+    showToast('✅ Foto testimoni ditambahkan!');
+    clearGaleriTestiCache();
+    await renderAdminGaleriTesti();
+    await renderBerandaGaleriTesti();
+    closeGaleriTestiForm();
+  }catch(e){
+    showToast('❌ Gagal upload: '+e.message);
+  }
+  btn.innerHTML = '✅ Simpan Foto';
+  btn.disabled = false;
+}
+
+/* ── Delete ── */
+async function deleteGaleriTesti(idx){
+  if(!confirm('Hapus foto testimoni ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await postSheet({sheet:'galeri_testi', action:'delete', idx});
+    clearGaleriTestiCache();
+    await renderAdminGaleriTesti();
+    await renderBerandaGaleriTesti();
+    showToast('🗑️ Foto dihapus!');
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+/* ── Move (reorder) ── */
+async function moveGaleriTesti(idx, dir){
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await postSheet({sheet:'galeri_testi', action:'move', idx, dir});
+    clearGaleriTestiCache();
+    await renderAdminGaleriTesti();
+    await renderBerandaGaleriTesti();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
 
 async function renderBerandaTestimoni(){
   const wrap = document.getElementById('berandaTestiContainer');
@@ -11776,12 +12383,15 @@ async function saveRunningTextSettings(silent){
       </div>
       <div class="field">
         <label class="field-label">Rating</label>
-        <div class="cust-star-row" id="custStarRow">
-          <span class="cust-star active" data-val="1" onclick="pickCustStar(1)">★</span>
-          <span class="cust-star active" data-val="2" onclick="pickCustStar(2)">★</span>
-          <span class="cust-star active" data-val="3" onclick="pickCustStar(3)">★</span>
-          <span class="cust-star active" data-val="4" onclick="pickCustStar(4)">★</span>
-          <span class="cust-star active" data-val="5" onclick="pickCustStar(5)">★</span>
+        <div class="cust-rating-box">
+          <div class="cust-star-row" id="custStarRow">
+            <span class="cust-star active" data-val="1" onclick="pickCustStar(1)">★</span>
+            <span class="cust-star active" data-val="2" onclick="pickCustStar(2)">★</span>
+            <span class="cust-star active" data-val="3" onclick="pickCustStar(3)">★</span>
+            <span class="cust-star active" data-val="4" onclick="pickCustStar(4)">★</span>
+            <span class="cust-star active" data-val="5" onclick="pickCustStar(5)">★</span>
+          </div>
+          <div class="cust-rating-label" id="custRatingLabel">Mantap banget! 🔥</div>
         </div>
         <input type="hidden" id="ctRating" value="5" />
       </div>
@@ -11791,12 +12401,13 @@ async function saveRunningTextSettings(silent){
       </div>
       <div class="field">
         <label class="field-label">Ulasan <span style="color:var(--red);">*</span></label>
-        <textarea class="input" id="ctPesan" rows="4" placeholder="Ceritakan pengalamanmu berbelanja di sini..." maxlength="500" style="resize:none;"></textarea>
+        <textarea class="input" id="ctPesan" rows="4" placeholder="Ceritakan pengalamanmu berbelanja di sini..." maxlength="500" style="resize:none;" oninput="updateCtCharCount()"></textarea>
+        <div class="field-charcount" id="ctCharCount">0 / 500</div>
       </div>
       <button class="cust-testi-submit" id="ctSubmitBtn" onclick="submitCustTesti()">
         ✉️ Kirim Testimoni
       </button>
-      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;">Testimonimu akan ditampilkan setelah disetujui admin 👍</p>
+      <div class="cust-testi-notice"><span class="ico">👍</span><span>Testimonimu akan ditampilkan setelah disetujui admin.</span></div>
     </div>
     <div id="custTestiSuccess" style="display:none;">
       <div class="cust-testi-success">
@@ -11954,6 +12565,74 @@ function pgToggleTheme(isLight){
   });
 })();
 </script>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Lightbox Galeri Testimoni
+     ═══════════════════════════════════════════════════════ -->
+<div id="gtiLightbox" class="gti-lightbox hidden" onclick="if(event.target===this)closeGaleriLightbox()">
+  <div class="gti-lb-inner">
+    <button class="gti-lb-close" onclick="closeGaleriLightbox()" title="Tutup">✕</button>
+    <img id="gtiLbImg" class="gti-lb-img" src="" alt="Foto Testimoni"
+         style="transition:opacity .15s,transform .15s;" />
+    <div class="gti-lb-caption" id="gtiLbCaption"></div>
+    <div class="gti-lb-counter" id="gtiLbCounter"></div>
+    <div class="gti-lb-nav">
+      <button onclick="lbPrev()" title="Sebelumnya">‹</button>
+      <button onclick="lbNext()" title="Berikutnya">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Form Upload Galeri Testimoni
+     ═══════════════════════════════════════════════════════ -->
+<div id="galeriTestiFormModal" class="modal-overlay hidden" onclick="if(event.target===this)closeGaleriTestiForm()">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header">
+      <span>📸 Upload Foto Testimoni</span>
+      <button class="modal-close" onclick="closeGaleriTestiForm()">✕</button>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Area Upload Foto -->
+      <div class="galeri-testi-upload-area" id="gtfImgPreview"
+           onclick="document.getElementById('gtfImgFile').click()"
+           style="cursor:pointer;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <div class="up-icon">📷</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;">Tap untuk upload foto testimoni</div>
+        <div class="up-hint">Foto dari WA, IG, dll · Otomatis dikompres · JPG/PNG/WebP</div>
+      </div>
+      <input type="file" id="gtfImgFile" accept="image/*" style="display:none;"
+             onchange="handleGaleriTestiImgUpload(event)" />
+      <!-- Hidden input menyimpan base64 -->
+      <input type="hidden" id="gtfImgData" />
+
+      <!-- Caption -->
+      <div class="field">
+        <label style="font-size:12px;color:var(--muted);margin-bottom:4px;display:block;">Caption (opsional)</label>
+        <input id="gtfCaption" placeholder="Misal: Pelanggan puas dengan pengiriman cepat 🔥"
+               style="width:100%;box-sizing:border-box;" />
+      </div>
+
+      <!-- Tanggal -->
+      <div class="field">
+        <label style="font-size:12px;color:var(--muted);margin-bottom:4px;display:block;">Tanggal</label>
+        <input id="gtfTanggal" type="date"
+               style="width:100%;box-sizing:border-box;" />
+      </div>
+
+      <!-- Tombol -->
+      <div style="display:flex;gap:8px;">
+        <button class="btn" style="flex:1;" onclick="closeGaleriTestiForm()">Batal</button>
+        <button class="btn btn-primary" id="gtfSaveBtn" style="flex:1;" onclick="saveGaleriTesti()">
+          ✅ Simpan Foto
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
