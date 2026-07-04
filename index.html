@@ -1828,6 +1828,85 @@ body{
 .testi-tab-panel{display:none;}
 .testi-tab-panel.active{display:block;animation:fadeU .3s ease both;}
 
+/* ── Testimoni Hero (beranda, menonjol tapi compact) ── */
+.testi-hero{
+  position:relative;
+  background:linear-gradient(160deg,rgba(251,191,36,.06),rgba(4,12,28,.4) 45%);
+  border:1px solid rgba(251,191,36,.16);
+  border-radius:20px;
+  padding:16px 14px 14px;
+  margin-bottom:18px;
+  overflow:hidden;
+}
+.testi-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.12),transparent 70%);
+  pointer-events:none;
+}
+.testi-hero .testi-unified-title{color:#fbbf24;}
+
+/* Carousel ulasan — geser horizontal, hemat ruang */
+.testi-carousel{
+  display:flex;gap:10px;
+  overflow-x:auto;
+  padding:2px 2px 8px;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+}
+.testi-carousel::-webkit-scrollbar{display:none;}
+.testi-carousel .testi-card{
+  flex:0 0 80%;
+  max-width:290px;
+  margin-bottom:0;
+  scroll-snap-align:start;
+}
+@media(min-width:560px){
+  .testi-carousel .testi-card{flex-basis:270px;}
+}
+.testi-carousel .testi-text{
+  display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+
+/* CTA submit testimoni — tombol menonjol */
+.testi-cta-btn{
+  display:flex;align-items:center;gap:12px;
+  width:100%;margin-top:10px;
+  padding:13px 16px;border-radius:15px;
+  background:linear-gradient(135deg,rgba(251,191,36,.16),rgba(217,119,6,.1));
+  border:1px solid rgba(251,191,36,.35);
+  cursor:pointer;text-align:left;
+  transition:all .25s;
+  box-shadow:0 4px 18px rgba(251,191,36,.1);
+}
+.testi-cta-btn:hover{
+  border-color:rgba(251,191,36,.6);
+  box-shadow:0 6px 24px rgba(251,191,36,.2);
+  transform:translateY(-1px);
+}
+.testi-cta-btn:active{transform:scale(.98);}
+.testi-cta-icon{
+  font-size:22px;flex-shrink:0;
+  filter:drop-shadow(0 2px 8px rgba(251,191,36,.5));
+  animation:ctaStarPulse 2.4s ease-in-out infinite;
+}
+@keyframes ctaStarPulse{
+  0%,100%{transform:scale(1) rotate(0deg);}
+  50%{transform:scale(1.15) rotate(8deg);}
+}
+.testi-cta-text{flex:1;display:flex;flex-direction:column;gap:2px;}
+.testi-cta-text b{
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:800;color:#fbbf24;
+}
+.testi-cta-text small{font-size:11px;color:var(--muted);}
+.testi-cta-arrow{
+  color:#fbbf24;font-size:16px;flex-shrink:0;
+  transition:transform .25s;
+}
+.testi-cta-btn:hover .testi-cta-arrow{transform:translateX(4px);}
+
 /* ── Admin Galeri Testi List ── */
 .galeri-testi-admin-item{
   display:flex;align-items:center;gap:12px;
@@ -2528,73 +2607,87 @@ body.on-page-faq .wa-float{display:none!important;}
 /* ══════════════════════════════════════
    PRODUCT MODAL
 ══════════════════════════════════════ */
-.prod-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:250;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);animation:fadeIn .2s ease;}
-.prod-modal{background:var(--surface);border:1px solid var(--border-hi);border-radius:28px 28px 0 0;padding:28px 22px 36px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.34,1.56,.64,1);position:relative;max-height:86vh;overflow-y:auto;}
-.prod-modal-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.07);border:none;color:var(--muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.prod-modal-emoji{font-size:52px;text-align:center;margin-bottom:8px;filter:drop-shadow(0 4px 16px rgba(62,111,224,.4));}
-.prod-modal-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;text-align:center;color:#fff;margin-bottom:4px;}
-.prod-modal-price{font-size:14px;color:var(--cyan-light);font-weight:600;text-align:center;margin-bottom:16px;}
-.prod-modal-desc{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
-.prod-modal-features{list-style:none;margin-bottom:20px;}
-.prod-modal-features li{font-size:13px;color:var(--text);padding:7px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.prod-modal-bg{position:fixed;inset:0;background:rgba(2,8,20,.78);z-index:250;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px);animation:fadeIn .22s ease;}
+.prod-modal{
+  background:var(--surface);
+  border:1px solid var(--border-hi);
+  border-radius:24px;
+  padding:0;
+  width:100%;max-width:420px;
+  animation:pmPop .38s cubic-bezier(.3,1.4,.5,1);
+  position:relative;
+  max-height:85vh;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 0 1px rgba(143,176,248,.05),0 0 70px rgba(62,111,224,.14);
+}
+.prod-modal-close{
+  position:absolute;top:14px;right:14px;z-index:5;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .22s;backdrop-filter:blur(6px);
+}
+.prod-modal-close:hover{background:rgba(248,113,113,.18);border-color:rgba(248,113,113,.35);color:#fca5a5;transform:rotate(90deg);}
+
+/* ── Hero header ── */
+.pm-hero{
+  position:relative;flex-shrink:0;
+  padding:30px 22px 20px;text-align:center;
+  background:
+    radial-gradient(120% 90% at 50% -20%,rgba(62,111,224,.22),transparent 62%),
+    linear-gradient(180deg,rgba(16,30,58,.7),transparent);
+  border-bottom:1px solid var(--border);
+}
+.pm-hero::after{
+  content:'';position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
+  width:130px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(143,176,248,.55),transparent);
+}
+.prod-modal-emoji{
+  width:86px;height:86px;margin:0 auto 14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;border-radius:24px;
+  background:linear-gradient(145deg,rgba(62,111,224,.2),rgba(34,211,238,.07));
+  border:1px solid rgba(143,176,248,.25);
+  box-shadow:0 10px 30px rgba(62,111,224,.3),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.prod-modal-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.2px;}
+.prod-modal-price{
+  display:inline-flex;align-items:center;
+  width:max-content;max-width:100%;margin:0 auto;
+  padding:6px 16px;border-radius:999px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;
+  color:var(--cyan-light);
+  background:rgba(34,211,238,.08);
+  border:1px solid rgba(34,211,238,.28);
+  box-shadow:0 4px 16px rgba(34,211,238,.12);
+}
+
+/* ── Scrollable body ── */
+.pm-body{
+  overflow-y:auto;padding:20px 22px 24px;
+  scrollbar-width:thin;scrollbar-color:rgba(143,176,248,.25) transparent;
+}
+.pm-body::-webkit-scrollbar{width:5px;}
+.pm-body::-webkit-scrollbar-thumb{background:rgba(143,176,248,.22);border-radius:99px;}
+.pm-body::-webkit-scrollbar-track{background:transparent;}
+
+.prod-modal-desc{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:16px;text-align:center;}
+.prod-modal-desc:empty{display:none;margin:0;}
+.prod-modal-features{list-style:none;margin-bottom:18px;background:rgba(4,12,28,.45);border:1px solid var(--border);border-radius:16px;padding:6px 14px;}
+.prod-modal-features:empty{display:none;padding:0;border:none;margin:0;}
+.prod-modal-features li{font-size:13px;color:var(--text);padding:9px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+.prod-modal-features li::before{content:'✓';flex-shrink:0;width:18px;height:18px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--cyan-light);background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);}
 .prod-modal-features li:last-child{border-bottom:none;}
 .prod-order-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(37,211,102,.35);transition:all .3s;}
 .prod-order-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(37,211,102,.5);}
 
-/* ── Share row ── */
-.pm-share-row{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
-  margin-bottom:14px;
-}
-.pm-share-btn{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:5px;padding:11px 6px;border-radius:14px;
-  border:1.5px solid var(--border);background:rgba(4,12,28,.55);
-  color:var(--text);cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3px;
-  transition:all .22s;backdrop-filter:blur(8px);
-  position:relative;overflow:hidden;
-}
-.pm-share-btn::before{
-  content:'';position:absolute;inset:0;opacity:0;transition:opacity .22s;
-}
-.pm-share-btn:hover{transform:translateY(-2px);}
-.pm-share-btn:active{transform:scale(.95);}
-
-/* WA */
-.pm-share-wa{border-color:rgba(37,211,102,.3);}
-.pm-share-wa::before{background:linear-gradient(135deg,rgba(37,211,102,.15),rgba(18,140,126,.08));}
-.pm-share-wa:hover{border-color:rgba(37,211,102,.6);box-shadow:0 6px 20px rgba(37,211,102,.2);}
-.pm-share-wa:hover::before{opacity:1;}
-.pm-share-wa .pm-share-icon{font-size:22px;}
-
-/* IG */
-.pm-share-ig{border-color:rgba(225,48,108,.3);}
-.pm-share-ig::before{background:linear-gradient(135deg,rgba(240,148,51,.12),rgba(225,48,108,.12),rgba(188,24,136,.08));}
-.pm-share-ig:hover{border-color:rgba(225,48,108,.6);box-shadow:0 6px 20px rgba(225,48,108,.15);}
-.pm-share-ig:hover::before{opacity:1;}
-.pm-share-ig .pm-share-icon{font-size:22px;}
-
-/* Copy link */
-.pm-share-copy{border-color:rgba(143,176,248,.25);}
-.pm-share-copy::before{background:linear-gradient(135deg,rgba(62,111,224,.12),rgba(78,127,235,.08));}
-.pm-share-copy:hover{border-color:rgba(143,176,248,.5);box-shadow:0 6px 20px rgba(62,111,224,.15);}
-.pm-share-copy:hover::before{opacity:1;}
-.pm-share-copy .pm-share-icon{font-size:22px;}
-
-.pm-share-icon{position:relative;z-index:1;}
-.pm-share-label{position:relative;z-index:1;color:var(--muted);}
-.pm-share-btn:hover .pm-share-label{color:var(--text);}
-
-/* Share divider */
-.pm-share-divider{
-  display:flex;align-items:center;gap:10px;margin-bottom:14px;
-}
-.pm-share-divider::before,.pm-share-divider::after{
-  content:'';flex:1;height:1px;background:var(--border);
-}
-.pm-share-divider-txt{
-  font-size:10px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;letter-spacing:.5px;white-space:nowrap;
+@keyframes pmPop{from{transform:scale(.9) translateY(16px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+@media (prefers-reduced-motion:reduce){
+  .prod-modal{animation:none;}
+  .prod-modal-bg{animation:none;}
 }
 @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
@@ -2898,9 +2991,9 @@ body.on-page-faq .wa-float{display:none!important;}
   width:44px;height:44px;object-fit:contain;border-radius:8px;flex-shrink:0;
 }
 .prod-modal-img{
-  width:110px;height:110px;object-fit:contain;
-  border-radius:18px;margin:0 auto 8px;display:block;
-  filter:drop-shadow(0 4px 16px rgba(62,111,224,.3));
+  width:60px;height:60px;object-fit:contain;
+  border-radius:14px;display:block;
+  filter:drop-shadow(0 4px 14px rgba(62,111,224,.35));
 }
 
 /* ══════════════════════════════════════
@@ -4374,10 +4467,47 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="banner-skeleton"></div>
   </div>
 
-  <div class="sec-label">🎯 Produk Unggulan</div>
-  <div class="products-grid" id="berandaProdukGrid">
-    <!-- Rendered by JS -->
+  <!-- ── Testimoni Pembeli (menonjol, compact) ── -->
+  <div class="testi-unified-section testi-hero" id="berandaTestiUnifiedSection">
+    <div class="testi-unified-header">
+      <div class="testi-unified-title">⭐ Testimoni Pembeli</div>
+      <div class="testi-tab-pills" id="testiTabPills" style="display:none;">
+        <button class="testi-tab-pill active" onclick="switchTestiTab('ulasan',this)">💬 Ulasan</button>
+        <button class="testi-tab-pill" onclick="switchTestiTab('foto',this)">📸 Foto</button>
+      </div>
+    </div>
+
+    <!-- Panel: Ulasan Teks (carousel geser) -->
+    <div class="testi-tab-panel active" id="testiPanelUlasan">
+      <div class="testi-carousel" id="berandaTestiContainer">
+        <!-- skeleton -->
+        <div class="testi-card" style="opacity:.4;">
+          <div class="testi-head"><div class="testi-av">…</div><div><div class="stars">★★★★★</div><div class="testi-name" style="background:rgba(255,255,255,.08);border-radius:6px;width:90px;height:12px;"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Galeri Foto -->
+    <div class="testi-tab-panel" id="testiPanelFoto">
+      <div class="galeri-testi-grid" id="berandaGaleriTestiGrid">
+        <!-- dynamic -->
+      </div>
+      <button class="galeri-testi-more hidden" id="galeriTestiMoreBtn" onclick="loadMoreGaleriTesti()">
+        📷 Lihat Semua Foto
+      </button>
+    </div>
+
+    <!-- CTA: submit testimoni -->
+    <button class="testi-cta-btn" onclick="openCustTestiModal()">
+      <span class="testi-cta-icon">⭐</span>
+      <span class="testi-cta-text">
+        <b>Bagikan Testimoni Kamu</b>
+        <small>Cuma 1 menit — ceritakan pengalaman belanjamu!</small>
+      </span>
+      <span class="testi-cta-arrow">→</span>
+    </button>
   </div>
+
   <div class="link-card hl" onclick="goPage('page-produk')" style="margin-bottom:16px;cursor:pointer;">
     <div class="card-icon ic-cat" style="padding:0;overflow:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;">
       <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
@@ -4490,42 +4620,6 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
     <div class="card-arrow">→</div>
   </a>
 
-  <!-- ── Unified Testimoni Section ── -->
-  <div class="testi-unified-section" id="berandaTestiUnifiedSection">
-    <div class="testi-unified-header">
-      <div class="testi-unified-title">⭐ Testimoni Pembeli</div>
-      <div class="testi-tab-pills" id="testiTabPills" style="display:none;">
-        <button class="testi-tab-pill active" onclick="switchTestiTab('ulasan',this)">💬 Ulasan</button>
-        <button class="testi-tab-pill" onclick="switchTestiTab('foto',this)">📸 Foto</button>
-      </div>
-    </div>
-
-    <!-- Panel: Ulasan Teks -->
-    <div class="testi-tab-panel active" id="testiPanelUlasan">
-      <div id="berandaTestiContainer">
-        <!-- skeleton -->
-        <div class="testi-card" style="opacity:.4;">
-          <div class="testi-head"><div class="testi-av">…</div><div><div class="stars">★★★★★</div><div class="testi-name" style="background:rgba(255,255,255,.08);border-radius:6px;width:90px;height:12px;"></div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Panel: Galeri Foto -->
-    <div class="testi-tab-panel" id="testiPanelFoto">
-      <div class="galeri-testi-grid" id="berandaGaleriTestiGrid">
-        <!-- dynamic -->
-      </div>
-      <button class="galeri-testi-more hidden" id="galeriTestiMoreBtn" onclick="loadMoreGaleriTesti()">
-        📷 Lihat Semua Foto
-      </button>
-    </div>
-
-    <div class="link-card d7 testi-submit-card" onclick="openCustTestiModal()" style="margin-top:10px;">
-      <div class="card-icon ic-rev">⭐</div>
-      <div class="card-info"><div class="card-title">Bagikan Testimoni</div><div class="card-sub">Ceritakan pengalaman belanjamu!</div></div>
-      <div class="card-arrow">→</div>
-    </div>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -7344,44 +7438,7 @@ async function renderProductPage(){
   sfApplyAndRender();
 }
 
-async function renderBerandaProducts(){
-  const wrap = document.getElementById('berandaProdukGrid');
-  if(!wrap) return;
-  const prods = await fetchProduk();
-  // Produk combo/bundling diprioritaskan tampil duluan di preview beranda
-  const sorted  = [...prods].sort((a,b)=> (b.tipe==='bundling'?1:0) - (a.tipe==='bundling'?1:0));
-  const preview = sorted.slice(0,4);
-  if(!preview.length){ wrap.innerHTML=''; return; }
-  wrap.innerHTML = preview.map((p,i)=>{
-    const imgHtml = p.emoji && p.emoji.startsWith('data:image')
-      ? `<img src="${p.emoji}" class="product-img" />`
-      : `<span style="display:inline-flex;">${prodIconSvg(p.emoji, 28)}</span>`;
-    const isCombo = p.tipe === 'bundling';
-    if(isCombo){
-      const appsTxt = (p.bundleApps||[]).join(' + ');
-      return `<div class="product-card product-card-combo d${i+1}" onclick="goPage('page-produk');setTimeout(()=>openProdModal('${p.id}'),300)">
-        <div class="combo-mini-ribbon">COMBO</div>
-        <div class="product-emoji">${imgHtml}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="combo-mini-apps">🎁 ${appsTxt}</div>
-        <div class="combo-mini-price-row">
-          <span class="product-price">${p.price}</span>
-          <span class="combo-mini-tag">HEMAT</span>
-        </div>
-        ${_stokBadgeHtml(p.stok)}
-      </div>`;
-    }
-    return `<div class="product-card d${i+1}" onclick="goPage('page-produk');setTimeout(()=>openProdModal('${p.id}'),300)">
-      <div class="product-emoji">${imgHtml}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">${p.price}</div>
-      ${_stokBadgeHtml(p.stok)}
-    </div>`;
-  }).join('');
-}
-
 /* ── Product Detail Modal ── */
-/* ── Currently open product (for share) ── */
 let _pmCurrentProd = null;
 
 async function openProdModal(id){
@@ -7469,83 +7526,12 @@ async function openProdModal(id){
   const vr = document.getElementById('voucherResult'); if(vr){ vr.style.display='none'; vr.textContent=''; }
   _appliedPromo = null;
 
-  // Reset copy button state
-  const copyIcon  = document.getElementById('pmShareCopyIcon');
-  const copyLabel = document.getElementById('pmShareCopyLabel');
-  if(copyIcon)  copyIcon.textContent  = '🔗';
-  if(copyLabel) copyLabel.textContent = 'Salin Link';
-
   document.getElementById('prodModal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
 function closeProdModal(){
   document.getElementById('prodModal').classList.add('hidden');
   document.body.style.overflow = '';
-}
-
-/* ══════════════════════════════════════
-   SHARE PRODUK
-══════════════════════════════════════ */
-function _buildShareText(p){
-  const features = (p.features||[]).slice(0,3).map(f=>`✅ ${f}`).join('\n');
-  return `${p.emoji||'📱'} *${p.name}*\n💰 Harga: *${p.price}*\n\n${p.desc||''}\n\n${features}\n\n🛍️ Order & info lebih lanjut:\n${WEBSITE_URL}`;
-}
-
-function _buildShareUrl(p){
-  // Deep link ke halaman produk (pakai hash param agar bisa dibuka langsung)
-  return `${WEBSITE_URL}#produk-${p.id}`;
-}
-
-function shareProdWa(){
-  if(!_pmCurrentProd) return;
-  const text = _buildShareText(_pmCurrentProd);
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-}
-
-function shareProdIg(){
-  if(!_pmCurrentProd) return;
-  const p = _pmCurrentProd;
-  // Instagram tidak support deep-link share text langsung —
-  // pakai Web Share API kalau tersedia (mobile), fallback copy ke clipboard
-  const text = _buildShareText(p);
-  if(navigator.share){
-    navigator.share({
-      title: `${p.name} — Rizanta Store`,
-      text: `${p.emoji||'📱'} ${p.name} | ${p.price}\n${p.desc||''}\n\n${WEBSITE_URL}`,
-      url: _buildShareUrl(p)
-    }).catch(()=>{});
-  } else {
-    // Fallback: salin teks, buka IG story di browser
-    navigator.clipboard.writeText(text).then(()=>{
-      showToast('📋 Teks disalin! Buka Instagram dan paste di Story/Caption.');
-      setTimeout(()=> window.open('https://www.instagram.com/', '_blank'), 1000);
-    }).catch(()=>{
-      showToast('⚠️ Tidak bisa menyalin. Coba buka Instagram manual ya!');
-      window.open('https://www.instagram.com/', '_blank');
-    });
-  }
-}
-
-function shareProdCopy(){
-  if(!_pmCurrentProd) return;
-  const p = _pmCurrentProd;
-  const url = _buildShareUrl(p);
-  const fullText = `${_buildShareText(p)}\n\n🔗 ${url}`;
-
-  const copyIcon  = document.getElementById('pmShareCopyIcon');
-  const copyLabel = document.getElementById('pmShareCopyLabel');
-
-  navigator.clipboard.writeText(fullText).then(()=>{
-    if(copyIcon)  copyIcon.textContent  = '✅';
-    if(copyLabel) copyLabel.textContent = 'Tersalin!';
-    showToast('✅ Info produk berhasil disalin!');
-    setTimeout(()=>{
-      if(copyIcon)  copyIcon.textContent  = '🔗';
-      if(copyLabel) copyLabel.textContent = 'Salin Link';
-    }, 2500);
-  }).catch(()=>{
-    showToast('⚠️ Gagal menyalin. Coba lagi ya!');
-  });
 }
 
 /* ══════════════════════════════════════
@@ -7730,7 +7716,6 @@ async function saveProd(){
     await postSheet(payload);
     clearProdCache();
     await renderProductPage();
-    await renderBerandaProducts();
     await renderAdminProducts();
     closeProdForm();
     showToast(_editProdId ? '✅ Produk diperbarui!' : '✅ Produk ditambahkan!');
@@ -7748,7 +7733,6 @@ async function deleteProd(id){
     await postSheet({sheet:'produk', action:'delete', id});
     clearProdCache();
     await renderProductPage();
-    await renderBerandaProducts();
     await renderAdminProducts();
     showToast('🗑️ Produk dihapus!');
   }catch(e){
@@ -8617,7 +8601,6 @@ document.addEventListener('click', function(){
 document.addEventListener('DOMContentLoaded', function(){
   loadConfig();
   renderProductPage();
-  renderBerandaProducts();
   renderBerandaTestimoni();
   renderBerandaGaleriTesti();
   // Tampilkan popup iklan aktif saat pertama buka
@@ -8928,53 +8911,43 @@ async function renderBerandaTestimoni(){
 <!-- ══════════════════════════════════
      PRODUCT DETAIL MODAL
 ══════════════════════════════════ -->
-<div class="prod-modal-bg hidden" id="prodModal">
+<div class="prod-modal-bg hidden" id="prodModal" onclick="if(event.target===this)closeProdModal()">
   <div class="prod-modal">
     <button class="prod-modal-close" onclick="closeProdModal()">✕</button>
-    <div class="prod-modal-emoji" id="pmEmoji"></div>
-    <div class="prod-modal-name" id="pmName"></div>
-    <div class="prod-modal-price" id="pmPrice"></div>
-    <div class="prod-modal-desc" id="pmDesc"></div>
-    <div class="pm-bundle-row hidden" id="pmBundleRow">
-      <div class="pm-bundle-label">🎁 Termasuk dalam paket ini</div>
-      <div class="pm-bundle-list" id="pmBundleList"></div>
-    </div>
-    <ul class="prod-modal-features" id="pmFeatures"></ul>
 
-    <!-- Share row -->
-    <div class="pm-share-row">
-      <button class="pm-share-btn pm-share-wa" id="pmShareWa" onclick="shareProdWa()">
-        <span class="pm-share-icon">💬</span>
-        <span class="pm-share-label">WhatsApp</span>
-      </button>
-      <button class="pm-share-btn pm-share-ig" onclick="shareProdIg()">
-        <span class="pm-share-icon">📸</span>
-        <span class="pm-share-label">Instagram</span>
-      </button>
-      <button class="pm-share-btn pm-share-copy" id="pmShareCopy" onclick="shareProdCopy()">
-        <span class="pm-share-icon" id="pmShareCopyIcon">🔗</span>
-        <span class="pm-share-label" id="pmShareCopyLabel">Salin Link</span>
-      </button>
+    <!-- Hero: ikon + nama + harga -->
+    <div class="pm-hero">
+      <div class="prod-modal-emoji" id="pmEmoji"></div>
+      <div class="prod-modal-name" id="pmName"></div>
+      <div class="prod-modal-price" id="pmPrice"></div>
     </div>
 
-    <div class="pm-share-divider"><span class="pm-share-divider-txt">ATAU ORDER LANGSUNG</span></div>
-
-    <!-- Stok badge -->
-    <div class="pm-stok-row" id="pmStokRow" style="display:none;"></div>
-
-    <!-- Voucher / Kode Promo -->
-    <div style="margin-bottom:10px;">
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">🎟️ Punya Kode Promo?</div>
-      <div class="voucher-row">
-        <input class="voucher-input" id="voucherInput" placeholder="Masukkan kode promo" />
-        <button class="voucher-btn" onclick="applyVoucher()">Pakai</button>
+    <!-- Konten scrollable -->
+    <div class="pm-body">
+      <div class="prod-modal-desc" id="pmDesc"></div>
+      <div class="pm-bundle-row hidden" id="pmBundleRow">
+        <div class="pm-bundle-label">🎁 Termasuk dalam paket ini</div>
+        <div class="pm-bundle-list" id="pmBundleList"></div>
       </div>
-      <div class="voucher-result" id="voucherResult"></div>
-    </div>
+      <ul class="prod-modal-features" id="pmFeatures"></ul>
 
-    <button class="prod-order-btn" id="pmOrderBtn">
-      💬 Order via WhatsApp
-    </button>
+      <!-- Stok badge -->
+      <div class="pm-stok-row" id="pmStokRow" style="display:none;"></div>
+
+      <!-- Voucher / Kode Promo -->
+      <div style="margin-bottom:12px;">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">🎟️ Punya Kode Promo?</div>
+        <div class="voucher-row">
+          <input class="voucher-input" id="voucherInput" placeholder="Masukkan kode promo" />
+          <button class="voucher-btn" onclick="applyVoucher()">Pakai</button>
+        </div>
+        <div class="voucher-result" id="voucherResult"></div>
+      </div>
+
+      <button class="prod-order-btn" id="pmOrderBtn">
+        💬 Order via WhatsApp
+      </button>
+    </div>
   </div>
 </div>
 
