@@ -666,6 +666,70 @@ body.ticker-hidden { padding-top: 0; }
 .btn-del-banner{background:rgba(248,113,113,.12);color:var(--red);}
 .btn-del-banner:hover{background:rgba(248,113,113,.25);}
 
+/* ── Admin Akun & S&K list ── */
+.snk-item{
+  padding:14px;border-radius:14px;
+  background:rgba(4,12,28,.52);border:1px solid var(--border);
+  margin-bottom:10px;backdrop-filter:blur(12px);
+}
+.snk-item-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.snk-app-badge{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:rgba(91,138,245,.14);overflow:hidden;
+}
+.snk-app-badge img{width:100%;height:100%;object-fit:contain;border-radius:10px;}
+.akun-icon-preview{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:rgba(91,138,245,.14);overflow:hidden;transition:background .2s;
+}
+.akun-icon-preview img{width:100%;height:100%;object-fit:contain;border-radius:10px;}
+.snk-app-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:700;color:#fff;}
+.snk-app-updated{font-size:10.5px;color:var(--muted);margin-top:1px;}
+.snk-item-actions{display:flex;gap:6px;margin-left:auto;flex-shrink:0;}
+.snk-row{
+  display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text);
+  padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.03);margin-bottom:6px;
+}
+.snk-row-label{color:var(--muted);font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;width:72px;flex-shrink:0;}
+.snk-row-val{flex:1;min-width:0;word-break:break-all;font-family:'JetBrains Mono',monospace,monospace;}
+.snk-row-btn{
+  width:26px;height:26px;border-radius:7px;border:none;cursor:pointer;flex-shrink:0;
+  background:rgba(255,255,255,.06);color:var(--muted);font-size:12px;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.snk-row-btn:hover{background:rgba(91,138,245,.2);color:var(--blue-light);}
+.snk-copy-full-btn{
+  width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1px solid rgba(91,138,245,.35);
+  background:rgba(91,138,245,.12);color:var(--blue-light);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;
+}
+.snk-copy-full-btn:hover{background:rgba(91,138,245,.24);}
+.extra-field-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.extra-field-row input{flex:1;}
+.extra-field-row .snk-row-btn{background:rgba(248,113,113,.12);color:var(--red);}
+.extra-field-row .snk-row-btn:hover{background:rgba(248,113,113,.25);}
+.snk-quickbtns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.snk-quickbtn{
+  padding:6px 12px;border-radius:8px;border:1px dashed var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);font-size:11px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.snk-quickbtn:hover{border-color:var(--blue-bright);color:var(--blue-light);background:rgba(91,138,245,.1);}
+.snk-preview-box{
+  white-space:pre-wrap;font-family:'JetBrains Mono',monospace,monospace;font-size:11.5px;line-height:1.6;
+  background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:12px;padding:12px;
+  color:var(--text);max-height:220px;overflow-y:auto;
+}
+.snk-filter-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;scrollbar-width:none;}
+.snk-filter-chips::-webkit-scrollbar{display:none;}
+.snk-filter-chip{
+  white-space:nowrap;flex-shrink:0;padding:7px 12px;border-radius:9px;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.snk-filter-chip.active{border-color:var(--blue-bright);background:rgba(91,138,245,.14);color:var(--blue-light);}
+
 /* ── Admin iklan list ── */
 .iklan-admin-item{
   display:flex;align-items:center;gap:12px;
@@ -4882,6 +4946,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab" id="tabBanner" onclick="switchTab('banner')">🖼️ Banner</button>
       <button class="admin-tab" id="tabVideo" onclick="switchTab('video')">▶️ Video</button>
       <button class="admin-tab" id="tabPromo" onclick="switchTab('promo')">🎟️ Promo</button>
+      <button class="admin-tab" id="tabAkunsnk" onclick="switchTab('akunsnk')">🔐 Akun & S&K</button>
       <button class="admin-tab" id="tabRunningtext" onclick="switchTab('runningtext')">📢 Running Text</button>
       <button class="admin-tab" id="tabLog" onclick="switchTab('log')">📜 Log</button>
     </div>
@@ -5209,6 +5274,23 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <div id="promoAdminList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
     </div>
   </div><!-- /tab-promo -->
+
+  <!-- Tab: Akun & S&K -->
+  <div id="tab-akunsnk" class="tab-content">
+    <div class="card d1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="card-heading" style="margin:0;">🔐 Akun & S&K Siap Kirim</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline" style="width:auto;padding:7px 12px;font-size:12px;" onclick="openSnkTemplateModal()">⚙️ Template</button>
+          <button class="btn btn-primary" style="width:auto;padding:7px 14px;font-size:12px;" onclick="openAkunForm()">➕ Tambah</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">💡 Simpan akun + S&K per aplikasi di sini, nanti tinggal 📋 <strong style="color:var(--blue-light);">Copy</strong> buat langsung kirim ke pelanggan. Data kesimpen di Google Sheets, jadi kayak catatan permanen.</div>
+      <input type="text" id="akunSearchInput" placeholder="🔍 Cari email / aplikasi..." oninput="renderAdminAkun()" style="width:100%;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;margin-bottom:10px;" />
+      <div class="snk-filter-chips" id="akunFilterChips"></div>
+      <div id="akunAdminList"><div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Memuat...</div></div>
+    </div>
+  </div><!-- /tab-akunsnk -->
 
   <!-- Tab: Running Text -->
   <div id="tab-runningtext" class="tab-content">
@@ -5749,6 +5831,8 @@ let CFG={
 function loadConfig(){
   /* Muat Groq Key dari sheet Config */
   _loadGroqKey();
+  /* Muat override Template S&K (kalau admin pernah edit) dari sheet Config */
+  loadSnkTemplates();
 }
 
 /* ── Ambil Groq API Key dari Google Sheets (sheet: Config) ── */
@@ -7570,6 +7654,7 @@ function switchTab(tab){
   if(tab==='banner') renderAdminBanner();
   if(tab==='video') renderAdminVideo();
   if(tab==='promo') renderAdminPromo();
+  if(tab==='akunsnk') renderAdminAkun();
   if(tab==='runningtext') renderAdminRt();
   if(tab==='log') renderAdminLog();
 }
@@ -9274,6 +9359,74 @@ async function renderBerandaTestimoni(){
     </div>
   </div>
 </div>
+
+<!-- Modal: Akun & S&K -->
+<div class="prod-form-modal hidden" id="akunFormModal">
+  <div class="prod-form-inner">
+    <h3 id="akunFormTitle">➕ Tambah Akun & S&K</h3>
+    <div class="field">
+      <label>Aplikasi</label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="akun-icon-preview" id="akunAppIconPreview">🔐</div>
+        <select id="akunAppSelect" onchange="onAkunAppChange()" style="flex:1;min-width:0;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;">
+          <option value="">-- Pilih Aplikasi --</option>
+          <option value="__custom__">✏️ Lainnya (custom)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" id="akunAppCustomWrap" style="display:none;">
+      <label>Nama Aplikasi (custom)</label>
+      <input id="akunAppCustom" placeholder="misal: Vidio Diamond" />
+    </div>
+    <div class="field"><label>Email</label><input id="akunEmail" placeholder="briwebvuuermanaga80@gigaa.xyz" /></div>
+    <div class="field"><label>Password</label><input id="akunPassword" placeholder="masuk12345" /></div>
+
+    <div class="field">
+      <label>Field Tambahan (opsional, misal Profil / PIN)</label>
+      <div id="akunExtraFieldsWrap"></div>
+      <div class="snk-quickbtns">
+        <button type="button" class="snk-quickbtn" onclick="addAkunExtraField('Profil','')">➕ Profil</button>
+        <button type="button" class="snk-quickbtn" onclick="addAkunExtraField('PIN','')">➕ PIN</button>
+        <button type="button" class="snk-quickbtn" onclick="addAkunExtraField('','')">➕ Field Custom</button>
+      </div>
+    </div>
+
+    <div class="field"><label>Catatan Tambahan (opsional)</label><input id="akunCatatan" placeholder="misal: slot ke-3 dari 5" /></div>
+
+    <div class="field">
+      <label>S&K (otomatis terisi sesuai aplikasi, bisa diedit)</label>
+      <textarea id="akunSnk" rows="7" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;outline:none;resize:vertical;line-height:1.6;" placeholder="▪︎ jangan ubah email & password..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Preview Siap Kirim</label>
+      <div class="snk-preview-box" id="akunPreviewBox">-</div>
+    </div>
+
+    <div style="display:flex;gap:9px;margin-top:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeAkunForm()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="akunSaveBtn" onclick="saveAkun()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Edit Template S&K Default per-Aplikasi
+══════════════════════════════════ -->
+<div class="prod-form-modal hidden" id="snkTemplateModal">
+  <div class="prod-form-inner">
+    <h3>⚙️ Template S&K Default per-Aplikasi</h3>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+      💡 Ini S&K bawaan yang otomatis keisi tiap kamu pilih aplikasi di form ➕ Tambah Akun. Edit di sini, ndak perlu ubah kode. Perubahan cuma ngaruh ke akun <strong style="color:var(--blue-light);">baru</strong> — akun yang udah tersimpan ndak berubah.
+    </div>
+    <div id="snkTemplateListWrap"></div>
+    <div style="display:flex;gap:9px;margin-top:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeSnkTemplateModal()">Batal</button>
+      <button class="btn btn-primary" style="flex:1;" id="snkTemplateSaveBtn" onclick="saveSnkTemplates()">Simpan Semua Template</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════
      FLOATING MUSIC BAR
 ══════════════════════════════════ -->
@@ -11941,6 +12094,468 @@ async function deletePromo(idx){
 }
 
 /* ══════════════════════════════════════
+   ADMIN: AKUN & S&K (catatan siap-kirim)
+   Sheet: akun_snk
+══════════════════════════════════════ */
+const SNK_DEFAULTS = {
+  netflix: `▪︎ jangan ubah email & password
+▪︎ jangan ubah profil yang sudah ditentukan
+▪︎ jangan ubah PIN profil
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ jangan ubah region/negara
+▪︎ garansi penuh 28 hari (bukan garansi selamanya)
+▪︎ jangan utak-atik profil/anggota lain, melanggar = garansi hangus`,
+  spotify: `▪︎ jangan ubah email & password
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ jangan ubah region/negara
+▪︎ garansi penuh bf dan desable (28 hari)
+▪︎ jangan utak-atik anggota paket, melanggar garansi melayang dan hangus`,
+  disney: `▪︎ jangan ubah email & password
+▪︎ jangan ubah profil yang sudah ditentukan
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ jangan ubah region/negara
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik profil/anggota lain, melanggar = garansi hangus`,
+  youtube: `▪︎ jangan keluar dari family group
+▪︎ jangan ubah alamat rumah pada akun
+▪︎ jangan ubah email & password
+▪︎ jangan ubah billing details
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik anggota family, melanggar = garansi hangus`,
+  chatgpt: `▪︎ jangan ubah email & password
+▪︎ jangan logout paksa dari semua device
+▪︎ jangan ubah billing details
+▪︎ garansi penuh 28 hari
+▪︎ pemakaian wajar, jangan disalahgunakan (spam/ilegal)`,
+  canva: `▪︎ jangan ubah email & password
+▪︎ jangan keluar dari tim/brand kit yang ada
+▪︎ jangan ubah billing details
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik anggota tim, melanggar = garansi hangus`,
+  prime: `▪︎ jangan ubah email & password
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ jangan ubah region/negara
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik anggota paket, melanggar = garansi hangus`,
+  viu: `▪︎ jangan ubah email & password
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik anggota paket, melanggar = garansi hangus`,
+  _generic: `▪︎ jangan ubah email & password
+▪︎ jangan ubah billing details
+▪︎ jangan klik/pencet payment cancel
+▪︎ jangan ubah region/negara
+▪︎ garansi penuh 28 hari
+▪︎ jangan utak-atik anggota paket, melanggar garansi hangus`
+};
+
+/* ── S&K Template: versi yang bisa diedit dari Admin Panel ──
+   SNK_DEFAULTS di atas tetap jadi "pabrikan" (fallback & tombol reset).
+   SNK_TEMPLATES adalah yang benar-benar dipakai di form, bisa di-override
+   lewat modal ⚙️ Template dan disimpan ke sheet Config (key: snkTemplates),
+   pola sama persis kayak penyimpanan Groq Key. ── */
+let SNK_TEMPLATES = Object.assign({}, SNK_DEFAULTS);
+let _snkTemplatesLoaded = false;
+
+async function loadSnkTemplates(){
+  if(_snkTemplatesLoaded || !CFG.scriptUrl) return;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=config&action=get&key=snkTemplates');
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.value){
+      const saved = JSON.parse(data.value);
+      SNK_TEMPLATES = Object.assign({}, SNK_DEFAULTS, saved);
+    }
+    _snkTemplatesLoaded = true;
+  }catch(e){
+    // Gagal load ya sudah, tetap pakai default bawaan
+  }
+}
+
+async function saveSnkTemplates(){
+  const btn = document.getElementById('snkTemplateSaveBtn');
+  if(!CFG.scriptUrl){ showToast('⚠️ Apps Script URL belum diisi!'); return; }
+  const updated = {};
+  [...APPS.map(a=>a.id), '_generic'].forEach(id=>{
+    const ta = document.getElementById('snkTplBox_'+id);
+    if(ta) updated[id] = ta.value;
+  });
+  if(btn){ btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true; }
+  try{
+    await postSheet({ sheet:'config', action:'set', key:'snkTemplates', value: JSON.stringify(updated) });
+    SNK_TEMPLATES = Object.assign({}, SNK_DEFAULTS, updated);
+    _snkTemplatesLoaded = true;
+    showToast('✅ Template S&K disimpan!');
+    closeSnkTemplateModal();
+  }catch(e){ showToast('❌ Gagal simpan: '+e.message); }
+  if(btn){ btn.innerHTML = 'Simpan Semua Template'; btn.disabled = false; }
+}
+
+function resetSnkTemplateField(appId){
+  const ta = document.getElementById('snkTplBox_'+appId);
+  if(ta){ ta.value = SNK_DEFAULTS[appId] || SNK_DEFAULTS._generic || ''; }
+}
+
+function openSnkTemplateModal(){
+  const wrap = document.getElementById('snkTemplateListWrap');
+  if(wrap){
+    const rows = APPS.map(a=>`
+      <div class="field">
+        <label>${a.emoji} ${a.name}</label>
+        <textarea id="snkTplBox_${a.id}" rows="6" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;outline:none;resize:vertical;line-height:1.6;">${(SNK_TEMPLATES[a.id]||'').replace(/</g,'&lt;')}</textarea>
+        <button type="button" class="snk-quickbtn" style="margin-top:6px;" onclick="resetSnkTemplateField('${a.id}')">↺ Reset ke Default</button>
+      </div>`).join('');
+    const generic = `
+      <div class="field">
+        <label>🔧 Umum / Aplikasi Custom (default kalau app baru/lainnya)</label>
+        <textarea id="snkTplBox__generic" rows="6" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;outline:none;resize:vertical;line-height:1.6;">${(SNK_TEMPLATES._generic||'').replace(/</g,'&lt;')}</textarea>
+        <button type="button" class="snk-quickbtn" style="margin-top:6px;" onclick="resetSnkTemplateField('_generic')">↺ Reset ke Default</button>
+      </div>`;
+    wrap.innerHTML = rows + generic;
+  }
+  document.getElementById('snkTemplateModal').classList.remove('hidden');
+}
+
+function closeSnkTemplateModal(){
+  document.getElementById('snkTemplateModal').classList.add('hidden');
+}
+
+let _akunCache = null;
+let _editAkunIdx = null;
+let _akunExtraCount = 0;
+let _akunFilterApp = '';
+
+function clearAkunCache(){ _akunCache = null; }
+
+async function fetchAkun(){
+  if(_akunCache) return _akunCache;
+  try{
+    const res = await fetch(CFG.scriptUrl + '?sheet=akun_snk');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    _akunCache = Array.isArray(data) ? data : [];
+    return _akunCache;
+  }catch(e){ _akunCache = []; return []; }
+}
+
+function _akunAppOptions(){
+  return APPS.map(a=>`<option value="${a.id}">${a.emoji} ${a.name}</option>`).join('');
+}
+(function _initAkunAppSelectOptions(){
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const sel = document.getElementById('akunAppSelect');
+    if(sel) sel.insertAdjacentHTML('afterbegin', _akunAppOptions());
+  });
+})();
+
+function onAkunAppChange(){
+  const val = document.getElementById('akunAppSelect').value;
+  document.getElementById('akunAppCustomWrap').style.display = (val==='__custom__') ? 'block' : 'none';
+  const snkBox = document.getElementById('akunSnk');
+  if(!snkBox.dataset.userEdited){
+    snkBox.value = SNK_TEMPLATES[val] || SNK_TEMPLATES._generic;
+  }
+  updateAkunPreview();
+  updateAkunAppIconPreview();
+}
+
+function addAkunExtraField(label, value){
+  _akunExtraCount++;
+  if(_akunExtraCount > 3){ showToast('⚠️ Maksimal 3 field tambahan!'); _akunExtraCount = 3; return; }
+  const wrap = document.getElementById('akunExtraFieldsWrap');
+  const rid = 'akunExtra'+_akunExtraCount;
+  const row = document.createElement('div');
+  row.className = 'extra-field-row';
+  row.id = rid+'Row';
+  row.innerHTML = `<input id="${rid}Label" placeholder="Label (misal: Profil)" value="${(label||'').replace(/"/g,'&quot;')}" oninput="updateAkunPreview()" style="max-width:130px;" />
+    <input id="${rid}Val" placeholder="Nilai (misal: 2 - PIN 1234)" value="${(value||'').replace(/"/g,'&quot;')}" oninput="updateAkunPreview()" />
+    <button type="button" class="snk-row-btn" onclick="document.getElementById('${rid}Row').remove(); updateAkunPreview();">✕</button>`;
+  wrap.appendChild(row);
+  updateAkunPreview();
+}
+
+function _getAkunExtraFields(){
+  const out = [];
+  for(let i=1;i<=3;i++){
+    const l = document.getElementById('akunExtra'+i+'Label');
+    const v = document.getElementById('akunExtra'+i+'Val');
+    if(l && v && (l.value.trim() || v.value.trim())){
+      out.push({label:l.value.trim(), value:v.value.trim()});
+    }
+  }
+  return out;
+}
+
+function _akunAppDisplayName(appId, appCustom){
+  if(appId==='__custom__') return appCustom || 'Lainnya';
+  const a = APPS.find(x=>x.id===appId);
+  return a ? a.name : (appId||'Lainnya');
+}
+function _akunAppEmoji(appId){
+  const a = APPS.find(x=>x.id===appId);
+  return a ? a.emoji : '🔐';
+}
+
+/* ── Cocokin Akun & S&K ke logo Produk (biar ikonnya sinkron sama menu Produk) ── */
+function _akunMatchProdImg(item){
+  const prods = _prodCache || [];
+  if(!prods.length) return null;
+  const nama = (item.appnama || '').toLowerCase().trim();
+  const appId = (item.app || '').toLowerCase().trim();
+  if(!nama && !appId) return null;
+  let found = prods.find(p => (p.name||'').toLowerCase().trim() === nama);
+  if(!found && appId) found = prods.find(p => (p.name||'').toLowerCase().includes(appId));
+  if(!found && nama.length >= 3) found = prods.find(p => {
+    const pn = (p.name||'').toLowerCase().trim();
+    return pn && (pn.includes(nama) || nama.includes(pn));
+  });
+  return (found && found.emoji && found.emoji.startsWith('data:image')) ? found.emoji : null;
+}
+
+async function updateAkunAppIconPreview(){
+  await fetchProduk();
+  const sel = document.getElementById('akunAppSelect');
+  const val = sel.value;
+  const custom = document.getElementById('akunAppCustom').value.trim();
+  const appnama = _akunAppDisplayName(val, custom);
+  const prodImg = _akunMatchProdImg({app:val, appnama});
+  const el = document.getElementById('akunAppIconPreview');
+  if(!el) return;
+  el.innerHTML = prodImg ? `<img src="${prodImg}" />` : (_akunAppEmoji(val) || '🔐');
+}
+
+function buildAkunFinalText(item){
+  const lines = [];
+  lines.push(`${(item.appnama||item.app||'').toUpperCase()} RIZANTA STORE`);
+  if(item.email) lines.push(`Email : ${item.email}`);
+  if(item.password) lines.push(`Password : ${item.password}`);
+  for(let i=1;i<=3;i++){
+    const lbl = item['extra'+i+'_label'], val = item['extra'+i+'_value'];
+    if(lbl || val) lines.push(`${lbl||'Info'} : ${val||''}`);
+  }
+  if(item.catatan) lines.push(`Catatan : ${item.catatan}`);
+  lines.push(' 𝗦&𝗞,');
+  if(item.snk) lines.push(item.snk);
+  return lines.join('\n');
+}
+
+function updateAkunPreview(){
+  const appSel = document.getElementById('akunAppSelect').value;
+  const appCustom = document.getElementById('akunAppCustom').value.trim();
+  const item = {
+    appnama: _akunAppDisplayName(appSel, appCustom),
+    email: document.getElementById('akunEmail').value.trim(),
+    password: document.getElementById('akunPassword').value,
+    catatan: document.getElementById('akunCatatan').value.trim(),
+    snk: document.getElementById('akunSnk').value
+  };
+  const extras = _getAkunExtraFields();
+  extras.forEach((f,i)=>{ item['extra'+(i+1)+'_label']=f.label; item['extra'+(i+1)+'_value']=f.value; });
+  document.getElementById('akunPreviewBox').textContent = buildAkunFinalText(item);
+}
+['akunEmail','akunPassword','akunCatatan'].forEach(id=>{
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateAkunPreview);
+  });
+});
+document.addEventListener('DOMContentLoaded', ()=>{
+  const snkEl = document.getElementById('akunSnk');
+  if(snkEl){ snkEl.addEventListener('input', ()=>{ snkEl.dataset.userEdited='1'; updateAkunPreview(); }); }
+  const customEl = document.getElementById('akunAppCustom');
+  if(customEl) customEl.addEventListener('input', ()=>{ updateAkunPreview(); updateAkunAppIconPreview(); });
+});
+
+async function openAkunForm(idx){
+  _editAkunIdx = (idx !== undefined && idx !== null) ? idx : null;
+  const items = _editAkunIdx !== null ? await fetchAkun() : [];
+  const it = _editAkunIdx !== null ? items[_editAkunIdx] : null;
+
+  document.getElementById('akunFormTitle').textContent = it ? '✏️ Edit Akun & S&K' : '➕ Tambah Akun & S&K';
+  document.getElementById('akunExtraFieldsWrap').innerHTML = '';
+  _akunExtraCount = 0;
+
+  const sel = document.getElementById('akunAppSelect');
+  const knownApp = it ? APPS.find(a=>a.id===it.app || a.name===it.appnama) : null;
+  if(it && !knownApp){
+    sel.value = '__custom__';
+    document.getElementById('akunAppCustom').value = it.appnama || it.app || '';
+    document.getElementById('akunAppCustomWrap').style.display = 'block';
+  } else if(it && knownApp){
+    sel.value = knownApp.id;
+    document.getElementById('akunAppCustomWrap').style.display = 'none';
+  } else {
+    sel.value = '';
+    document.getElementById('akunAppCustom').value = '';
+    document.getElementById('akunAppCustomWrap').style.display = 'none';
+  }
+
+  document.getElementById('akunEmail').value = it ? (it.email||'') : '';
+  document.getElementById('akunPassword').value = it ? (it.password||'') : '';
+  document.getElementById('akunCatatan').value = it ? (it.catatan||'') : '';
+
+  const snkEl = document.getElementById('akunSnk');
+  snkEl.value = it ? (it.snk||'') : (SNK_TEMPLATES[sel.value] || '');
+  snkEl.dataset.userEdited = it ? '1' : '';
+
+  if(it){
+    for(let i=1;i<=3;i++){
+      const lbl = it['extra'+i+'_label'], val = it['extra'+i+'_value'];
+      if(lbl || val) addAkunExtraField(lbl, val);
+    }
+  }
+
+  updateAkunPreview();
+  updateAkunAppIconPreview();
+  document.getElementById('akunFormModal').classList.remove('hidden');
+}
+
+function closeAkunForm(){
+  document.getElementById('akunFormModal').classList.add('hidden');
+  _editAkunIdx = null;
+}
+
+async function saveAkun(){
+  const appSel = document.getElementById('akunAppSelect').value;
+  const appCustom = document.getElementById('akunAppCustom').value.trim();
+  const email = document.getElementById('akunEmail').value.trim();
+  const password = document.getElementById('akunPassword').value;
+  const catatan = document.getElementById('akunCatatan').value.trim();
+  const snk = document.getElementById('akunSnk').value;
+
+  if(!appSel){ showToast('⚠️ Pilih aplikasi dulu!'); return; }
+  if(appSel==='__custom__' && !appCustom){ showToast('⚠️ Isi nama aplikasi custom!'); return; }
+  if(!email && !password){ showToast('⚠️ Minimal isi email atau password!'); return; }
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+
+  const appnama = _akunAppDisplayName(appSel, appCustom);
+  const extras = _getAkunExtraFields();
+  const payload = {
+    sheet:'akun_snk', action:'add',
+    app: appSel==='__custom__' ? appCustom : appSel,
+    appnama, email, password, catatan, snk,
+    extra1_label: extras[0]?.label||'', extra1_value: extras[0]?.value||'',
+    extra2_label: extras[1]?.label||'', extra2_value: extras[1]?.value||'',
+    extra3_label: extras[2]?.label||'', extra3_value: extras[2]?.value||'',
+    updated: new Date().toISOString()
+  };
+
+  const btn = document.getElementById('akunSaveBtn');
+  btn.innerHTML = '<span class="spinner"></span> Menyimpan...'; btn.disabled = true;
+  try{
+    if(_editAkunIdx !== null){
+      await postSheet({sheet:'akun_snk', action:'delete', idx:_editAkunIdx});
+      await postSheet(payload);
+      showToast('✅ Akun & S&K diperbarui!');
+    } else {
+      await postSheet(payload);
+      showToast('✅ Akun & S&K ditambahkan!');
+    }
+    clearAkunCache();
+    logActivity('Simpan Akun & S&K', appnama);
+    await renderAdminAkun();
+    closeAkunForm();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+  btn.innerHTML = 'Simpan'; btn.disabled = false;
+}
+
+async function deleteAkun(idx){
+  if(!confirm('Hapus data akun & S&K ini?')) return;
+  if(!CFG.scriptUrl){ showToast('⚠️ Script URL belum diisi!'); return; }
+  try{
+    await postSheet({sheet:'akun_snk', action:'delete', idx});
+    clearAkunCache();
+    showToast('🗑️ Akun & S&K dihapus!');
+    await renderAdminAkun();
+  }catch(e){ showToast('❌ Gagal: '+e.message); }
+}
+
+function copyAkunFull(idx, items){
+  const it = items[idx];
+  copyTxt(buildAkunFinalText(it));
+}
+
+function togglePassRow(btn, pass){
+  const span = btn.parentElement.querySelector('.snk-row-val');
+  const show = btn.dataset.show === '1';
+  span.textContent = show ? '••••••••' : pass;
+  btn.dataset.show = show ? '0' : '1';
+  btn.textContent = show ? '👁️' : '🙈';
+}
+
+function setAkunFilter(app, el){
+  _akunFilterApp = app;
+  document.querySelectorAll('.snk-filter-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderAdminAkun();
+}
+
+async function renderAdminAkun(){
+  const wrap = document.getElementById('akunAdminList');
+  wrap.innerHTML = '<div style="text-align:center;padding:16px;"><span class="spinner"></span></div>';
+  clearAkunCache();
+  const items = await fetchAkun();
+  await fetchProduk(); // biar logo produk kepakek buat ikon S&K
+
+  // filter chips
+  const chipsWrap = document.getElementById('akunFilterChips');
+  const usedApps = [...new Set(items.map(i=>i.appnama||i.app).filter(Boolean))];
+  chipsWrap.innerHTML = `<button class="snk-filter-chip${_akunFilterApp===''?' active':''}" onclick="setAkunFilter('',this)">Semua (${items.length})</button>` +
+    usedApps.map(a=>`<button class="snk-filter-chip${_akunFilterApp===a?' active':''}" onclick="setAkunFilter('${a.replace(/'/g,"\\'")}',this)">${a}</button>`).join('');
+
+  const q = (document.getElementById('akunSearchInput').value||'').toLowerCase().trim();
+  let filtered = items.map((it,i)=>({it, i}));
+  if(_akunFilterApp) filtered = filtered.filter(({it})=>(it.appnama||it.app)===_akunFilterApp);
+  if(q) filtered = filtered.filter(({it})=>
+    (it.email||'').toLowerCase().includes(q) ||
+    (it.appnama||it.app||'').toLowerCase().includes(q)
+  );
+
+  if(!items.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Belum ada data akun & S&K. Klik Tambah!</div>';
+    return;
+  }
+  if(!filtered.length){
+    wrap.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px;">Tidak ada hasil yang cocok.</div>';
+    return;
+  }
+
+  wrap.innerHTML = filtered.map(({it,i})=>{
+    const prodImg = _akunMatchProdImg(it);
+    const emoji = prodImg ? `<img src="${prodImg}" />` : (_akunAppEmoji(it.app) || '🔐');
+    const extraRows = [1,2,3].map(n=>{
+      const lbl = it['extra'+n+'_label'], val = it['extra'+n+'_value'];
+      if(!lbl && !val) return '';
+      return `<div class="snk-row"><span class="snk-row-label">${lbl||'Info'}</span><span class="snk-row-val">${val||''}</span></div>`;
+    }).join('');
+    return `<div class="snk-item">
+      <div class="snk-item-head">
+        <div class="snk-app-badge">${emoji}</div>
+        <div>
+          <div class="snk-app-name">${it.appnama||it.app||'(tanpa nama)'}</div>
+          <div class="snk-app-updated">${it.updated ? fmtDate(it.updated.slice(0,10)) : ''}</div>
+        </div>
+        <div class="snk-item-actions">
+          <button class="btn-edit-banner" onclick="openAkunForm(${i})">✏️</button>
+          <button class="btn-del-banner" onclick="deleteAkun(${i})">🗑️</button>
+        </div>
+      </div>
+      <div class="snk-row"><span class="snk-row-label">Email</span><span class="snk-row-val">${it.email||'-'}</span><button class="snk-row-btn" onclick="copyTxt('${(it.email||'').replace(/'/g,"\\'")}')">📋</button></div>
+      <div class="snk-row"><span class="snk-row-label">Password</span><span class="snk-row-val">••••••••</span><button class="snk-row-btn" data-show="0" onclick="togglePassRow(this,'${(it.password||'').replace(/'/g,"\\'")}')">👁️</button><button class="snk-row-btn" onclick="copyTxt('${(it.password||'').replace(/'/g,"\\'")}')">📋</button></div>
+      ${extraRows}
+      ${it.catatan ? `<div class="snk-row"><span class="snk-row-label">Catatan</span><span class="snk-row-val">${it.catatan}</span></div>` : ''}
+      <button class="snk-copy-full-btn" onclick='copyAkunFull(${i}, ${JSON.stringify(items).replace(/'/g,"&#39;")})'>📋 Copy Lengkap (Siap Kirim ke Pelanggan)</button>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════
    STOK — integrasi ke produk
    Field stok tersimpan di sheet Produk
 ══════════════════════════════════════ */
@@ -12808,4 +13423,3 @@ body.light-mode .rzt-ring-sec{background:rgba(21,27,38,.025);}
 
 </body>
 </html>
-
