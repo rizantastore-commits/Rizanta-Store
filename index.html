@@ -1935,9 +1935,93 @@ body{
 @media(min-width:560px){
   .testi-carousel .testi-card{flex-basis:270px;}
 }
+.testi-carousel .testi-card{cursor:pointer;transition:transform .2s,border-color .2s;position:relative;}
+.testi-carousel .testi-card:hover{border-color:rgba(251,191,36,.35);transform:translateY(-2px);}
+.testi-carousel .testi-card:active{transform:scale(.98);}
+.testi-carousel .testi-text-wrap{position:relative;}
 .testi-carousel .testi-text{
   display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;
   -webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:0;
+}
+.testi-read-more{
+  display:inline-flex;align-items:center;gap:3px;
+  margin-top:6px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:10.5px;font-weight:700;letter-spacing:.2px;
+  color:#fbbf24;
+}
+.testi-read-more span{transition:transform .2s;}
+.testi-carousel .testi-card:hover .testi-read-more span{transform:translateX(3px);}
+
+/* ── Testimoni Detail Modal (popup isi lengkap) ── */
+.testi-detail-bg{
+  position:fixed;inset:0;z-index:260;
+  background:rgba(2,8,20,.78);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;backdrop-filter:blur(10px);
+  animation:fadeIn .22s ease;
+}
+.testi-detail-modal{
+  background:var(--surface);
+  border:1px solid rgba(251,191,36,.3);
+  border-radius:24px;
+  width:100%;max-width:420px;
+  max-height:82vh;
+  display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+  animation:pmPop .38s cubic-bezier(.3,1.4,.5,1);
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 0 1px rgba(251,191,36,.06),0 0 70px rgba(251,191,36,.14);
+}
+.testi-detail-close{
+  position:absolute;top:14px;right:14px;z-index:5;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .22s;backdrop-filter:blur(6px);
+}
+.testi-detail-close:hover{background:rgba(248,113,113,.18);border-color:rgba(248,113,113,.35);color:#fca5a5;transform:rotate(90deg);}
+.testi-detail-head{
+  position:relative;flex-shrink:0;
+  padding:26px 22px 18px;
+  background:
+    radial-gradient(120% 90% at 50% -20%,rgba(251,191,36,.16),transparent 62%),
+    linear-gradient(180deg,rgba(16,30,58,.7),transparent);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.testi-detail-head::after{
+  content:'';position:absolute;left:22px;bottom:-1px;
+  width:110px;height:1px;
+  background:linear-gradient(90deg,rgba(251,191,36,.55),transparent);
+}
+.testi-detail-av{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.3);
+}
+.testi-detail-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:15.5px;font-weight:800;color:#fff;margin-bottom:3px;}
+.testi-detail-meta{font-size:11.5px;color:var(--muted);}
+.testi-detail-stars{color:#fbbf24;font-size:13px;margin-bottom:4px;letter-spacing:1px;}
+.testi-detail-body{
+  overflow-y:auto;padding:20px 22px 24px;
+  scrollbar-width:thin;scrollbar-color:rgba(251,191,36,.25) transparent;
+}
+.testi-detail-body::-webkit-scrollbar{width:5px;}
+.testi-detail-body::-webkit-scrollbar-thumb{background:rgba(251,191,36,.25);border-radius:99px;}
+.testi-detail-body::-webkit-scrollbar-track{background:transparent;}
+.testi-detail-quote-mark{
+  font-family:Georgia,serif;font-size:42px;line-height:1;color:rgba(251,191,36,.28);
+  margin-bottom:-14px;
+}
+.testi-detail-text{
+  font-size:14.5px;color:var(--text);line-height:1.8;
+  white-space:pre-wrap;word-break:break-word;
+}
+@media (prefers-reduced-motion:reduce){
+  .testi-detail-modal{animation:none;}
+  .testi-detail-bg{animation:none;}
 }
 
 /* CTA submit testimoni — tombol menonjol */
@@ -9228,12 +9312,16 @@ async function renderBerandaTestimoni(){
       'linear-gradient(135deg,#065f46,#059669)',
       'linear-gradient(135deg,#92400e,#d97706)',
     ];
+    _berandaTestiItems = items;
+    _berandaTestiColors = items.map((t,i)=>avColors[i % avColors.length]);
     wrap.innerHTML = items.map((t,i)=>{
       const initial = (t.nama||'?').charAt(0).toUpperCase();
       const rating  = Math.min(5, Math.max(1, parseInt(t.rating)||5));
       const stars   = '★'.repeat(rating) + '<span style="color:rgba(255,255,255,.12);">' + '★'.repeat(5-rating) + '</span>';
       const color   = avColors[i % avColors.length];
-      return `<div class="testi-card d${(i%4)+1}">
+      const pesan   = t.pesan||'';
+      const isLong  = pesan.length > 110;
+      return `<div class="testi-card d${(i%4)+1}" onclick="openTestiDetail(${i})">
         <div class="testi-head">
           <div class="testi-av" style="background:${color};">${initial}</div>
           <div>
@@ -9242,14 +9330,64 @@ async function renderBerandaTestimoni(){
             <div class="testi-date">${t.produk ? t.produk+' · ':''} ${t.tanggal||''}</div>
           </div>
         </div>
-        <p class="testi-text">"${t.pesan||''}"</p>
+        <div class="testi-text-wrap">
+          <p class="testi-text">"${pesan}"</p>
+          ${isLong ? '<div class="testi-read-more">Baca selengkapnya<span>→</span></div>' : ''}
+        </div>
       </div>`;
     }).join('');
   }catch(e){
     wrap.innerHTML = '';
   }
 }
+
+/* ── Testimoni Detail Modal (popup isi lengkap, tanpa terpotong) ── */
+let _berandaTestiItems = [];
+let _berandaTestiColors = [];
+function openTestiDetail(i){
+  const t = _berandaTestiItems[i];
+  if(!t) return;
+  const initial = (t.nama||'?').charAt(0).toUpperCase();
+  const rating  = Math.min(5, Math.max(1, parseInt(t.rating)||5));
+  const stars   = '★'.repeat(rating) + '<span style="color:rgba(255,255,255,.15);">' + '★'.repeat(5-rating) + '</span>';
+  document.getElementById('tdAv').style.background = _berandaTestiColors[i] || 'var(--blue)';
+  document.getElementById('tdAv').textContent = initial;
+  document.getElementById('tdStars').innerHTML = stars;
+  document.getElementById('tdName').textContent = t.nama || '-';
+  document.getElementById('tdMeta').textContent = (t.produk ? t.produk+' · ' : '') + (t.tanggal||'');
+  document.getElementById('tdText').textContent = t.pesan || '';
+  document.getElementById('testiDetailModal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeTestiDetail(){
+  document.getElementById('testiDetailModal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeTestiDetail();
+});
 </script>
+
+<!-- ══════════════════════════════════
+     TESTIMONI DETAIL MODAL (popup isi lengkap)
+══════════════════════════════════ -->
+<div class="testi-detail-bg hidden" id="testiDetailModal" onclick="if(event.target===this)closeTestiDetail()">
+  <div class="testi-detail-modal">
+    <button class="testi-detail-close" onclick="closeTestiDetail()">✕</button>
+    <div class="testi-detail-head">
+      <div class="testi-detail-av" id="tdAv"></div>
+      <div>
+        <div class="testi-detail-stars" id="tdStars"></div>
+        <div class="testi-detail-name" id="tdName"></div>
+        <div class="testi-detail-meta" id="tdMeta"></div>
+      </div>
+    </div>
+    <div class="testi-detail-body">
+      <div class="testi-detail-quote-mark">"</div>
+      <p class="testi-detail-text" id="tdText"></p>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════
      PRODUCT DETAIL MODAL
