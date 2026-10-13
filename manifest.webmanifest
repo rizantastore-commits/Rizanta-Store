@@ -1,0 +1,21 @@
+{
+  "name": "Rizanta Store",
+  "short_name": "Rizanta",
+  "description": "Cek resi, produk, dan langganan Rizanta Store",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E9F1FF",
+  "theme_color": "#2F6BEA",
+  "lang": "id",
+  "icons": [
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Cek Resi", "short_name": "Cek Resi", "url": "/?source=shortcut#cek", "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
