@@ -2964,6 +2964,14 @@ body.on-page-faq .wa-float{display:none!important;}
 .admin-tabs-wrap{position:relative;margin-bottom:16px;display:flex;align-items:center;gap:4px;}
 .admin-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;flex:1;}
 .admin-tabs::-webkit-scrollbar{display:none;}
+.admin-tabs{cursor:grab;overscroll-behavior-x:contain;}
+.admin-tabs.dragging{cursor:grabbing;user-select:none;}
+.admin-tabs.dragging .admin-tab{pointer-events:none;}
+.admin-tabs-wrap::before,.admin-tabs-wrap::after{content:'';position:absolute;top:0;bottom:4px;width:22px;pointer-events:none;z-index:2;opacity:0;transition:opacity .2s;}
+.admin-tabs-wrap::before{left:0;background:linear-gradient(90deg,var(--bg,#0a1020),transparent);}
+.admin-tabs-wrap::after{right:0;background:linear-gradient(270deg,var(--bg,#0a1020),transparent);}
+.admin-tabs-wrap.fade-l::before{opacity:1;}
+.admin-tabs-wrap.fade-r::after{opacity:1;}
 .admin-tab{white-space:nowrap;flex-shrink:0;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .25s;letter-spacing:.3px;}
 .admin-tab.active{border-color:var(--blue-bright);background:rgba(74,130,240,.14);color:var(--blue-light);}
 .admin-tabs-arrow{display:none;flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--muted);font-size:14px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;}
@@ -7933,12 +7941,69 @@ function updateAdminTabArrows(){
   const canRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
   prev.classList.toggle('visible', canLeft);
   next.classList.toggle('visible', canRight);
+  const wrap = el.parentElement;
+  if(wrap){ wrap.classList.toggle('fade-l', canLeft); wrap.classList.toggle('fade-r', canRight); }
 }
+/* Menu admin di laptop: roda mouse / touchpad, drag dengan mouse, panah, dan auto-update panah */
+(function initAdminTabsScroll(){
+  function setup(){
+    const el = document.getElementById('adminTabsScroll');
+    if(!el || el._rztInit) return; el._rztInit = true;
+
+    // 1) Roda mouse (vertikal) → geser horizontal. Touchpad horizontal tetap native.
+    el.addEventListener('wheel', function(e){
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+        const max = el.scrollWidth - el.clientWidth;
+        if(max <= 0) return;
+        const atStart = el.scrollLeft <= 0 && e.deltaY < 0;
+        const atEnd   = el.scrollLeft >= max - 1 && e.deltaY > 0;
+        if(atStart || atEnd) return;          // di ujung: biarkan halaman scroll normal
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    }, {passive:false});
+
+    // 2) Drag dengan mouse (klik-tahan lalu geser)
+    let down=false, moved=false, startX=0, startL=0;
+    el.addEventListener('mousedown', function(e){
+      if(e.button!==0) return;
+      down=true; moved=false; startX=e.clientX; startL=el.scrollLeft;
+    });
+    window.addEventListener('mousemove', function(e){
+      if(!down) return;
+      const dx = e.clientX - startX;
+      if(!moved && Math.abs(dx) > 5){ moved=true; el.classList.add('dragging'); }
+      if(moved) el.scrollLeft = startL - dx;
+    });
+    window.addEventListener('mouseup', function(){
+      if(!down) return; down=false;
+      if(moved){ setTimeout(function(){ el.classList.remove('dragging'); }, 0); }
+    });
+    // cegah klik tab setelah drag
+    el.addEventListener('click', function(e){ if(moved){ e.stopPropagation(); e.preventDefault(); moved=false; } }, true);
+
+    // 3) Update panah saat scroll / ukuran berubah / font selesai dimuat
+    el.addEventListener('scroll', updateAdminTabArrows, {passive:true});
+    window.addEventListener('resize', updateAdminTabArrows);
+    if(window.ResizeObserver){ try{ new ResizeObserver(updateAdminTabArrows).observe(el); }catch(e){} }
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(updateAdminTabArrows);
+
+    // 4) Keyboard: panah kiri/kanan saat fokus di salah satu tab
+    el.addEventListener('keydown', function(e){
+      if(e.key==='ArrowRight'){ scrollAdminTabs(1); }
+      else if(e.key==='ArrowLeft'){ scrollAdminTabs(-1); }
+    });
+
+    updateAdminTabArrows();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', setup); else setup();
+})();
 function switchTab(tab){
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
   document.getElementById('tab-'+tab).classList.add('active');
+  try{ var _at=document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)); if(_at&&_at.scrollIntoView) _at.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}); setTimeout(updateAdminTabArrows,350); }catch(e){}
   // Pause admin RT saat pindah dari tab order
   if(tab !== 'order') stopAdminRt();
   if(tab==='produk') renderAdminProducts();
@@ -9991,6 +10056,71 @@ document.addEventListener('keydown', function(e){
 ══════════════════════════════════════ */
 
 const FAQ_DB = [
+  // ══ FITUR BARU (diletakkan paling atas agar menang dari kata kunci umum) ══
+  // ── NOTIF BERMASALAH ──
+  {
+    keys: ['notif tidak muncul','notif ga muncul','notif gak muncul','notif nggak muncul','notif tidak masuk','notif ga masuk','notif gak masuk','notif nggak masuk','notif tidak ada','notif ga ada','notif gak ada','notif ga bunyi','notif gak bunyi','notif error','notif mati','notif diblokir','notif blokir','notifikasi tidak muncul','notifikasi tidak masuk','notifikasi ga muncul','notifikasi gak muncul','notifikasi ga masuk','notifikasi gak masuk','notifikasi diblokir','tidak dapat notif','ga dapat notif','gak dapat notif','ga dapet notif','gak dapet notif','kenapa notif','kenapa notifikasi','tidak ada notif','tidak ada notifikasi'],
+    type: 'notif_masalah',
+    test: function(l){ return /notif/.test(l) && /(^|[^a-z])(tidak|ga|gak|nggak|ngga|enggak|belum|kok|kenapa|masalah|error|gagal|susah|bisa)([^a-z]|$)/.test(l) && !/(cara|gimana|bagaimana)/.test(l.replace(/kenapa/g,'')) ; },
+    answer: '🔕 Kalau notifikasi nggak masuk, coba cek ini ya kak:\n\n1️⃣ <b>Izin diblokir?</b> Klik ikon gembok di address bar → <b>Notifikasi → Izinkan</b>, lalu muat ulang halaman.\n2️⃣ <b>Belum diaktifkan.</b> Di Beranda ada kartu <b>🔔 Dapat info promo & stok</b> → klik <b>Aktifkan</b> → <b>Izinkan</b>.\n3️⃣ <b>Pengaturan HP.</b> Pastikan notifikasi Chrome / browser tidak dimatikan di pengaturan sistem, dan mode hemat baterai tidak membatasi browser.\n4️⃣ <b>iPhone:</b> notifikasi hanya jalan kalau situs sudah ditambahkan ke <b>Layar Utama</b> (Share → Add to Home Screen) dan dibuka dari ikon itu (iOS 16.4+).\n5️⃣ Coba <b>muat ulang</b> halaman lalu aktifkan lagi.\n\nMasih belum muncul? Chat admin WA aja kak, kami bantu cek 😊',
+    quick: ['🔔 Cara Aktifkan Notif','📲 Install Aplikasi','Hubungi WA']
+  },
+  // ── NOTIF UMUM ──
+  {
+    keys: ['notif','notifikasi','pemberitahuan','push notif','pengingat','reminder','pengumuman','info terbaru','ingatkan'],
+    type: 'notif',
+    answer: '🔔 <b>Notifikasi Rizanta Store</b>\n\nDengan mengaktifkan notifikasi, kamu bisa dapat:\n• 📢 <b>Pengumuman & promo</b> terbaru (tanpa perlu beli dulu)\n• 🎉 <b>Kabar stok</b> saat produk yang habis tersedia lagi\n• ⏳ <b>Pengingat masa aktif</b> langganan (H-3, H-1, dan hari terakhir) untuk member\n• 🛠️ <b>Update klaim garansi</b> kamu\n\n<b>Cara aktifkan:</b>\n1. Buka tab <b>Beranda</b>\n2. Klik <b>Aktifkan</b> di kartu <b>🔔 Dapat info promo & stok</b>\n3. Pilih <b>Izinkan</b> di jendela yang muncul\n\n💡 Pengingat masa aktif otomatis butuh login lewat <b>nomor HP</b> yang kamu pakai saat order (menu <b>Cek Langgananku</b>). Di iPhone, pasang dulu ke Layar Utama ya kak.',
+    quick: ['🔔 Cara Aktifkan Notif','📲 Install Aplikasi','Hubungi WA']
+  },
+  // ── KABARI SAYA / STOK ──
+  {
+    keys: ['kabari','stok habis','stok kosong','habis stok','kehabisan','restock','re-stock','kapan ready','kapan tersedia','produk habis','out of stock','sold out','stok'],
+    type: 'stok',
+    answer: '📦 Produk yang stoknya lagi habis bisa kamu <b>pantau</b> kak!\n\n• Di produk yang habis, klik tombol <b>Kabari Saya</b>\n• Izinkan notifikasi (dan boleh isi nomor WA)\n• Begitu stok masuk lagi, kamu langsung dikabari lewat <b>notifikasi</b> 🎉\n\nKamu juga bisa mengaktifkan notifikasi dari Beranda supaya dapat kabar stok produk apa pun. Atau tanya langsung ke admin WA untuk estimasi stok masuk.',
+    quick: ['Lihat Produk','🔔 Cara Aktifkan Notif','Hubungi WA']
+  },
+  // ── KLAIM GARANSI ──
+  {
+    keys: ['klaim','lapor masalah','lapor kendala','ajukan klaim','status klaim','cek klaim','balasan klaim'],
+    type: 'klaim',
+    answer: '🛠️ <b>Klaim Garansi / Lapor Masalah</b>\n\nAkun bermasalah? Ajukan klaim langsung dari web:\n1. Buka tab <b>🔍 Cek Resi</b> dan masukkan kode resi kamu\n2. Di hasil pencarian, klik <b>🛠️ Klaim Garansi / Lapor Masalah</b>\n3. Pilih jenis masalah, tulis penjelasan singkat, lalu kirim\n\nStatus klaim (Menunggu → Diproses → Selesai/Ditolak) beserta balasan admin bisa kamu lihat di Cek Resi, dan kamu juga dapat <b>notifikasi</b> kalau ada update 🔔\n\nButuh respons lebih cepat? Chat admin WA aja kak.',
+    quick: ['Cek Resi','🔔 Cara Aktifkan Notif','Hubungi WA']
+  },
+  // ── KALKULATOR REFUND ──
+  {
+    keys: ['kalkulator refund','hitung refund','estimasi refund','berapa refund','refund berapa','syarat refund','kebijakan refund','cara refund','ajukan refund','minta refund','uang kembali'],
+    type: 'refund',
+    answer: '💸 <b>Kalkulator Refund</b>\n\nKamu bisa hitung estimasi refund sendiri di menu <b>Kalkulator Refund</b>: isi nama aplikasi, harga bayar, tanggal order, durasi, dan alasan.\n\nRefund dihitung <b>prorata dari sisa hari</b> yang belum terpakai, dikali faktor alasan:\n• Problem/error atau tidak kunjung aktif → <b>100%</b>\n• Double order → <b>95%</b>\n• Salah order → <b>80%</b>\n• Lainnya → <b>75%</b>\n• Tidak puas → <b>60%</b>\n\n⚠️ Hasilnya <b>estimasi</b>. Keputusan final tetap di admin, jadi hubungi admin WA untuk pengajuan resmi ya kak.',
+    quick: ['Hubungi WA','Cek Resi']
+  },
+  // ── INSTALL APLIKASI (PWA) ──
+  {
+    keys: ['install','instal','pasang aplikasi','download aplikasi','unduh aplikasi','add to home','layar utama','home screen','pwa','ada aplikasinya','ada appnya','playstore','play store','app store','appstore','apk'],
+    type: 'install',
+    answer: '📲 <b>Pasang Rizanta Store seperti aplikasi</b> (tanpa Play Store / App Store)\n\n🤖 <b>Android (Chrome):</b> klik tombol <b>Install Aplikasi</b> di web, atau menu ⋮ → <b>Install app / Tambahkan ke Layar Utama</b>\n🍎 <b>iPhone (Safari):</b> tombol Share → <b>Add to Home Screen</b>\n💻 <b>Laptop (Chrome/Edge):</b> klik ikon install di address bar (kanan atas)\n\nKeuntungannya: buka lebih cepat, tampilan layar penuh, dan <b>notifikasi</b> tetap bisa masuk. 🔔',
+    quick: ['🔔 Cara Aktifkan Notif','Lihat Produk']
+  },
+  // ── CEK LANGGANANKU / MEMBER ──
+  {
+    keys: ['cek langgananku','langgananku','dashboard member','login member','masuk member','member area','lupa resi','resi hilang','resi lupa','resi saya hilang','kode resi hilang','lupa kode resi','lupa nomor resi','login pakai hp'],
+    type: 'member',
+    answer: '🎫 <b>Cek Langgananku (Member)</b>\n\nLupa kode resi? Tenang kak. Buka menu <b>Cek Langgananku</b>, lalu masukkan <b>nomor HP / WhatsApp</b> yang kamu daftarkan saat order.\n\nDi dashboard kamu bisa lihat:\n• Semua order & status aktifnya\n• Sisa hari langganan\n• Detail akun, dan pengajuan klaim kalau ada kendala\n\n💡 Aktifkan <b>pengingat</b> di dashboard supaya dapat notifikasi sebelum langganan habis.',
+    quick: ['Cek Resi','🔔 Cara Aktifkan Notif','Hubungi WA']
+  },
+  // ── TESTIMONI ──
+  {
+    keys: ['kirim testimoni','tulis testimoni','beri testimoni','kasih testimoni','beri ulasan','kasih ulasan','tulis ulasan','review','rating','bintang'],
+    type: 'testimoni',
+    answer: '⭐ Mau kasih testimoni? Makasih banyak kak!\n\nBuka halaman <b>Beranda</b>, cari bagian <b>Tulis Testimonimu</b>, isi nama, rating, produk, dan pesanmu, lalu klik <b>Kirim Testimoni</b>.\n\nTestimoni akan dicek admin dulu sebelum tampil di web. Kamu juga bisa kirim screenshot testimoni lewat WA admin untuk masuk galeri 📸',
+    quick: ['Lihat Testimoni','Hubungi WA']
+  },
+  // ── BAHASA / MUSIK / PENGATURAN ──
+  {
+    keys: ['musik latar','matikan musik','hentikan musik','efek suara','ganti bahasa','bahasa inggris','english','pengaturan','settings'],
+    type: 'pengaturan',
+    answer: '⚙️ <b>Pengaturan</b>\n\nDi menu <b>Pengaturan</b> kamu bisa:\n• 🎵 Nyalakan / matikan <b>musik latar</b>\n• 🔊 Atur <b>efek suara</b>\n• 🌐 Ganti <b>bahasa</b> (Indonesia / English)\n• ⏰ Kelola <b>pengingat langganan</b>\n\nCoba buka lewat menu titik tiga atau ikon pengaturan di web ya kak 😊',
+    quick: ['Lihat Produk']
+  },
   // ── SAPAAN ──
   {
     keys: ['hai','halo','hallo','hello','hi','hey','permisi','selamat pagi','selamat siang','selamat malam','assalam','assalamualaikum','waalaikum'],
@@ -10119,9 +10249,9 @@ function toggleFaqBot(){ goPage('page-faq'); } function _oldToggleFaqBot_unused(
 }
 
 function faqGreet(){
-  faqAddMsg('bot', 'Halo kak! 👋 Aku <b>Riza</b>, bot Rizanta Store.\n\nAku siap bantu jawab pertanyaan seputar:\n• 💰 Harga & produk\n• 🛒 Cara order & pembayaran\n• 🎫 Cek status langganan\n• 🛡️ Garansi & kendala\n\nMau tanya apa? Ketik aja ya! 😊');
+  faqAddMsg('bot', 'Halo kak! 👋 Aku <b>Riza</b>, bot Rizanta Store.\n\nAku siap bantu jawab pertanyaan seputar:\n• 💰 Harga & produk\n• 🛒 Cara order & pembayaran\n• 🎫 Cek status langganan\n• 🛡️ Garansi, klaim & kendala\n• 🔔 Notifikasi, kabar stok & install aplikasi\n• 💸 Estimasi refund\n\nMau tanya apa? Ketik aja ya! 😊');
   setTimeout(()=>{
-    faqSetQuick(['💰 Harga', '🛒 Cara Order', '💳 Pembayaran', '🛡️ Garansi', '🎮 Produk Apa Aja']);
+    faqSetQuick(['💰 Harga', '🛒 Cara Order', '💳 Pembayaran', '🛡️ Garansi', '🔔 Notifikasi', '📲 Install Aplikasi', '🛠️ Klaim Garansi', '💸 Refund', '🎮 Produk Apa Aja']);
     document.getElementById('faqInput').focus();
   }, 600);
 }
@@ -10163,6 +10293,8 @@ function faqQuickClick(btn, label){
   const mapped = {
     '💰 Harga':'harga','🛒 Cara Order':'cara order','💳 Pembayaran':'bayar',
     '🛡️ Garansi':'garansi','🎮 Produk Apa Aja':'produk apa',
+    '🔔 Notifikasi':'notifikasi','🔔 Cara Aktifkan Notif':'notifikasi','📲 Install Aplikasi':'install aplikasi',
+    '🛠️ Klaim Garansi':'klaim garansi','💸 Refund':'syarat refund','🎫 Cek Langgananku':'cek langgananku',
   };
   if(QUICK_SHORTCUTS[label]){
     QUICK_SHORTCUTS[label]();
@@ -10277,6 +10409,11 @@ async function _buildProdukMsg(){
   return { msg: lines, quick: ['Lihat Produk','💰 Harga', 'Hubungi WA'] };
 }
 
+/* Kata kunci pendek (<=3 huruf) harus cocok sebagai kata utuh: 'hi' ≠ 'hilang', 'dah' ≠ 'sudah', 'ml' ≠ 'html' */
+function faqKeyMatch(lower, k){
+  if(k.length > 3) return lower.includes(k);
+  return new RegExp('(^|[^a-z0-9])' + k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '($|[^a-z0-9])').test(lower);
+}
 async function faqRespond(txt){
   const lower = txt.toLowerCase();
   clearTimeout(faqTypingTm);
@@ -10285,7 +10422,7 @@ async function faqRespond(txt){
   const delay = 900 + Math.random()*400;
 
   // Cek tipe khusus yang butuh async (harga & produk)
-  const matchAsync = FAQ_DB.find(f => f.keys.some(k => lower.includes(k)));
+  const matchAsync = FAQ_DB.find(f => (f.test && f.test(lower)) || f.keys.some(k => faqKeyMatch(lower, k)));
 
   faqTypingTm = setTimeout(async ()=>{
     faqHideTyping();
@@ -10299,7 +10436,7 @@ async function faqRespond(txt){
         setTimeout(()=> faqSetQuick(['💰 Harga','🛒 Cara Order','Hubungi WA']), 200);
         logChat(txt, 'AI', 'pertanyaan bebas');
       } else {
-        faqAddMsg('bot', '🤔 Hmm, aku belum bisa jawab itu nih kak.\n\nCoba tanya dengan kata lain, atau langsung hubungi admin WA biar lebih cepat dibantu ya! 😊\n\nContoh: ketik <b>"harga"</b>, <b>"cara order"</b>, atau <b>"garansi"</b>');
+        faqAddMsg('bot', '🤔 Hmm, aku belum bisa jawab itu nih kak.\n\nCoba tanya dengan kata lain, atau langsung hubungi admin WA biar lebih cepat dibantu ya! 😊\n\nContoh: ketik <b>"harga"</b>, <b>"cara order"</b>, <b>"notifikasi"</b>, atau <b>"klaim garansi"</b>');
         setTimeout(()=> faqSetQuick(['💰 Harga','🛒 Cara Order','Hubungi WA']), 200);
         logChat(txt, 'tidak terjawab', 'tidak dikenali');
       }
