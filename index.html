@@ -5091,6 +5091,7 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="admin-tab" id="tabAkunsnk" onclick="switchTab('akunsnk')">🔐 Akun & S&K</button>
       <button class="admin-tab" id="tabRunningtext" onclick="switchTab('runningtext')">📢 Running Text</button>
       <button class="admin-tab" id="tabLog" onclick="switchTab('log')">📜 Log</button>
+      <button class="admin-tab" id="tabNotif" onclick="switchTab('notif')">🔔 Notif & Klaim</button>
     </div>
     <button class="admin-tabs-arrow" id="adminTabNext" onclick="scrollAdminTabs(1)" aria-label="Geser kanan">&#8250;</button>
   </div>
@@ -5620,6 +5621,14 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
       <button class="btn btn-primary" style="margin-top:16px;" onclick="saveRunningTextSettings()">💾 Simpan & Terapkan</button>
     </div>
   </div><!-- /tab-runningtext -->
+
+  <!-- Tab: Notif & Klaim -->
+  <div id="tab-notif" class="tab-content">
+    <div class="card d1">
+      <div class="card-heading">🔔 Notif & Klaim</div>
+      <div id="rzt2AdminNotif"></div>
+    </div>
+  </div><!-- /tab-notif -->
 
   <!-- Tab: Log Aktivitas -->
   <div id="tab-log" class="tab-content">
@@ -6361,6 +6370,7 @@ async function cekResi(){
           ${o.password?`<div class="acc-row"><span class="acc-key">Password</span><span class="acc-val" id="passVal">••••••••<button class="copy-btn" onclick="copyTxt('${o.password}')">📋</button><button class="copy-btn" onclick="togglePass(this,'${o.password}')">👁️</button></span></div>`:''}
           ${o.catatan?`<div class="acc-row"><span class="acc-key">Catatan</span><span class="acc-val">${o.catatan}</span></div>`:''}
         </div>`:''}
+        <button class="btn btn-outline" style="font-size:13px;margin-bottom:8px;" onclick="rzt2KlaimOpen('${o.resi}','${String(o.app||o.aplikasi||'').replace(/['"]/g,'')}')">🛠️ Klaim Garansi / Lapor Masalah</button>
         <button class="btn btn-outline" style="font-size:13px;" onclick="if(window._rztCd){clearInterval(window._rztCd);window._rztCd=null;}document.getElementById('resultArea').classList.add('hidden');document.getElementById('resiInput').value='';">🔄 Cek Resi Lain</button>
       </div>`;
     ra.classList.remove('hidden');
@@ -7944,6 +7954,7 @@ function switchTab(tab){
   if(tab==='akunsnk') renderAdminAkun();
   if(tab==='runningtext') renderAdminRt();
   if(tab==='log') renderAdminLog();
+  if(tab==='notif' && window.rzt2AdminRender) rzt2AdminRender();
 }
 
 /* ══════════════════════════════════════
@@ -9373,6 +9384,7 @@ document.addEventListener('keydown', function(e){
       <button class="prod-order-btn" id="pmOrderBtn">
         💬 Order via WhatsApp
       </button>
+      <div id="rztPmExtra"></div>
     </div>
   </div>
 </div>
@@ -11001,6 +11013,7 @@ async function renderMemberDashboard(){
         ${o.catatan ? `<div class="moc-chip">📝 ${o.catatan}</div>`                                     : ''}
       </div>
       ${barHtml}
+      <button class="moc-klaim" onclick="rzt2KlaimOpen('${o.resi}','${String(o.app||'').replace(/['"]/g,'')}')">🛠️ Klaim Garansi</button>
     </div>`;
   }).join('');
 }
@@ -14634,6 +14647,429 @@ body:not(.light-mode) .rzt-steps li{background:rgba(108,159,245,.12);color:#E8EF
     setTimeout(function(){if(!deferred)show();},1500);
   }
   if(document.readyState==='complete')setTimeout(boot,400);else window.addEventListener('load',function(){setTimeout(boot,400);});
+})();
+</script>
+
+<!-- ================= RIZANTA v2: KERANJANG · KLAIM GARANSI · KABARI SAYA · PUSH · BADGE · UPDATE ================= -->
+<style id="rzt2-style">
+body{--rzt2-card:#ffffff;--rzt2-ink:#14275A;--rzt2-mute:#5B6F9A;--rzt2-line:rgba(47,107,234,.18);--rzt2-soft:#EEF4FF;--rzt2-field:#F5F8FF;}
+body:not(.light-mode){--rzt2-card:#0F1D40;--rzt2-ink:#EAF2FF;--rzt2-mute:#9DB3E0;--rzt2-line:rgba(188,211,251,.18);--rzt2-soft:rgba(108,159,245,.12);--rzt2-field:rgba(255,255,255,.05);}
+.rzt2-bg{position:fixed;inset:0;z-index:10050;background:rgba(8,16,40,.55);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;}
+.rzt2-bg.open{display:flex;animation:rzt2fade .2s ease;}
+@keyframes rzt2fade{from{opacity:0}to{opacity:1}}
+@keyframes rzt2up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.rzt2-sheet{position:relative;width:100%;max-width:520px;max-height:92vh;overflow:auto;background:var(--rzt2-card);color:var(--rzt2-ink);border-radius:26px 26px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:rzt2up .28s ease;font-family:'Plus Jakarta Sans',sans-serif;}
+@media(min-width:700px){.rzt2-bg{align-items:center}.rzt2-sheet{border-radius:26px}}
+.rzt2-sheet h3{margin:0 0 4px;font-size:18px;font-weight:800;}
+.rzt2-sub{font-size:12.5px;color:var(--rzt2-mute);margin-bottom:14px;line-height:1.5;}
+.rzt2-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:var(--rzt2-soft);color:var(--rzt2-ink);font-size:14px;cursor:pointer;}
+.rzt2-lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--rzt2-mute);margin:12px 0 5px;}
+.rzt2-in,.rzt2-sel,.rzt2-ta{width:100%;box-sizing:border-box;padding:11px 13px;border-radius:12px;border:1px solid var(--rzt2-line);background:var(--rzt2-field);color:var(--rzt2-ink);font-family:inherit;font-size:13.5px;outline:none;}
+.rzt2-in:focus,.rzt2-sel:focus,.rzt2-ta:focus{border-color:#2F6BEA;}
+.rzt2-ta{min-height:96px;resize:vertical;}
+.rzt2-in[readonly]{opacity:.7;}
+.rzt2-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:10px;padding:13px;border-radius:14px;border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#2F6BEA,#4A7BE0);box-shadow:0 4px 18px rgba(47,107,234,.32);}
+.rzt2-btn:disabled{opacity:.55;cursor:default;}
+.rzt2-btn.rzt2-ghost{background:transparent;color:#2F6BEA;border:1px solid var(--rzt2-line);box-shadow:none;}
+.rzt2-btn.rzt2-wa{background:linear-gradient(135deg,#25D366,#1fa855);box-shadow:0 4px 18px rgba(37,211,102,.3);}
+.rzt2-btn.sm{width:auto;display:inline-flex;margin-top:0;padding:8px 14px;font-size:12px;border-radius:10px;}
+.rzt2-note{margin-top:10px;padding:11px 13px;border-radius:12px;background:var(--rzt2-soft);font-size:12.5px;line-height:1.5;}
+.rzt2-err{color:#d93a3a;font-size:12.5px;margin-top:8px;}
+.rzt2-ok{color:#15803d;font-size:12.5px;margin-top:8px;}
+.rzt2-row{display:flex;gap:8px;align-items:center;}
+.rzt2-link{background:none;border:none;color:var(--rzt2-mute);font-size:12px;text-decoration:underline;cursor:pointer;margin-top:10px;font-family:inherit;}
+/* FAB keranjang */
+#rzt2-fab{position:fixed;right:20px;bottom:calc(var(--nav-h,72px) + var(--music-bar-h,0px) + 16px + 62px);z-index:98;width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#2F6BEA,#4A7BE0);color:#fff;display:none;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(47,107,234,.5);}
+#rzt2-fab.show{display:flex;animation:rzt2up .3s ease;}
+#rzt2-fab svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+#rzt2-fab b{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:10px;background:#ef4444;color:#fff;font-size:11px;line-height:20px;text-align:center;font-weight:800;}
+#rzt2-fab.bump{animation:rzt2bump .4s ease;}
+@keyframes rzt2bump{50%{transform:scale(1.25)}}
+/* item keranjang */
+.rzt2-item{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--rzt2-line);}
+.rzt2-item .n{flex:1;min-width:0;font-weight:700;font-size:13.5px;}
+.rzt2-item .p{font-size:12px;color:var(--rzt2-mute);margin-top:2px;}
+.rzt2-qty{display:flex;align-items:center;gap:8px;}
+.rzt2-qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--rzt2-line);background:var(--rzt2-soft);color:var(--rzt2-ink);font-size:15px;cursor:pointer;line-height:1;}
+.rzt2-qty span{min-width:18px;text-align:center;font-weight:800;font-size:13px;}
+.rzt2-sum{margin-top:12px;font-size:13px;}
+.rzt2-sum div{display:flex;justify-content:space-between;padding:3px 0;}
+.rzt2-sum .t{font-weight:800;font-size:16px;border-top:1px dashed var(--rzt2-line);margin-top:6px;padding-top:9px;}
+/* klaim */
+.moc-klaim{margin-top:10px;width:100%;padding:9px;border-radius:12px;border:1px dashed var(--rzt2-line,rgba(47,107,234,.3));background:transparent;color:#2F6BEA;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;}
+.rzt2-claim{margin:12px 0;padding:12px 14px;border-radius:16px;background:var(--rzt2-soft,#EEF4FF);color:var(--rzt2-ink,#14275A);font-size:12.5px;}
+.rzt2-claim b.h{display:block;font-size:11.5px;margin-bottom:6px;}
+.rzt2-claim .c{padding:7px 0;border-top:1px solid var(--rzt2-line,rgba(47,107,234,.18));}
+.rzt2-claim .c:first-of-type{border-top:none;}
+.rzt2-chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10.5px;font-weight:800;margin-left:6px;}
+.rzt2-chip.baru{background:#FEF3C7;color:#92400E}.rzt2-chip.diproses{background:#DBEAFE;color:#1E40AF}.rzt2-chip.selesai{background:#DCFCE7;color:#166534}.rzt2-chip.ditolak{background:#FEE2E2;color:#991B1B}
+/* push card member */
+.rzt2-push{display:flex;gap:12px;align-items:center;margin:0 0 14px;padding:13px 14px;border-radius:16px;background:var(--rzt2-soft,#EEF4FF);color:var(--rzt2-ink,#14275A);font-size:12.5px;}
+.rzt2-push .t{flex:1;line-height:1.45;}.rzt2-push .t b{display:block;font-size:13px;}
+/* snackbar update */
+#rzt2-upd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,72px) + 14px);z-index:10060;display:flex;align-items:center;gap:10px;max-width:92vw;padding:10px 12px 10px 16px;border-radius:99px;background:#14275A;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.35);animation:rzt2up .3s ease;}
+#rzt2-upd button{border:none;border-radius:99px;padding:7px 14px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer;background:#6C9FF5;color:#0b1a44;}
+#rzt2-upd .x{background:transparent;color:#fff;padding:4px 6px;}
+/* admin */
+.rzt2-a-sec{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.rzt2-a-sec h4{margin:0 0 8px;font-size:14px;}
+.rzt2-a-row{padding:10px 12px;margin-bottom:8px;border-radius:12px;background:rgba(47,107,234,.07);font-size:12.5px;}
+</style>
+
+<!-- Keranjang -->
+<button id="rzt2-fab" onclick="rzt2CartOpen()" aria-label="Keranjang"><svg viewBox="0 0 24 24"><path d="M3 4h2.2l2 11h10.2l2-8H6.4"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><b id="rzt2-fab-n">0</b></button>
+<div class="rzt2-bg" id="rzt2-cart" onclick="if(event.target===this)rzt2Close('cart')"><div class="rzt2-sheet"><button class="rzt2-x" onclick="rzt2Close('cart')">✕</button><h3>🛒 Keranjang</h3><div class="rzt2-sub">Cek pesananmu, lalu checkout lewat WhatsApp.</div><div id="rzt2-cart-body"></div></div></div>
+<!-- Klaim garansi -->
+<div class="rzt2-bg" id="rzt2-klaim" onclick="if(event.target===this)rzt2Close('klaim')"><div class="rzt2-sheet"><button class="rzt2-x" onclick="rzt2Close('klaim')">✕</button><h3>🛠️ Klaim Garansi</h3><div class="rzt2-sub">Akun bermasalah? Ceritakan singkat, admin akan segera cek.</div><div id="rzt2-klaim-body"></div></div></div>
+<!-- Kabari saya -->
+<div class="rzt2-bg" id="rzt2-kabari" onclick="if(event.target===this)rzt2Close('kabari')"><div class="rzt2-sheet"><button class="rzt2-x" onclick="rzt2Close('kabari')">✕</button><h3>🔔 Kabari Saya</h3><div class="rzt2-sub" id="rzt2-kabari-sub"></div><div id="rzt2-kabari-body"></div></div></div>
+
+<script id="rzt2-js">
+(function(){
+'use strict';
+/* ═════════ KONFIGURASI ═════════ */
+var OS_APP_ID = '405af106-e462-4a0c-a544-e8029c67b648';                       // ← isi App ID OneSignal (lihat panduan). Kosong = push background nonaktif
+var WA_NUMBER = '6289529101513';
+
+/* ═════════ HELPER ═════════ */
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}return null;}
+function toast(m){if(window.showToast)showToast(m);}
+function rp(n){return 'Rp '+(Number(n)||0).toLocaleString('id-ID');}
+function tagKey(id){return 'restock_'+String(id).replace(/[^a-zA-Z0-9_-]/g,'_');}
+function isIOS(){var u=navigator.userAgent;return /iPad|iPhone|iPod/.test(u)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+function standalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
+function session(){try{return (typeof MEMBER_SESSION!=='undefined')?MEMBER_SESSION:null;}catch(e){return null;}}
+function curProd(){try{return (typeof _pmCurrentProd!=='undefined')?_pmCurrentProd:null;}catch(e){return null;}}
+function api(params){return fetch(CFG.scriptUrl+'?'+new URLSearchParams(params).toString()).then(function(r){return r.json();});}
+function open_(id){var e=$('rzt2-'+id);if(e){e.classList.add('open');document.body.style.overflow='hidden';}}
+window.rzt2Close=function(id){var e=$('rzt2-'+id);if(e)e.classList.remove('open');document.body.style.overflow='';};
+
+/* ═════════ 1) PUSH NOTIFICATION (OneSignal) ═════════ */
+var OS=null;
+if(OS_APP_ID){
+  window.OneSignalDeferred=window.OneSignalDeferred||[];
+  window.OneSignalDeferred.push(async function(O){
+    try{
+      await O.init({appId:OS_APP_ID,serviceWorkerPath:'sw.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});
+      OS=O; osSync(); refreshPushCard();
+    }catch(e){console.warn('OneSignal init gagal',e);}
+  });
+  var sc=document.createElement('script');sc.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';sc.defer=true;document.head.appendChild(sc);
+}
+function osSync(){
+  if(!OS)return;
+  var s=session();
+  try{ if(s&&s.hp) OS.login(normalizeHp(s.hp)); }catch(e){}
+}
+function pushOn(){try{return !!(OS&&OS.User.PushSubscription.optedIn);}catch(e){return false;}}
+async function enablePush(){
+  if(!OS_APP_ID){ if(window.requestNotifPermission)requestNotifPermission(); return false; }
+  if(isIOS()&&!standalone()){toast('Di iPhone: pasang dulu ke Layar Utama, lalu aktifkan notifikasi');if(window.rztInstall)rztInstall();return false;}
+  if(!OS){toast('Layanan notifikasi masih dimuat, coba lagi sebentar');return false;}
+  try{await OS.Notifications.requestPermission();await OS.User.PushSubscription.optIn();}catch(e){}
+  var ok=pushOn();toast(ok?'🔔 Notifikasi aktif!':'❌ Notifikasi tidak diizinkan');refreshPushCard();return ok;
+}
+window.rzt2EnablePush=enablePush;
+function refreshPushCard(){
+  var list=$('memberOrderList');if(!list||!OS_APP_ID)return;
+  var c=$('rzt2-push');
+  if(!c){c=document.createElement('div');c.id='rzt2-push';c.className='rzt2-push';list.parentNode.insertBefore(c,list);}
+  if(pushOn()){c.innerHTML='<div class="t"><b>✅ Pengingat aktif</b>Kamu akan dapat notif H-3, H-1, dan hari terakhir langganan.</div>';}
+  else{c.innerHTML='<div class="t"><b>🔔 Aktifkan pengingat</b>Dapat notif sebelum langgananmu habis, juga info promo &amp; update.</div><button class="rzt2-btn sm" onclick="rzt2EnablePush()">Aktifkan</button>';}
+}
+
+/* ═════════ 2) APP BADGE ═════════ */
+function badgeCount(){
+  var s=session();if(!s||!s.orders)return 0;var n=0;
+  s.orders.forEach(function(o){
+    if(!o.selesai||o.status==='expired')return;
+    var d=window.daysLeft?daysLeft(o.selesai):999;
+    if(d>=0&&d<=7)n++;
+  });
+  return n;
+}
+function applyBadge(){
+  if(!('setAppBadge' in navigator))return;
+  try{var n=badgeCount();var p=n>0?navigator.setAppBadge(n):navigator.clearAppBadge();if(p&&p.catch)p.catch(function(){});}catch(e){}
+}
+
+/* ═════════ 3) TOAST "VERSI BARU TERSEDIA" ═════════ */
+function showUpdate(){
+  if($('rzt2-upd'))return;
+  var d=document.createElement('div');d.id='rzt2-upd';
+  d.innerHTML='<span>✨ Versi baru tersedia</span><button onclick="location.reload()">Muat ulang</button><button class="x" onclick="this.parentNode.remove()" aria-label="Tutup">✕</button>';
+  document.body.appendChild(d);
+}
+if('serviceWorker' in navigator){
+  var hadCtl=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(hadCtl)showUpdate();});
+}
+var baseTag=null;
+function checkVer(){
+  if(document.visibilityState==='hidden')return;
+  fetch('/index.html',{method:'HEAD',cache:'no-store'}).then(function(r){
+    var t=r.headers.get('etag')||r.headers.get('last-modified')||'';if(!t)return;
+    if(baseTag===null)baseTag=t;else if(t!==baseTag)showUpdate();
+  }).catch(function(){});
+  if('serviceWorker' in navigator)navigator.serviceWorker.getRegistration().then(function(g){if(g)g.update().catch(function(){});});
+}
+
+/* ═════════ 4) KERANJANG ═════════ */
+var CART_KEY='rzt_cart_v1',cart=[],cartPromo=null;
+try{cart=JSON.parse(ls(CART_KEY)||'[]')||[];}catch(e){cart=[];}
+function saveCart(){ls(CART_KEY,JSON.stringify(cart));renderFab();}
+function priceOf(str){return window.sfParsePrice?sfParsePrice(str):(parseInt(String(str).replace(/\D/g,''))||0);}
+function stokNum(p){if(p.stok===undefined||p.stok===''||p.stok===null)return Infinity;var n=parseInt(p.stok);return isNaN(n)?Infinity:n;}
+function renderFab(){
+  var n=cart.reduce(function(a,i){return a+i.qty;},0),f=$('rzt2-fab');if(!f)return;
+  $('rzt2-fab-n').textContent=n;f.classList.toggle('show',n>0);
+}
+window.rzt2CartAdd=function(){
+  var p=curProd();if(!p)return;
+  var max=stokNum(p);if(max<=0){toast('⛔ Stok habis');return;}
+  var it=cart.find(function(i){return i.id===p.id;});
+  if(it){if(it.qty+1>max){toast('Stok tersisa '+max);return;}it.qty++;}
+  else cart.push({id:p.id,name:p.name,price:priceOf(p.price),priceStr:p.price,cat:p.kategori||p.cat||'',qty:1,stok:max===Infinity?'':max});
+  cartPromo=null;saveCart();toast('🛒 Ditambahkan ke keranjang');
+  var f=$('rzt2-fab');if(f){f.classList.remove('bump');void f.offsetWidth;f.classList.add('bump');}
+  if(window.closeProdModal)closeProdModal();
+};
+function appIdOf(it){
+  var cat=(it.cat||'').toLowerCase(),nm=(it.name||'').toLowerCase();
+  var a=(typeof APPS!=='undefined'?APPS:[]).find(function(a){var an=a.name.toLowerCase();return cat===an||(cat&&cat.indexOf(an)>-1)||nm.indexOf(an)===0||nm.indexOf(an+' ')>-1;});
+  return a?a.id:null;
+}
+function allowedIds(){return cartPromo&&cartPromo.aplikasi&&String(cartPromo.aplikasi).trim()?String(cartPromo.aplikasi).split(',').map(function(s){return s.trim().toLowerCase();}):null;}
+function eligible(it){var al=allowedIds();if(!al)return true;var id=appIdOf(it);return !!id&&al.indexOf(id)>-1;}
+function calc(){
+  var sub=0,base=0;
+  cart.forEach(function(i){var t=i.price*i.qty;sub+=t;if(eligible(i))base+=t;});
+  var disc=0;
+  if(cartPromo){
+    if(cartPromo.jenis==='persen')disc=Math.round(base*(parseFloat(cartPromo.nilai)||0)/100);
+    else if(cartPromo.jenis==='nominal')disc=Math.min(base,parseInt(cartPromo.nilai)||0);
+  }
+  return {sub:sub,disc:disc,total:Math.max(0,sub-disc)};
+}
+function cartHtml(msg){
+  if(!cart.length)return '<div class="rzt2-note" style="text-align:center;">Keranjang masih kosong. Pilih produk dulu ya 🛍️</div>';
+  var c=calc(),s=session(),nm=ls('rzt_cart_name')||(s&&s.nama)||'';
+  var items=cart.map(function(i,ix){
+    return '<div class="rzt2-item"><div class="n">'+esc(i.name)+'<div class="p">'+esc(i.priceStr||rp(i.price))+'</div></div>'+
+    '<div class="rzt2-qty"><button onclick="rzt2Qty('+ix+',-1)">−</button><span>'+i.qty+'</span><button onclick="rzt2Qty('+ix+',1)">+</button></div>'+
+    '<div style="min-width:76px;text-align:right;font-weight:800;font-size:13px;">'+rp(i.price*i.qty)+'</div></div>';
+  }).join('');
+  return items+
+  '<label class="rzt2-lbl">🎟️ Kode promo</label><div class="rzt2-row"><input class="rzt2-in" id="rzt2-vc" placeholder="Masukkan kode" value="'+esc(cartPromo?cartPromo.kode:'')+'"><button class="rzt2-btn sm" onclick="rzt2Voucher()">Pakai</button></div>'+
+  '<div id="rzt2-vmsg">'+(msg||'')+'</div>'+
+  '<div class="rzt2-sum"><div><span>Subtotal</span><span>'+rp(c.sub)+'</span></div>'+(c.disc?'<div style="color:#15803d;"><span>Diskon ('+esc(cartPromo.kode)+')</span><span>− '+rp(c.disc)+'</span></div>':'')+'<div class="t"><span>Total</span><span>'+rp(c.total)+'</span></div></div>'+
+  '<label class="rzt2-lbl">Nama kamu</label><input class="rzt2-in" id="rzt2-cname" placeholder="Nama (opsional)" value="'+esc(nm)+'">'+
+  '<button class="rzt2-btn rzt2-wa" onclick="rzt2Checkout()">💬 Checkout via WhatsApp</button>'+
+  '<div style="text-align:center;"><button class="rzt2-link" onclick="rzt2CartClear()">Kosongkan keranjang</button></div>';
+}
+function renderCart(msg){$('rzt2-cart-body').innerHTML=cartHtml(msg);}
+window.rzt2CartOpen=function(){renderCart();open_('cart');};
+window.rzt2Qty=function(ix,d){
+  var it=cart[ix];if(!it)return;
+  var max=it.stok===''?Infinity:it.stok,q=it.qty+d;
+  if(q>max){toast('Stok tersisa '+max);return;}
+  if(q<=0)cart.splice(ix,1);else it.qty=q;
+  cartPromo=null;saveCart();renderCart();
+};
+window.rzt2CartClear=function(){if(!confirm('Kosongkan keranjang?'))return;cart=[];cartPromo=null;saveCart();window.rzt2Close('cart');};
+window.rzt2Voucher=async function(){
+  var kode=(($('rzt2-vc')||{}).value||'').trim().toUpperCase();
+  if(!kode){renderCart('<div class="rzt2-err">Masukkan kode promo dulu.</div>');return;}
+  try{
+    var promos=await fetchPromo(),today=new Date().toISOString().split('T')[0];
+    var f=promos.find(function(p){return (p.kode||'').toUpperCase()===kode&&(p.status||'aktif').toLowerCase()==='aktif'&&!(p.exp&&p.exp<today);});
+    if(!f){cartPromo=null;renderCart('<div class="rzt2-err">Kode tidak valid atau sudah kedaluwarsa.</div>');return;}
+    var prev=cartPromo;cartPromo=f;
+    if(!cart.some(eligible)){cartPromo=prev;renderCart('<div class="rzt2-err">Kode ini hanya berlaku untuk aplikasi tertentu yang belum ada di keranjang.</div>');return;}
+    var sub=calc().sub,min=parseInt(f.minorder)||0;
+    if(min&&sub<min){cartPromo=prev;renderCart('<div class="rzt2-err">Minimal belanja '+rp(min)+' untuk kode ini.</div>');return;}
+    renderCart('<div class="rzt2-ok">✅ Kode '+esc(kode)+' dipakai'+(f.nama?' — '+esc(f.nama):'')+'</div>');
+  }catch(e){renderCart('<div class="rzt2-err">Gagal memeriksa kode. Cek koneksi.</div>');}
+};
+window.rzt2Checkout=function(){
+  if(!cart.length)return;
+  var c=calc(),nm=(($('rzt2-cname')||{}).value||'').trim();if(nm)ls('rzt_cart_name',nm);
+  var L=['Halo Rizanta Store, saya mau order:',''];
+  cart.forEach(function(i,ix){L.push((ix+1)+'. '+i.name+' x'+i.qty+' — '+rp(i.price*i.qty));});
+  L.push('','Subtotal: '+rp(c.sub));
+  if(cartPromo){
+    L.push('🎟️ Kode Promo: '+cartPromo.kode+(cartPromo.nama?' ('+cartPromo.nama+')':''));
+    if(c.disc)L.push('💸 Potongan: '+rp(c.disc));
+  }
+  L.push('✅ Total: '+rp(c.total));
+  if(nm)L.push('','Nama: '+nm);
+  window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(L.join('\n')),'_blank');
+};
+
+/* ═════════ 5) KABARI SAYA (stok habis) ═════════ */
+function kabariIds(){try{return JSON.parse(ls('rzt_kabari')||'[]');}catch(e){return [];}}
+function pmExtra(){
+  var box=$('rztPmExtra');if(!box)return;var p=curProd();if(!p){box.innerHTML='';return;}
+  if(stokNum(p)<=0){
+    box.innerHTML=kabariIds().indexOf(String(p.id))>-1
+      ?'<div class="rzt2-note">✅ Kamu akan dikabari begitu stok <b>'+esc(p.name)+'</b> tersedia lagi.</div>'
+      :'<button class="rzt2-btn rzt2-ghost" onclick="rzt2KabariOpen()">🔔 Kabari saya kalau tersedia</button>';
+  }else box.innerHTML='<button class="rzt2-btn rzt2-ghost" onclick="rzt2CartAdd()">🛒 Tambah ke Keranjang</button>';
+}
+window.rzt2KabariOpen=function(){
+  var p=curProd();if(!p)return;var s=session();
+  $('rzt2-kabari-sub').innerHTML='Kami kabari kamu saat <b>'+esc(p.name)+'</b> ready lagi.';
+  $('rzt2-kabari-body').innerHTML=
+    '<label class="rzt2-lbl">Nomor WhatsApp'+(OS_APP_ID?' (opsional jika notif diaktifkan)':'')+'</label><input class="rzt2-in" id="rzt2-kh" inputmode="tel" placeholder="08xxxxxxxxxx" value="'+esc(ls('rzt_kabari_hp')||(s&&s.hp)||'')+'">'+
+    (OS_APP_ID?'<div class="rzt2-note">Dengan klik tombol di bawah, kamu juga diminta mengizinkan notifikasi supaya langsung dapat kabar di HP.</div>':'')+
+    '<div id="rzt2-kmsg"></div><button class="rzt2-btn" id="rzt2-kbtn" onclick="rzt2KabariSend()">🔔 Kabari saya</button>';
+  open_('kabari');
+};
+window.rzt2KabariSend=async function(){
+  var p=curProd();if(!p)return;
+  var hp=normalizeHp((($('rzt2-kh')||{}).value||'').trim()),msg=$('rzt2-kmsg'),b=$('rzt2-kbtn');
+  if(hp&&hp.length<8){msg.innerHTML='<div class="rzt2-err">Nomor WhatsApp belum valid.</div>';return;}
+  if(!hp&&!OS_APP_ID){msg.innerHTML='<div class="rzt2-err">Isi nomor WhatsApp dulu ya.</div>';return;}
+  b.disabled=true;var pushOk=false;
+  if(OS_APP_ID){pushOk=pushOn()||await enablePush();if(pushOk){try{OS.User.addTag(tagKey(p.id),'1');}catch(e){}}}
+  if(!hp&&!pushOk){msg.innerHTML='<div class="rzt2-err">Notifikasi belum aktif. Isi nomor WhatsApp supaya tetap bisa dikabari.</div>';b.disabled=false;return;}
+  try{
+    if(hp)ls('rzt_kabari_hp',hp);
+    await postSheet({sheet:'kabari',action:'add',produk_id:p.id,produk:p.name,hp:hp?hpForSheet(hp):'',nama:(session()&&session().nama)||'',tanggal:new Date().toISOString()});
+    var ids=kabariIds();if(ids.indexOf(String(p.id))<0)ids.push(String(p.id));ls('rzt_kabari',JSON.stringify(ids));
+    toast('✅ Oke, kamu akan dikabari!');window.rzt2Close('kabari');pmExtra();
+  }catch(e){msg.innerHTML='<div class="rzt2-err">Gagal menyimpan. Coba lagi.</div>';b.disabled=false;}
+};
+
+/* ═════════ 6) KLAIM GARANSI ═════════ */
+var JENIS=['Tidak bisa login / password salah','Akun kena limit / profil penuh','Akun berhenti sebelum masa aktif habis','Fitur premium tidak aktif','Lainnya'];
+window.rzt2KlaimOpen=function(resi,app){
+  resi=String(resi||'').toUpperCase();
+  $('rzt2-klaim-body').innerHTML=
+    '<label class="rzt2-lbl">Kode resi</label><input class="rzt2-in" id="rzt2-kr" value="'+esc(resi)+'" readonly>'+
+    '<label class="rzt2-lbl">Aplikasi</label><input class="rzt2-in" id="rzt2-ka" value="'+esc(app||'')+'" readonly>'+
+    '<label class="rzt2-lbl">Jenis masalah</label><select class="rzt2-sel" id="rzt2-kj">'+JENIS.map(function(j){return '<option>'+esc(j)+'</option>';}).join('')+'</select>'+
+    '<label class="rzt2-lbl">Ceritakan masalahnya</label><textarea class="rzt2-ta" id="rzt2-kd" placeholder="Contoh: sejak tadi pagi muncul pesan akun tidak bisa dipakai di perangkat ini…"></textarea>'+
+    '<div id="rzt2-kmsg2"></div><button class="rzt2-btn" id="rzt2-kgo" onclick="rzt2KlaimSend()">Kirim Klaim</button>';
+  open_('klaim');
+};
+window.rzt2KlaimSend=async function(){
+  var resi=$('rzt2-kr').value.trim().toUpperCase(),app=$('rzt2-ka').value,jenis=$('rzt2-kj').value,desc=$('rzt2-kd').value.trim(),msg=$('rzt2-kmsg2'),b=$('rzt2-kgo');
+  if(desc.length<10){msg.innerHTML='<div class="rzt2-err">Ceritakan masalahnya minimal 10 karakter ya.</div>';return;}
+  var last=parseInt(ls('rzt_klaim_last')||'0');if(Date.now()-last<30000){msg.innerHTML='<div class="rzt2-err">Tunggu sebentar sebelum kirim klaim lagi.</div>';return;}
+  b.disabled=true;b.innerHTML='<span class="spinner"></span> Mengirim...';
+  try{
+    var orders=await fetchSheets();
+    var o=orders.find(function(x){return String(x.resi||'').toUpperCase()===resi;});
+    if(!o)throw new Error('Resi tidak ditemukan.');
+    var id='KL'+Date.now().toString(36).toUpperCase();
+    await postSheet({sheet:'klaim',action:'add',id:id,tanggal:new Date().toISOString(),resi:resi,nama:o.nama||'',hp:hpForSheet(o.hp||''),app:app||o.app||'',jenis:jenis,deskripsi:desc,status:'baru'});
+    ls('rzt_klaim_last',String(Date.now()));
+    var wa='Halo Rizanta Store, saya mengajukan klaim garansi.\nID Klaim: '+id+'\nResi: '+resi+'\nAplikasi: '+(app||'-')+'\nMasalah: '+jenis+'\n'+desc;
+    $('rzt2-klaim-body').innerHTML='<div class="rzt2-note" style="text-align:center;"><div style="font-size:34px;">✅</div><b>Klaim terkirim</b><br>ID klaim: <b>'+esc(id)+'</b><br>Status bisa dipantau di menu Cek Resi.</div>'+
+      '<a class="rzt2-btn rzt2-wa" style="text-decoration:none;" target="_blank" href="https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(wa)+'">💬 Percepat via WhatsApp</a>'+
+      '<button class="rzt2-btn rzt2-ghost" onclick="rzt2Close(\'klaim\')">Tutup</button>';
+    setTimeout(function(){if(window.cekResi&&$('resiInput')&&($('resiInput').value||'').toUpperCase()===resi&&$('page-cek')&&$('resultArea')&&!$('resultArea').classList.contains('hidden'))injectClaims();},2500);
+  }catch(e){msg.innerHTML='<div class="rzt2-err">'+esc(e.message||'Gagal mengirim. Coba lagi.')+'</div>';b.disabled=false;b.textContent='Kirim Klaim';}
+};
+var ST={baru:'Menunggu',diproses:'Diproses',selesai:'Selesai',ditolak:'Ditolak'};
+async function injectClaims(){
+  var ra=$('resultArea');if(!ra||ra.classList.contains('hidden'))return;
+  var card=ra.querySelector('.result-card');if(!card)return;
+  var resi=(($('resiInput')||{}).value||'').trim().toUpperCase();if(!resi)return;
+  try{
+    var list=await api({sheet:'klaim',action:'cek',resi:resi});
+    var old=$('rzt2-claims');if(old)old.remove();
+    if(!Array.isArray(list)||!list.length)return;
+    var d=document.createElement('div');d.id='rzt2-claims';d.className='rzt2-claim';
+    d.innerHTML='<b class="h">🛠️ Status klaim garansi</b>'+list.slice(-3).reverse().map(function(c){
+      var st=String(c.status||'baru').toLowerCase();
+      return '<div class="c"><b>#'+esc(c.id)+'</b><span class="rzt2-chip '+esc(st)+'">'+esc(ST[st]||st)+'</span><br>'+esc(c.jenis||'')+(c.balasan?'<br><i>Balasan admin:</i> '+esc(c.balasan):'')+'</div>';
+    }).join('');
+    var anchor=card.querySelector('.btn-outline');card.insertBefore(d,anchor);
+  }catch(e){}
+}
+
+/* ═════════ 7) ADMIN: NOTIF & KLAIM ═════════ */
+function admPw(){try{return sessionStorage.getItem('rzt_adm_pw')||'';}catch(e){return '';}}
+window.rzt2AdmPw=function(v){try{sessionStorage.setItem('rzt_adm_pw',v);}catch(e){}};
+window.rzt2AdminRender=function(){
+  var box=$('rzt2AdminNotif');if(!box)return;
+  box.innerHTML=
+  '<label class="rzt2-lbl" style="margin-top:0;">Password admin (untuk aksi kirim/ubah)</label><input class="rzt2-in" type="password" id="rzt2-apw" value="'+esc(admPw())+'" oninput="rzt2AdmPw(this.value)" placeholder="Password admin">'+
+  '<div class="rzt2-a-sec"><h4>📣 Kirim pengumuman (push ke semua pelanggan)</h4>'+
+  '<input class="rzt2-in" id="rzt2-aj" placeholder="Judul, mis. Promo Ramadhan" style="margin-bottom:8px;"><textarea class="rzt2-ta" id="rzt2-ai" placeholder="Isi pengumuman" style="min-height:70px;"></textarea>'+
+  '<input class="rzt2-in" id="rzt2-al" placeholder="Link tujuan (opsional)" style="margin-top:8px;"><div id="rzt2-amsg"></div>'+
+  '<button class="rzt2-btn" onclick="rzt2AdmKirim()">📣 Kirim sekarang</button></div>'+
+  '<div class="rzt2-a-sec"><div class="rzt2-row" style="justify-content:space-between;"><h4 style="margin:0;">🛠️ Klaim garansi</h4><button class="rzt2-btn sm" onclick="rzt2AdmKlaim()">↻ Muat</button></div><div id="rzt2-alist" style="margin-top:10px;"></div></div>'+
+  '<div class="rzt2-a-sec"><div class="rzt2-row" style="justify-content:space-between;"><h4 style="margin:0;">🔔 Permintaan "Kabari saya"</h4><button class="rzt2-btn sm" onclick="rzt2AdmKabari()">↻ Muat</button></div><div id="rzt2-akab" style="margin-top:10px;"></div></div>';
+};
+window.rzt2AdmKirim=async function(){
+  var pw=admPw(),j=$('rzt2-aj').value.trim(),i=$('rzt2-ai').value.trim(),l=$('rzt2-al').value.trim(),m=$('rzt2-amsg');
+  if(!pw){m.innerHTML='<div class="rzt2-err">Isi password admin dulu.</div>';return;}
+  if(!j||!i){m.innerHTML='<div class="rzt2-err">Judul dan isi wajib diisi.</div>';return;}
+  if(!confirm('Kirim notifikasi ini ke SEMUA pelanggan yang mengaktifkan notif?'))return;
+  m.innerHTML='<div class="rzt2-note">Mengirim…</div>';
+  try{
+    var r=await api({sheet:'pengumuman',action:'kirim',pass:pw,judul:j,isi:i,link:l});
+    if(r.error)throw new Error(r.error);
+    m.innerHTML='<div class="rzt2-ok">✅ Terkirim'+(r.recipients!=null?' ke '+r.recipients+' perangkat':'')+'.</div>';
+    $('rzt2-aj').value='';$('rzt2-ai').value='';$('rzt2-al').value='';
+  }catch(e){m.innerHTML='<div class="rzt2-err">'+esc(e.message||'Gagal mengirim')+'</div>';}
+};
+window.rzt2AdmKlaim=async function(){
+  var pw=admPw(),box=$('rzt2-alist');if(!pw){box.innerHTML='<div class="rzt2-err">Isi password admin dulu.</div>';return;}
+  box.innerHTML='<div class="rzt2-note">Memuat…</div>';
+  try{
+    var r=await api({sheet:'klaim',action:'list',pass:pw});if(r.error)throw new Error(r.error);
+    if(!r.length){box.innerHTML='<div class="rzt2-note">Belum ada klaim.</div>';return;}
+    box.innerHTML=r.slice().reverse().map(function(c){
+      var st=String(c.status||'baru').toLowerCase();
+      return '<div class="rzt2-a-row"><b>#'+esc(c.id)+'</b> · '+esc(c.app)+' · resi '+esc(c.resi)+'<span class="rzt2-chip '+esc(st)+'">'+esc(ST[st]||st)+'</span><br>'+esc(c.nama)+' · '+esc(c.hp)+'<br><i>'+esc(c.jenis)+'</i><br>'+esc(c.deskripsi)+
+      '<div class="rzt2-row" style="margin-top:8px;"><select class="rzt2-sel" id="rzt2-s-'+esc(c.id)+'" style="flex:0 0 120px;">'+['baru','diproses','selesai','ditolak'].map(function(x){return '<option value="'+x+'"'+(x===st?' selected':'')+'>'+ST[x]+'</option>';}).join('')+'</select>'+
+      '<input class="rzt2-in" id="rzt2-b-'+esc(c.id)+'" placeholder="Balasan ke pelanggan" value="'+esc(c.balasan||'')+'"><button class="rzt2-btn sm" onclick="rzt2AdmKlaimSave(\''+esc(c.id)+'\')">Simpan</button></div></div>';
+    }).join('');
+  }catch(e){box.innerHTML='<div class="rzt2-err">'+esc(e.message||'Gagal memuat')+'</div>';}
+};
+window.rzt2AdmKlaimSave=async function(id){
+  var pw=admPw();
+  try{
+    var r=await api({sheet:'klaim',action:'update',pass:pw,id:id,status:$('rzt2-s-'+id).value,balasan:$('rzt2-b-'+id).value});
+    if(r.error)throw new Error(r.error);toast('✅ Klaim diperbarui');
+  }catch(e){toast('❌ '+(e.message||'Gagal'));}
+};
+window.rzt2AdmKabari=async function(){
+  var pw=admPw(),box=$('rzt2-akab');if(!pw){box.innerHTML='<div class="rzt2-err">Isi password admin dulu.</div>';return;}
+  box.innerHTML='<div class="rzt2-note">Memuat…</div>';
+  try{
+    var r=await api({sheet:'kabari',action:'list',pass:pw});if(r.error)throw new Error(r.error);
+    var g={};r.filter(function(x){return String(x.status||'menunggu')==='menunggu';}).forEach(function(x){(g[x.produk]=g[x.produk]||[]).push(x);});
+    var k=Object.keys(g);if(!k.length){box.innerHTML='<div class="rzt2-note">Tidak ada permintaan yang menunggu.</div>';return;}
+    box.innerHTML=k.map(function(n){
+      var hps=g[n].filter(function(x){return x.hp;});
+      return '<div class="rzt2-a-row"><b>'+esc(n)+'</b> — '+g[n].length+' peminat'+(hps.length?'<br>'+hps.map(function(x){var h=normalizeHp(x.hp).replace(/^0/,'62');return '<a target="_blank" href="https://wa.me/'+esc(h)+'?text='+encodeURIComponent('Halo, '+n+' sudah tersedia lagi di Rizanta Store 🎉')+'">'+esc(normalizeHp(x.hp))+'</a>';}).join(' · '):'')+'</div>';
+    }).join('');
+  }catch(e){box.innerHTML='<div class="rzt2-err">'+esc(e.message||'Gagal memuat')+'</div>';}
+};
+
+/* ═════════ WRAP FUNGSI YANG ADA ═════════ */
+function wrap(name,after){
+  var o=window[name];if(typeof o!=='function')return;
+  window[name]=function(){var r=o.apply(this,arguments);if(r&&r.then)return r.then(function(v){try{after();}catch(e){}return v;});try{after();}catch(e){}return r;};
+}
+wrap('openProdModal',pmExtra);
+wrap('cekResi',injectClaims);
+wrap('renderMemberDashboard',function(){applyBadge();osSync();refreshPushCard();});
+wrap('memberLogout',function(){try{if(OS)OS.logout();}catch(e){}applyBadge();});
+
+/* ═════════ INIT ═════════ */
+renderFab();
+setTimeout(applyBadge,1500);
+setTimeout(checkVer,2500);
+setInterval(checkVer,10*60*1000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){applyBadge();checkVer();}});
 })();
 </script>
 
