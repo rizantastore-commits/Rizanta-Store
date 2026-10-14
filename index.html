@@ -14753,7 +14753,8 @@ if(OS_APP_ID){
   window.OneSignalDeferred.push(async function(O){
     try{
       await O.init({appId:OS_APP_ID,serviceWorkerPath:'sw.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});
-      OS=O; osSync(); refreshPushCard();
+      OS=O; osSync(); refreshPushCard(); tagInfo(); refreshHomePush();
+      try{O.User.PushSubscription.addEventListener('change',function(){tagInfo();refreshHomePush();refreshPushCard();});}catch(e){}
     }catch(e){console.warn('OneSignal init gagal',e);}
   });
   var sc=document.createElement('script');sc.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';sc.defer=true;document.head.appendChild(sc);
@@ -14769,8 +14770,27 @@ async function enablePush(){
   if(isIOS()&&!standalone()){toast('Di iPhone: pasang dulu ke Layar Utama, lalu aktifkan notifikasi');if(window.rztInstall)rztInstall();return false;}
   if(!OS){toast('Layanan notifikasi masih dimuat, coba lagi sebentar');return false;}
   try{await OS.Notifications.requestPermission();await OS.User.PushSubscription.optIn();}catch(e){}
-  var ok=pushOn();toast(ok?'🔔 Notifikasi aktif!':'❌ Notifikasi tidak diizinkan');refreshPushCard();return ok;
+  var ok=pushOn();toast(ok?'🔔 Notifikasi aktif!':'❌ Notifikasi tidak diizinkan');tagInfo();refreshPushCard();refreshHomePush();return ok;
 }
+/* tag 'info_stok' = tanda pelanggan mau terima pengumuman & kabar stok (tidak perlu login member) */
+function tagInfo(){try{if(OS&&pushOn())OS.User.addTag('info_stok','1');}catch(e){}}
+/* Kartu ajakan notifikasi di BERANDA (untuk semua pengunjung, bukan cuma member) */
+function refreshHomePush(){
+  if(!OS_APP_ID)return;
+  var c=$('rzt2-homepush');
+  var dis=parseInt(ls('rzt_push_dis')||'0');
+  var hide=pushOn()||(dis&&Date.now()-dis<7*86400000)||(window.Notification&&Notification.permission==='denied');
+  if(hide){if(c)c.remove();return;}
+  if(c)return;
+  var home=$('page-home');if(!home)return;
+  var ref=home.querySelector('.beranda-panda-wrap');
+  c=document.createElement('div');c.id='rzt2-homepush';c.className='rzt2-push';c.style.margin='0 16px 14px';
+  c.innerHTML='<div class="t"><b>🔔 Dapat info promo &amp; stok</b>Aktifkan notifikasi untuk pengumuman, promo, dan kabar kalau produk tersedia lagi. Tanpa perlu beli.</div>'+
+    '<div style="display:flex;flex-direction:column;gap:6px;"><button class="rzt2-btn sm" onclick="rzt2EnablePush()">Aktifkan</button>'+
+    '<button class="rzt2-btn rzt2-ghost sm" onclick="rzt2DismissHomePush()">Nanti</button></div>';
+  if(ref&&ref.parentNode)ref.parentNode.insertBefore(c,ref);else home.appendChild(c);
+}
+window.rzt2DismissHomePush=function(){ls('rzt_push_dis',String(Date.now()));var c=$('rzt2-homepush');if(c)c.remove();};
 window.rzt2EnablePush=enablePush;
 function refreshPushCard(){
   var list=$('memberOrderList');if(!list||!OS_APP_ID)return;
