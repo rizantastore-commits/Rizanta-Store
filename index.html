@@ -14771,8 +14771,16 @@ async function enablePush(){
   if(!OS_APP_ID){ if(window.requestNotifPermission)requestNotifPermission(); return false; }
   if(isIOS()&&!standalone()){toast('Di iPhone: pasang dulu ke Layar Utama, lalu aktifkan notifikasi');if(window.rztInstall)rztInstall();return false;}
   if(!OS){toast('Layanan notifikasi masih dimuat, coba lagi sebentar');return false;}
-  try{await OS.Notifications.requestPermission();await OS.User.PushSubscription.optIn();}catch(e){}
-  var ok=pushOn();toast(ok?'🔔 Notifikasi aktif!':'❌ Notifikasi tidak diizinkan');tagInfo();refreshPushCard();refreshHomePush();return ok;
+  try{await OS.Notifications.requestPermission();}catch(e){console.warn('requestPermission',e);}
+  var perm=(window.Notification&&Notification.permission)||'default';
+  if(perm==='denied'){toast('❌ Notifikasi diblokir. Buka pengaturan situs di browser (ikon gembok) → Notifikasi → Izinkan, lalu muat ulang');refreshPushCard();refreshHomePush();return false;}
+  if(perm!=='granted'){toast('Notifikasi belum diizinkan');return false;}
+  try{await OS.User.PushSubscription.optIn();}catch(e){console.warn('optIn',e);}
+  /* subscription dibuat OneSignal secara asinkron — tunggu sampai tercatat (maks ±10 detik) */
+  var ok=pushOn();
+  for(var i=0;i<20&&!ok;i++){await new Promise(function(r){setTimeout(r,500);});ok=pushOn();}
+  toast(ok?'🔔 Notifikasi aktif!':'⚠️ Izin sudah diberikan, tapi pendaftaran ke server gagal. Muat ulang halaman lalu coba lagi');
+  tagInfo();refreshPushCard();refreshHomePush();return ok;
 }
 /* tag 'info_stok' = tanda pelanggan mau terima pengumuman & kabar stok (tidak perlu login member) */
 function tagInfo(){try{if(OS&&pushOn())OS.User.addTag('info_stok','1');}catch(e){}}
