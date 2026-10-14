@@ -14616,7 +14616,7 @@ body:not(.light-mode) .rzt-steps li{background:rgba(108,159,245,.12);color:#E8EF
   function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;}
   var ua=navigator.userAgent,isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 
-  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
+  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/OneSignalSDKWorker.js').catch(function(){});});}
 
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;show();});
   window.addEventListener('appinstalled',function(){deferred=null;hide();if(window.showToast)showToast('✅ Aplikasi terpasang di HP kamu!');});
@@ -14752,7 +14752,7 @@ if(OS_APP_ID){
   window.OneSignalDeferred=window.OneSignalDeferred||[];
   window.OneSignalDeferred.push(async function(O){
     try{
-      await O.init({appId:OS_APP_ID,serviceWorkerPath:'sw.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});
+      await O.init({appId:OS_APP_ID,serviceWorkerPath:'OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});
       OS=O; osSync(); refreshPushCard(); tagInfo(); refreshHomePush();
       try{O.User.PushSubscription.addEventListener('change',function(){tagInfo();refreshHomePush();refreshPushCard();});}catch(e){}
     }catch(e){console.warn('OneSignal init gagal',e);}
