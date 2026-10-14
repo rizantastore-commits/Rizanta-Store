@@ -14616,7 +14616,7 @@ body:not(.light-mode) .rzt-steps li{background:rgba(108,159,245,.12);color:#E8EF
   function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;}
   var ua=navigator.userAgent,isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 
-  if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/OneSignalSDKWorker.js').catch(function(){});});}
+  /* Service worker didaftarkan oleh OneSignal (lihat init di bawah); jangan didaftarkan dua kali supaya tidak saling timpa */
 
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;show();});
   window.addEventListener('appinstalled',function(){deferred=null;hide();if(window.showToast)showToast('✅ Aplikasi terpasang di HP kamu!');});
@@ -14748,6 +14748,8 @@ window.rzt2Close=function(id){var e=$('rzt2-'+id);if(e)e.classList.remove('open'
 
 /* ═════════ 1) PUSH NOTIFICATION (OneSignal) ═════════ */
 var OS=null;
+function swFallback(){try{if('serviceWorker' in navigator)navigator.serviceWorker.register('/OneSignalSDKWorker.js').catch(function(){});}catch(e){}}
+if(!OS_APP_ID)swFallback();
 if(OS_APP_ID){
   window.OneSignalDeferred=window.OneSignalDeferred||[];
   window.OneSignalDeferred.push(async function(O){
@@ -14755,7 +14757,7 @@ if(OS_APP_ID){
       await O.init({appId:OS_APP_ID,serviceWorkerPath:'OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});
       OS=O; osSync(); refreshPushCard(); tagInfo(); refreshHomePush();
       try{O.User.PushSubscription.addEventListener('change',function(){tagInfo();refreshHomePush();refreshPushCard();});}catch(e){}
-    }catch(e){console.warn('OneSignal init gagal',e);}
+    }catch(e){console.warn('OneSignal init gagal',e);swFallback();}
   });
   var sc=document.createElement('script');sc.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';sc.defer=true;document.head.appendChild(sc);
 }
@@ -14831,7 +14833,7 @@ function checkVer(){
   if(document.visibilityState==='hidden')return;
   fetch('/index.html',{method:'HEAD',cache:'no-store'}).then(function(r){
     var t=r.headers.get('etag')||r.headers.get('last-modified')||'';if(!t)return;
-    if(baseTag===null)baseTag=t;else if(t!==baseTag)showUpdate();
+    if(baseTag===null)baseTag=t;else if(t!==baseTag){if(window._rztPend===t)showUpdate();else window._rztPend=t;}else window._rztPend=null;
   }).catch(function(){});
   if('serviceWorker' in navigator)navigator.serviceWorker.getRegistration().then(function(g){if(g)g.update().catch(function(){});});
 }
