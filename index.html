@@ -5938,6 +5938,27 @@ body.light-mode .reminder-item { background:rgba(255,255,255,.85); }
 </nav>
 
 <script>
+/* ── Keamanan: sisipkan password admin ke setiap request Apps Script selama sesi admin ── */
+(function(){
+  var _f=window.fetch.bind(window);
+  window.fetch=function(input,init){
+    try{
+      var pass=sessionStorage.getItem('rzt_ap');
+      var url=(typeof input==='string')?input:(input&&input.url)||'';
+      if(pass && url.indexOf('script.google.com/macros/')>-1){
+        var method=((init&&init.method)||'GET').toUpperCase();
+        if(method==='POST' && init && typeof init.body==='string'){
+          var o=JSON.parse(init.body); if(o && typeof o==='object' && !o.pass){ o.pass=pass; init=Object.assign({},init,{body:JSON.stringify(o)}); }
+        } else if(method==='GET' && typeof input==='string' && url.indexOf('pass=')<0){
+          input=url+(url.indexOf('?')>-1?'&':'?')+'pass='+encodeURIComponent(pass);
+        }
+      }
+    }catch(e){}
+    return _f(input,init);
+  };
+})();
+</script>
+<script>
 /* ── Icon SVG produk (pengganti emoji biar rapi & konsisten, gaya sama dgn nav bar) ── */
 const PRODUCT_ICON_SVG = {
   default : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M10.3 18.4h3.4"/></svg>',
@@ -5998,11 +6019,11 @@ function goPage(id){
 
 /* ── Config (hardcoded — tidak perlu setup manual) ── */
 let CFG={
-  sheetId:   '1At5aPcLX7vu3a3Dq6FzF-4pKVQV9h0X1iAD-zFANrHo',
-  apiKey:    'AIzaSyBuitK6QzFyzhP_L2rZWaa94x80zWyi65U',
+  sheetId:   '',
+  apiKey:    '',
   sheetName: 'Orders',
   scriptUrl: 'https://script.google.com/macros/s/AKfycbwrzqaXAKUV7WD1h42hXzL7jWNr4RoF8EvHIxikVmrPMz5FwzwS-l4QuwqG-1cZu23S/exec',
-  groqKey: '', // diisi otomatis dari sheet Config (key: groqKey)
+  groqKey: 'proxy', // key asli ada di server (Script Properties: GROQ_API_KEY)
 };
 function loadConfig(){
   /* Muat Groq Key dari sheet Config */
@@ -6065,6 +6086,7 @@ document.addEventListener('DOMContentLoaded', startVisitorPresence);
 /* ── Ambil Groq API Key dari Google Sheets (sheet: Config) ── */
 let _groqKeyLoaded = false;
 async function _loadGroqKey(){
+  return; /* key Groq sekarang disimpan di server, tidak diambil ke browser */
   if(_groqKeyLoaded || !CFG.scriptUrl) return;
   try{
     const res = await fetch(CFG.scriptUrl + '?sheet=config&action=get&key=groqKey');
@@ -6130,18 +6152,9 @@ async function callGemini(userMsg){
   ];
 
   try{
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch(CFG.scriptUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + CFG.groqKey
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: messages,
-        max_tokens: 300,
-        temperature: 0.7
-      })
+      body: JSON.stringify({ sheet:'ai', action:'chat', messages: messages })
     });
     if(!res.ok){
       const errText = await res.text();
@@ -6249,16 +6262,14 @@ function statusInfo(d, o){
 function errBox(m){return`<div class="err-box">⚠️ ${m}</div>`;}
 
 /* ── Fetch Sheets ── */
-async function fetchSheets(){
-  if(!CFG.sheetId||!CFG.apiKey)throw new Error('Config belum diisi. Buka tab Admin → Setup dulu ya!');
-  const range=encodeURIComponent(`${CFG.sheetName||'Orders'}!A:L`);
-  const res=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${range}?key=${CFG.apiKey}`);
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+async function fetchSheets(resi){
+  if(!CFG.scriptUrl) throw new Error('Apps Script URL belum diisi!');
+  const url=CFG.scriptUrl+'?sheet=orders&fmt=display'+(resi?'&action=cek&resi='+encodeURIComponent(resi):'');
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
   const data=await res.json();
-  const rows=data.values||[];
-  if(rows.length<2)return[];
-  const h=rows[0];
-  return rows.slice(1).map(r=>{const o={};h.forEach((k,i)=>o[k.toLowerCase().trim()]=r[i]||'');return o;});
+  if(data&&data.error) throw new Error(data.error);
+  return Array.isArray(data)?data:[];
 }
 
 /* ── POST ke Apps Script (anti false-positive "Failed to fetch") ──
@@ -6297,8 +6308,8 @@ async function cekResi(){
   const btn=document.getElementById('cekBtn');
   btn.innerHTML='<span class="spinner"></span> Mencari...';btn.disabled=true;
   try{
-    const orders=await fetchSheets();
-    const o=orders.find(x=>x.resi===resi);
+    const orders=await fetchSheets(resi);
+    const o=orders.find(x=>String(x.resi||'').toUpperCase()===resi);
     if(!o)throw new Error('Resi tidak ditemukan. Pastikan kode benar ya!');
     const selesai=o.selesai||o['tanggal selesai']||o.end||'';
     const mulai=o.mulai||o['tanggal mulai']||o.start||'';
@@ -6482,7 +6493,7 @@ async function adminLogin(){
     const data = await res.json();
     if(data.valid === true){
       _loginAttempts = 0;
-      try{ localStorage.setItem(ADMIN_KEY, '1'); }catch(e){}
+      try{ localStorage.setItem(ADMIN_KEY, '1'); sessionStorage.setItem('rzt_ap', pass); }catch(e){}
       await _enterAdminPanel();
     } else {
       _loginAttempts++;
@@ -6528,7 +6539,7 @@ async function _enterAdminPanel(){
 (function restoreAdminSession(){
   function tryRestore(){
     try{
-      if(localStorage.getItem(ADMIN_KEY) === '1'){
+      if(localStorage.getItem(ADMIN_KEY) === '1' && sessionStorage.getItem('rzt_ap')){
         _enterAdminPanel().catch(e=>console.error('Gagal restore sesi admin:', e));
       }
     }catch(e){}
@@ -6544,7 +6555,7 @@ function adminLogout(){
   stopAdminRt();
   stopOnlineVisitorPolling();
   adminLoggedIn=false;
-  try{ localStorage.removeItem(ADMIN_KEY); }catch(e){}
+  try{ localStorage.removeItem(ADMIN_KEY); sessionStorage.removeItem('rzt_ap'); }catch(e){}
   document.getElementById('adminLogin').classList.remove('hidden');
   document.getElementById('adminPanel').classList.add('hidden');
   document.getElementById('adminPassInput').value='';
@@ -7548,16 +7559,14 @@ let _prodCache = null;
 async function fetchProduk(){
   if(_prodCache) return _prodCache;
   try{
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/Produk!A:J?key=${CFG.apiKey}`;
+    const url = CFG.scriptUrl + '?sheet=produk&fmt=display';
     const res = await fetch(url);
     if(!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
-    const rows = data.values||[];
-    if(rows.length < 2){ _prodCache=[]; return []; }
-    const h = rows[0];
-    _prodCache = rows.slice(1).map(r=>{
+    const list = await res.json();
+    if(!Array.isArray(list) || list.length < 1){ _prodCache=[]; return []; }
+    _prodCache = list.map(r0=>{
       const o={};
-      h.forEach((k,i)=> o[k.toLowerCase().trim()] = r[i]||'');
+      Object.keys(r0).forEach(k=> o[k] = (r0[k]===undefined||r0[k]===null) ? '' : String(r0[k]));
       // parse fitur kolom G (pipe-separated)
       o.features = o.fitur ? o.fitur.split('|').map(f=>f.trim()).filter(Boolean) : [];
       // alias field names to match UI
@@ -15128,11 +15137,11 @@ window.rzt2KlaimSend=async function(){
   var last=parseInt(ls('rzt_klaim_last')||'0');if(Date.now()-last<30000){msg.innerHTML='<div class="rzt2-err">Tunggu sebentar sebelum kirim klaim lagi.</div>';return;}
   b.disabled=true;b.innerHTML='<span class="spinner"></span> Mengirim...';
   try{
-    var orders=await fetchSheets();
+    var orders=await fetchSheets(resi);
     var o=orders.find(function(x){return String(x.resi||'').toUpperCase()===resi;});
     if(!o)throw new Error('Resi tidak ditemukan.');
     var id='KL'+Date.now().toString(36).toUpperCase();
-    await postSheet({sheet:'klaim',action:'add',id:id,tanggal:new Date().toISOString(),resi:resi,nama:o.nama||'',hp:hpForSheet(o.hp||''),app:app||o.app||'',jenis:jenis,deskripsi:desc,status:'baru'});
+    await postSheet({sheet:'klaim',action:'add',id:id,tanggal:new Date().toISOString(),resi:resi,nama:o.nama||'',app:app||o.app||'',jenis:jenis,deskripsi:desc,status:'baru'});
     ls('rzt_klaim_last',String(Date.now()));
     var wa='Halo Rizanta Store, saya mengajukan klaim garansi.\nID Klaim: '+id+'\nResi: '+resi+'\nAplikasi: '+(app||'-')+'\nMasalah: '+jenis+'\n'+desc;
     $('rzt2-klaim-body').innerHTML='<div class="rzt2-note" style="text-align:center;"><div style="font-size:34px;">✅</div><b>Klaim terkirim</b><br>ID klaim: <b>'+esc(id)+'</b><br>Status bisa dipantau di menu Cek Resi.</div>'+
